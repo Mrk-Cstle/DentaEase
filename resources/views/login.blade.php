@@ -14,7 +14,7 @@
                 <img class="h-16" src="{{ asset('images/logo.png') }}" alt="">
             </div>
             <div id="text">
-               <h1 class="p-5">Santiago-Amancio Dental Clinic</h1> 
+               <h1 class="p-5 text-white font-black text-3xl">Santiago-Amancio Dental Clinic</h1> 
             </div>
         </header>
     
@@ -33,12 +33,17 @@
                     <div class="flex justify-end">
                         <button type="submit" class=" bg-[#02ccfe] text-white rounded-md px-3 py-2">Login</button>
                     </div>
-                    <div class="flex justify-center">
-                        <p>
+                    <div class="flex flex-col items-center text-center gap-2 mt-3">
+                        <p class="text-sm">
                             Login using 
-                            <a class="text-blue-500 underline" href="#">Face Recognition</a> 
+                            <a class="text-blue-500 underline hover:text-blue-700 transition" href="#">Face Recognition</a> 
                             or 
-                            <a class="text-blue-500 underline" href="#">QR</a>
+                            <a class="text-blue-500 underline hover:text-blue-700 transition" href="#">QR</a>
+                        </p>
+        
+                        <p class="text-sm">
+                            Don't have an account?  
+                            <a class="text-blue-500 underline hover:text-blue-700 transition" href="#">Sign up</a> 
                         </p>
                     </div>
                    
