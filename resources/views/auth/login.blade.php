@@ -4,14 +4,14 @@
 
 @section('auth-content')
             <div class="bg-[#F5F5F5] bg-opacity-75 w-1/3 px-10 py-10 rounded-md flex flex-col h-150  ">
-                <form action="" class="flex flex-col gap-5">
+                <form action="{{ route(name: 'loginform') }}" class="flex flex-col gap-5">
                     <div class="flex  justify-center" >
                         <h2>Login</h2>
                     </div>
                    
                     @csrf
                     <label>User</label>
-                    <input type="email" name="user" class="border border-[#02ccfe] rounded-md p-2 bg-white">
+                    <input type="text" name="user" class="border border-[#02ccfe] rounded-md p-2 bg-white">
                     <label>Password</label>
                     <input type="password" name="password" class="border border-[#02ccfe] rounded-md p-2 bg-white">
                     <div class="flex justify-end">

@@ -4,7 +4,7 @@
 
 @section('auth-content')
             <div class="bg-[#F5F5F5] bg-opacity-75 w-1/3 px-10 py-10 rounded-md flex flex-col ">
-                <form action="" class="flex flex-col gap-5">
+                <form action="{{ route(name: 'signupform') }}" class="flex flex-col gap-5">
                     <div class="flex  justify-center" >
                         <h2>Sign Up</h2>
                     </div>
