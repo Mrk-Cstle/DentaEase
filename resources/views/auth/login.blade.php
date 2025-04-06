@@ -4,7 +4,7 @@
 
 @section('auth-content')
             <div class="bg-[#F5F5F5] bg-opacity-75 w-1/3 px-10 py-10 rounded-md flex flex-col h-150  ">
-                <form action="{{ route(name: 'loginform') }}" class="flex flex-col gap-5">
+                <form id="loginForm" class="flex flex-col gap-5" method="post">
                     <div class="flex  justify-center" >
                         <h2>Login</h2>
                     </div>
@@ -34,4 +34,40 @@
 
                 </form>
             </div>
+            <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+            <script>
+                $(document).ready(function(){
+                    $('#loginForm').submit(function(event){
+                        event.preventDefault();
+
+                        var formData = {
+                            user: $('input[name="user"]').val(),
+                            password: $('input[name="password"]').val(),
+                            _token: '{{ csrf_token()}}'
+                            };
+                        
+                        $.ajax({
+                            type: 'post',
+                            url: '{{ route('loginform') }}',
+                            data: formData,
+                            success: function(response){
+                                if (response.status === 'success') {
+                                    alert('Login successful!');
+                                    // redirect to dashboard
+                                    window.location.href = '/dashboard';
+                                } else {
+                                    alert(response.message);
+                                }
+                                },
+                                error: function(xhr, status, error){
+                                    console.log(xhr.responseText);
+                                    }
+                                    });
+
+
+                    });
+                    });
+
+            
+            </script>
             @endsection

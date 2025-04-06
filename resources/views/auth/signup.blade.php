@@ -30,7 +30,7 @@
                     <label>Email:</label>
                     <input type="email" name="email" class="border border-[#02ccfe] rounded-md p-2 bg-white">
                     <label>Contact Number:</label>
-                    <input type="number" name="number" class="border border-[#02ccfe] rounded-md p-2 bg-white">
+                    <input type="number" name="contact_number" class="border border-[#02ccfe] rounded-md p-2 bg-white">
                     <label>User:</label>
                     <input type="text" name="user" class="border border-[#02ccfe] rounded-md p-2 bg-white">
                     <label>Password</label>

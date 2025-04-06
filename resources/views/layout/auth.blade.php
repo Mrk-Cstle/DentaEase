@@ -7,7 +7,9 @@
     <script src="https://unpkg.com/@tailwindcss/browser@4"></script>
     <title>@yield('title', 'Auth Page')</title>
 </head>
-<body class="bg-cover bg-center relative " style="background-image: url('{{ asset('images/bg.jpg') }}' );  overflow-x: hidden; ">
+
+{{-- <body class="bg-cover bg-center relative " style="background-image: url('{{ asset('images/bg.jpg') }}' );  overflow-x: hidden; "> --}}
+<body>
   
         <header class="flex flex-row justify-center p-3 w-screen bg-[#02ccfe] h-auto gap-10" >
             <div id="logo" >

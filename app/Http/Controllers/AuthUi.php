@@ -19,7 +19,7 @@ class AuthUi extends Controller
             'lastname' => 'required',
             'email' => 'required|email',
             'password' => 'required',
-            'number' => 'required',
+            'contact_number' => 'required',
             'user' => 'required',
 
         ]);
@@ -32,8 +32,9 @@ class AuthUi extends Controller
         $credentials = $request->only('user','password');
 
         if(Auth::attempt($credentials)){
-            return redirect()->intended('/signupui');
+            
+            return response()->json(['status' => 'success']);
         }
-        return back()->withErrors(['user' => 'Invalid credentials.']);
+        return response()->json(['status' => 'error', 'message' => 'Invalid credentials']);
     }
 }
