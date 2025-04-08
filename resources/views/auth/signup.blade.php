@@ -84,7 +84,7 @@
                             if (response.status === "success") {
                                 Swal.fire({
                                 title: 'Success!',
-                                text: 'Your form has been submitted.',
+                                text: response.message,
                                 icon: 'success',
                                 confirmButtonText: 'OK'
                             }).then((result) => {

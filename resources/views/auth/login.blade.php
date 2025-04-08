@@ -35,6 +35,7 @@
                 </form>
             </div>
             <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+            <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
             <script>
                 $(document).ready(function(){
                     $('#loginForm').submit(function(event){
@@ -51,13 +52,22 @@
                             url: '{{ route('loginform') }}',
                             data: formData,
                             success: function(response){
-                                if (response.status === 'success') {
-                                    alert('Login successful!');
-                                    // redirect to dashboard
-                                    window.location.href = '/dashboard';
-                                } else {
-                                    alert(response.message);
-                                }
+                             if (response.status === "success") {
+                                Swal.fire({
+                                title: 'Success!',
+                                text: response.message,
+                                icon: 'success',
+                                confirmButtonText: 'OK'
+                            }).then((result) => {
+           
+                           
+                                
+                                window.location.href = '/loginui';
+                         
+                        });
+                            }else{
+                                Swal.fire('Error', response.message);
+                            }
                                 },
                                 error: function(xhr, status, error){
                                     console.log(xhr.responseText);
