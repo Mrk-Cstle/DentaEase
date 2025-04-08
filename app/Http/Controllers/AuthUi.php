@@ -14,18 +14,27 @@ class AuthUi extends Controller
     }
 
     public function SignUpForm(Request $request){
-        $request->validate([
+      $validated = $request->validate([
             'firstname' => 'required',
             'lastname' => 'required',
             'email' => 'required|email',
             'password' => 'required',
             'contact_number' => 'required',
-            'user' => 'required',
+            'user' => 'required|unique:users,user',
 
         ]);
 
-        User::create($request->all());
-        return redirect()->route('login');
+            // Hash password
+        $validated['password'] = bcrypt($validated['password']);
+
+        // Try saving user
+        $user = User::create($validated);
+
+    if ($user) {
+        return response()->json(['status' => 'success', 'message' => 'Account created successfully.']);
+    } else {
+        return response()->json(['status' => 'error', 'message' => 'Failed to create account.'], 500);
+    }
     }
 
     public function LoginForm(Request $request){

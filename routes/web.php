@@ -19,6 +19,6 @@ Route::get('/loginui',[AuthUi::class, 'LogInUi'])->name('loginui');
 
 //signup form
 
-Route::get('/signupform', [AuthUi::class, 'SignUpForm'])->name('signupform');
+Route::post('/signupform', [AuthUi::class, 'SignUpForm'])->name('signupform');
 
 Route::post('/loginform', [AuthUi::class, 'LoginForm'])->name('loginform');

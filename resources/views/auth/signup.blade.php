@@ -4,7 +4,7 @@
 
 @section('auth-content')
             <div class="bg-[#F5F5F5] bg-opacity-75 w-1/3 px-10 py-10 rounded-md flex flex-col ">
-                <form action="{{ route(name: 'signupform') }}" class="flex flex-col gap-5">
+                <form id="signupForm" method="post"  class="flex flex-col gap-5">
                     <div class="flex  justify-center" >
                         <h2>Sign Up</h2>
                     </div>
@@ -56,4 +56,50 @@
                     </p>
                 </div>
             </div>
+             <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+             <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+             <script>
+             $(document).ready(function(event){
+                $('#signupForm').submit(function (event) {
+                    event.preventDefault();
+                    var formData = {
+                        _token: $('input[name="_token"]').val(),
+                        firstname : $('input[name="firstname"]').val(),
+                        lastname : $('input[name="lastname"]').val(),
+                        email : $('input[name="email"]').val(),
+                        contact_number : $('input[name="contact_number"]').val(),
+                        user : $('input[name="user"]').val(),
+                        password : $('input[name="password"]').val()
+
+                    }
+
+                    $.ajax({
+                        type: 'post',
+                        url: '{{route('signupform')}}',
+
+                        data: formData,
+                       
+                        success: function (response) {
+                            if (response.status === "success") {
+                                Swal.fire({
+                                title: 'Success!',
+                                text: 'Your form has been submitted.',
+                                icon: 'success',
+                                confirmButtonText: 'OK'
+                            }).then((result) => {
+           
+                           
+                                
+                                window.location.href = '/loginui';
+                         
+                        });
+                            }else{
+                                Swal.fire('Error', response.message);
+                            }
+                            }
+                         });
+                })
+             })
+             </script>
             @endsection
