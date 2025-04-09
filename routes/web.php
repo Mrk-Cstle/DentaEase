@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\AdminController;
 use App\Http\Controllers\AuthUi;
 use Illuminate\Support\Facades\Route;
 
@@ -22,3 +23,7 @@ Route::get('/loginui',[AuthUi::class, 'LogInUi'])->name('loginui');
 Route::post('/signupform', [AuthUi::class, 'SignUpForm'])->name('signupform');
 
 Route::post('/loginform', [AuthUi::class, 'LoginForm'])->name('loginform');
+
+
+//dashboard page
+Route::get('/dashboard', [AdminController::class,'Dashboard'])->name('dashboard');
