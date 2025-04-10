@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <meta name="csrf-token" content="{{ csrf_token() }}">
     <script src="https://unpkg.com/@tailwindcss/browser@4"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
     <title>@yield('title', 'Navigation')</title>
@@ -25,8 +26,22 @@
             
             <i class="text-4xl fa-solid fa-circle-user"></i>
             <div class="">
+                
                 <h2 class="text-black text-sm " >First Name, Last Name</h2>
-                <h2 class="text-black text-xs" >Admin</h2>
+                <div class="flex flex-row justify-between">
+                    <h2 class="text-black text-xs" >Admin</h2>
+                    <button id="dropdownToggle" class="text-black text-xs focus:outline-none">
+                        <i class="fa-solid fa-caret-down"></i>
+                    </button>
+                </div>
+                
+
+                <ul id="dropdownMenu" class="absolute mt-2 right-0 bg-white border rounded shadow-lg text-sm hidden z-50">
+                    <li><a href="#" class="block px-4 py-2 hover:bg-gray-100">Profile</a></li>
+                    <li><a href="#" class="block px-4 py-2 hover:bg-gray-100">Settings</a></li>
+                    <li><a href="/logout" class="block px-4 py-2 hover:bg-gray-100 text-red-500">Sign out</a></li>
+                </ul>
+                
             </div>
            
         </div>
@@ -34,7 +49,7 @@
     <div class="flex flex-row h-screen gap-3 ">
         <aside class=" bg-[#F5F5F5] bg-opacity-75  basis-1/5 h-full max-h-full border-r-1 border-indigo-200 ">
             <ul class="mt-5 ">
-                <li class="p-4 border-b-1">
+                <li class="p-4 border-b-1 ">
                     <span >
                         <a href="" class="text-[#02ccfe] text">
                         <i class="fa-solid fa-house"></i> Dashboard</a>
@@ -62,6 +77,21 @@
         </main>
     </div>
     
+    <script>
+        const toggleBtn = document.getElementById('dropdownToggle');
+        const dropdown = document.getElementById('dropdownMenu');
+    
+        toggleBtn.addEventListener('click', () => {
+            dropdown.classList.toggle('hidden');
+        });
+    
+        // Optional: Close when clicking outside
+        window.addEventListener('click', function (e) {
+            if (!toggleBtn.contains(e.target) && !dropdown.contains(e.target)) {
+                dropdown.classList.add('hidden');
+            }
+        });
+    </script>
 
 </body>
 </html>

@@ -26,4 +26,6 @@ Route::post('/loginform', [AuthUi::class, 'LoginForm'])->name('loginform');
 
 
 //dashboard page
-Route::get('/dashboard', [AdminController::class,'Dashboard'])->name('dashboard');
+
+Route::get('/dashboard', [AdminController::class,'Dashboard'])->name('dashboard')->middleware('auth');
+Route::get('/logout', [AdminController::class,'Logout'])->name('Logout')->middleware('auth');

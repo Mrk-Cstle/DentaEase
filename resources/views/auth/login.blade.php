@@ -62,7 +62,7 @@
            
                            
                                 
-                                window.location.href = '/loginui';
+                                window.location.href = '{{ route('dashboard') }}';
                          
                         });
                             }else{
