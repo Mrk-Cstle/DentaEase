@@ -49,31 +49,35 @@
     <div class="flex flex-row h-screen gap-3 ">
         <aside class=" bg-[#F5F5F5] bg-opacity-75  basis-1/5 h-full max-h-full border-r-1 border-indigo-200 ">
             <ul class="mt-5 ">
+                
+                <li class="p-4 border-b-1">
+                    <span >
+                        <a href="" class="text-[#02ccfe] text">
+                        <i class="fa-solid fa-house"></i> Dashboard</a>
+
+                    </span>
+                </li>
+                <li class="p-4 border-b-1">
+                    <span >
+                        <a href="" class="text-[#02ccfe] text">
+                        <i class="fa-solid fa-house"></i> Dashboard</a>
+
+                    </span>
+                </li>
                 <li class="p-4 border-b-1 ">
                     <span >
-                        <a href="" class="text-[#02ccfe] text">
-                        <i class="fa-solid fa-house"></i> Dashboard</a>
-
-                    </span>
-                </li>
-                <li class="p-4 border-b-1">
-                    <span >
-                        <a href="" class="text-[#02ccfe] text">
-                        <i class="fa-solid fa-house"></i> Dashboard</a>
-
-                    </span>
-                </li>
-                <li class="p-4 border-b-1">
-                    <span >
-                        <a href="" class="text-[#02ccfe] text">
-                        <i class="fa-solid fa-house"></i> Dashboard</a>
+                        <a href="/userverify" class="text-[#02ccfe] text">
+                        <i class="fa-solid fa-house"></i>New User</a>
 
                     </span>
                 </li>
             </ul>
         </aside>
         <main class=" bg-[#F5F5F5] bg-opacity-75 basis-4/5 ">
-            @yield('main-content')
+            <div class="content flex flex-col p-10 mt-10 gap-5">
+                @yield('main-content')
+            </div>
+            
         </main>
     </div>
     

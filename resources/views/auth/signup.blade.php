@@ -14,11 +14,11 @@
                   <div class="flex flex-row gap-10 w-full mt-5">
                     <div class="flex flex-col gap-5 flex-1">
                         <label>First Name:</label>
-                        <input type="text" name="firstname" class="border border-[#02ccfe] rounded-md p-2 bg-white">
+                        <input type="text" name="first_name" class="border border-[#02ccfe] rounded-md p-2 bg-white">
                     </div>
                     <div class="flex flex-col gap-5 flex-1">
                         <label>Last Name:</label>
-                        <input type="text" name="lastname" class="border border-[#02ccfe] rounded-md p-2 bg-white">
+                        <input type="text" name="last_name" class="border border-[#02ccfe] rounded-md p-2 bg-white">
                      
                        
                     </div>
@@ -63,14 +63,17 @@
              $(document).ready(function(event){
                 $('#signupForm').submit(function (event) {
                     event.preventDefault();
+
+                    var account_type = 'Admin'
                     var formData = {
                         _token: $('input[name="_token"]').val(),
-                        firstname : $('input[name="firstname"]').val(),
-                        lastname : $('input[name="lastname"]').val(),
+                        first_name : $('input[name="first_name"]').val(),
+                        last_name : $('input[name="last_name"]').val(),
                         email : $('input[name="email"]').val(),
                         contact_number : $('input[name="contact_number"]').val(),
                         user : $('input[name="user"]').val(),
-                        password : $('input[name="password"]').val()
+                        password : $('input[name="password"]').val(),
+                        account_type: account_type
 
                     }
 
@@ -97,6 +100,10 @@
                             }else{
                                 Swal.fire('Error', response.message);
                             }
+                            },
+                            error: function(xhr) {
+                                console.error(xhr.responseText); // helpful info from Laravel
+                                Swal.fire('Error', 'Something went wrong on the server.', 'error');
                             }
                          });
                 })

@@ -29,3 +29,8 @@ Route::post('/loginform', [AuthUi::class, 'LoginForm'])->name('loginform');
 
 Route::get('/dashboard', [AdminController::class,'Dashboard'])->name('dashboard')->middleware('auth');
 Route::get('/logout', [AdminController::class,'Logout'])->name('Logout')->middleware('auth');
+
+
+//navigation link
+
+Route::get('/userverify', [AdminController::class,'Userverify'])->name('Userverify')->middleware('auth');

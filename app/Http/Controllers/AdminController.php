@@ -15,4 +15,8 @@ class AdminController extends Controller
         Auth::logout();
         return redirect('/loginui');
     }
+
+    public function Userverify(){
+        return view('admin.userverify');
+    }
 }
