@@ -21,7 +21,7 @@
                 <th>Action</th>
             </tr>
         </thead>
-        <tbody>
+        <tbody id="newtbody">
             <tr>
                 <td>Name</td>
                 <td>Birth Date</td>
@@ -43,21 +43,42 @@
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <script>
     $(document).ready(function(){
-
+        newuser();
         function newuser() {
-           $.$.ajax({
+          $.ajax({
             type: "get",
-            url: "{{route('newuserload')}}",
+            url: "{{route('Newuserlist')}}",
             // data: "data",
             // dataType: "dataType",
             success: function (response) {
                 if (response.status ==='success') {
-                    
-                }
+                    let rows = ''
+                    response.data.forEach(function (user) {
+                        rows+=`
+                        <tr>
+                            <td>
+                            ${user.last_name},${user.first_name}
+                            </td>
+                            <td>${user.birth_date}</td>
+                            <td>${user.contact_number}</td>
+                            <td>button</td>
+                            
+                            
+                        </tr>
+                        `
+                        
+                    });
+
+                    $('#newtbody').html(rows);
+                } else {
+                console.error('Failed to fetch data.');
+            }
             }
            }); 
         }
 
     })
+
+    
 </script>
 @endsection

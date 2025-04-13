@@ -2,11 +2,14 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
 class newuser extends Model
 {
     //
+    use HasFactory;
+
 
     protected $fillable = [
         'first_name',
@@ -19,4 +22,10 @@ class newuser extends Model
         'user',
         'password',
     ];
+
+    protected $casts = [      
+    'birth_date' => 'date',
+    ];
+        
+    
 }

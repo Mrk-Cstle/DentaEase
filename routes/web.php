@@ -34,3 +34,10 @@ Route::get('/logout', [AdminController::class,'Logout'])->name('Logout')->middle
 //navigation link
 
 Route::get('/userverify', [AdminController::class,'Userverify'])->name('Userverify')->middleware('auth');
+
+
+
+
+//new user 
+
+Route::get('/newuserlist', [AdminController::class,'Newuserlist'])->name('Newuserlist')->middleware('auth');
