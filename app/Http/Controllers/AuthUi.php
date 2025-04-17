@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 use App\Models\User;
+use App\Models\newuser;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 class AuthUi extends Controller
@@ -29,7 +30,7 @@ class AuthUi extends Controller
         $validated['password'] = bcrypt($validated['password']);
 
         // Try saving user
-        $user = User::create($validated);
+        $user = newuser::create($validated);
 
     if ($user) {
         return response()->json(['status' => 'success', 'message' => 'Account created successfully.']);

@@ -41,3 +41,4 @@ Route::get('/userverify', [AdminController::class,'Userverify'])->name('Userveri
 //new user 
 
 Route::get('/newuserlist', [AdminController::class,'Newuserlist'])->name('Newuserlist')->middleware('auth');
+Route::post('/viewuser',[AdminController::class,'Viewuser'])->name("Viewuser")->middleware('auth');
