@@ -23,17 +23,9 @@
         </thead>
         <tbody id="newtbody">
             <tr>
-                <td>Name</td>
-                <td>Birth Date</td>
-                <td>Contact Number</td>
-                <td>Action</td>
+              
             </tr>
-            <tr>
-                <td>Name</td>
-                <td>Birth Date</td>
-                <td>Contact Number</td>
-                <td>Action</td>
-            </tr>
+          
         </tbody>
      
     </table>
@@ -43,6 +35,24 @@
         <span id="currentPage">1</span>
         <button id="nextPage" disabled>Next</button>
     </div> --}}
+    
+
+    <!-- Modal -->
+<div id="viewModal" class="fixed inset-0 flex items-center justify-center backdrop-blur-sm bg-black/5 hidden z-50">
+    <div class="bg-white p-6 rounded-lg shadow-lg w-full max-w-md relative">
+      <button onclick="closeModal()" class="absolute top-2 right-2 text-gray-500 hover:text-black">&times;</button>
+      
+      <h2 class="text-xl font-semibold mb-4">User Info</h2>
+      
+      <div id="modalContent">
+        <!-- User data will be injected here -->
+      </div>
+      
+      <div class="mt-4 text-right">
+        <button onclick="closeModal()" class="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded">Close</button>
+      </div>
+    </div>
+  </div>
 </div>
 
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
@@ -50,6 +60,12 @@
 <script>
 let currentPage =  parseInt(localStorage.getItem('currentPage')) || 1;
 let currentSearch = '';
+
+//modal
+function closeModal() {
+    $('#viewModal').addClass('hidden');
+}
+
 function viewUser(id) {
     $.ajax({
         type: "post",
@@ -60,12 +76,48 @@ function viewUser(id) {
         },
         
         success: function (response) {
+
+            const users = response.data;
             console.log(response.data.id);
+            $('#modalContent').html(`
+                <p><strong>Name:</strong> ${users.first_name} ${users.last_name}</p>
+                <p><strong>Birth Date:</strong> ${users.birth_date}</p>
+                <p><strong>Contact:</strong> ${users.contact_number}</p>
+                <p><strong>Email</strong>${users.email}</p>
+                <button class="border p-2 rounded-sm" onclick="approveuser(${users.id})">Approve</button>
+
+            `);
+            $('#viewModal').removeClass('hidden');
         },
         error: function (xhr) {
             console.error(xhr.responseJSON);
         }
     });
+}
+
+function approveuser(userid) {
+    $.ajax({
+        type: "post",
+        url: "{{route('Approveuser')}}",
+        data: {
+           userid: userid,
+           _token: "{{csrf_token()}}",
+        },
+        success:function(response){
+            Swal.fire({
+                title: 'Approved!',
+                text: 'User has been approved',
+                icon: 'success',
+                confirmButtonText: 'Close'
+                });
+                $('#viewModal').addClass('hidden');
+                newuser(1); 
+
+
+        }
+
+    });
+    
 }
 function newuser(page = 1) {
     currentPage = page;

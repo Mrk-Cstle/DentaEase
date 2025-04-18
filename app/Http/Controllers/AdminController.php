@@ -67,5 +67,32 @@ class AdminController extends Controller
             ]
         ]);
     }
-    
+    public function Approveuser(Request $request){
+        $id = $request->input('userid');
+        $accounttype = "patient";
+          // Find the user in the newuser table
+        $newUser = newuser::findOrFail($id);
+
+        // Create a new record in the users table
+        $user = new User();
+        $user->first_name = $newUser->first_name;
+        $user->last_name = $newUser->last_name;
+        $user->email = $newUser->email;
+        $user->birth_date = $newUser->birth_date;
+        $user->contact_number = $newUser->contact_number;
+        $user->password = $newUser->password;
+        $user->user = $newUser->user; // Optional: hash again if needed
+        // Add other fields as needed
+        $user->account_type = $accounttype;
+        $user->save();
+
+        // Delete the user from the newuser table
+        $newUser->delete();
+
+        return response()->json([
+            'status' => 'success',
+            'message' => 'User approved and moved to users table.'
+        ]);
+
+    }
 }

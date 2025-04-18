@@ -43,8 +43,16 @@ class AuthUi extends Controller
         $credentials = $request->only('user','password');
 
         if(Auth::attempt($credentials)){
-            
-            return response()->json(['status' => 'success']);
+            $request->session()->regenerate();
+            $user = Auth::user();
+    
+            // Choose redirect URL based on account type
+            $redirectUrl = match ($user->account_type) {
+                'admin' => route('dashboard'),
+                'client' => route('CDashboard'),
+                default => route('login')
+            };
+            return response()->json(['status' => 'success','redirect' => $redirectUrl]);
         }
         return response()->json(['status' => 'error', 'message' => 'Invalid credentials']);
     }

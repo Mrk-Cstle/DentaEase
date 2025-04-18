@@ -62,7 +62,7 @@
            
                            
                                 
-                                window.location.href = '{{ route('dashboard') }}';
+                                window.location.href = response.redirect;
                          
                         });
                             }else{

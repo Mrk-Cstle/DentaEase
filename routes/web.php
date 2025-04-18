@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\AdminController;
 use App\Http\Controllers\AuthUi;
+use App\Http\Controllers\Clientside;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
@@ -17,6 +18,7 @@ Route::get('/', function () {
 //auth page
 Route::get('/signupui',[AuthUi::class,'SignUpUi'])->name('signupui');
 Route::get('/loginui',[AuthUi::class, 'LogInUi'])->name('loginui');
+
 
 //signup form
 
@@ -42,3 +44,10 @@ Route::get('/userverify', [AdminController::class,'Userverify'])->name('Userveri
 
 Route::get('/newuserlist', [AdminController::class,'Newuserlist'])->name('Newuserlist')->middleware('auth');
 Route::post('/viewuser',[AdminController::class,'Viewuser'])->name("Viewuser")->middleware('auth');
+Route::post('/approveuser',[AdminController::class,'Approveuser'])->name("Approveuser")->middleware('auth');
+
+
+
+//clent side
+
+Route::get('/cdashboard', [Clientside::class,'CDashboard'])->name('CDashboard')->middleware('auth');
