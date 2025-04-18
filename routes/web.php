@@ -4,7 +4,8 @@ use App\Http\Controllers\AdminController;
 use App\Http\Controllers\AuthUi;
 use App\Http\Controllers\Clientside;
 use Illuminate\Support\Facades\Route;
-
+use App\Http\Middleware\Admin;
+use App\Http\Middleware\Client;
 Route::get('/', function () {
     return view('auth.login');
 })->name('login');
@@ -27,7 +28,8 @@ Route::post('/signupform', [AuthUi::class, 'SignUpForm'])->name('signupform');
 Route::post('/loginform', [AuthUi::class, 'LoginForm'])->name('loginform');
 
 
-//dashboard page
+//admin dashboard page
+Route::middleware(['auth', Admin::class])->group(function () {
 
 Route::get('/dashboard', [AdminController::class,'Dashboard'])->name('dashboard')->middleware('auth');
 Route::get('/logout', [AdminController::class,'Logout'])->name('Logout')->middleware('auth');
@@ -46,8 +48,9 @@ Route::get('/newuserlist', [AdminController::class,'Newuserlist'])->name('Newuse
 Route::post('/viewuser',[AdminController::class,'Viewuser'])->name("Viewuser")->middleware('auth');
 Route::post('/approveuser',[AdminController::class,'Approveuser'])->name("Approveuser")->middleware('auth');
 
-
+});
 
 //clent side
-
-Route::get('/cdashboard', [Clientside::class,'CDashboard'])->name('CDashboard')->middleware('auth');
+Route::middleware(['auth', Client::class])->group(function(){
+    Route::get('/cdashboard', [Clientside::class,'CDashboard'])->name('CDashboard')->middleware('auth');
+});
