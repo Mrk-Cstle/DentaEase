@@ -3,6 +3,7 @@
 use App\Http\Controllers\AdminController;
 use App\Http\Controllers\AuthUi;
 use App\Http\Controllers\Clientside;
+use App\Http\Controllers\FaceRecognitionController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Middleware\Admin;
 use App\Http\Middleware\Client;
@@ -53,4 +54,12 @@ Route::post('/approveuser',[AdminController::class,'Approveuser'])->name("Approv
 //clent side
 Route::middleware(['auth', Client::class])->group(function(){
     Route::get('/cdashboard', [Clientside::class,'CDashboard'])->name('CDashboard')->middleware('auth');
+   
 });
+
+Route::post('/get-face-landmarks', [FaceRecognitionController::class, 'getLandmarks']);
+//face reecognitiion
+
+
+
+
