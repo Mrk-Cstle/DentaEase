@@ -34,6 +34,7 @@ Route::middleware(['auth', Admin::class])->group(function () {
 
 Route::get('/dashboard', [AdminController::class,'Dashboard'])->name('dashboard')->middleware('auth');
 Route::get('/logout', [AdminController::class,'Logout'])->name('Logout')->middleware('auth');
+Route::get('/profile', [AdminController::class,'Profile'])->name('Profile')->middleware('auth');
 
 
 //navigation link

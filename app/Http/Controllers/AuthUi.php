@@ -16,8 +16,8 @@ class AuthUi extends Controller
 
     public function SignUpForm(Request $request){
       $validated = $request->validate([
-            'first_name' => 'required',
-            'last_name' => 'required',
+            'name' => 'required',
+          
             'email' => 'required|email',
             'password' => 'required',
             'contact_number' => 'required',

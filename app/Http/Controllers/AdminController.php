@@ -36,6 +36,9 @@ class AdminController extends Controller
     public function Userverify(){
         return view('admin.userverify');
     }
+    public function Profile(){
+        return view('admin.adminprofile');
+    }
 
     public function Newuserlist(Request $request)
     {
@@ -46,8 +49,8 @@ class AdminController extends Controller
         $query = newuser::query();
        if ($search) {
         $query->where(function ($q) use ($search) {
-            $q->where('first_name', 'like', "%{$search}%")
-              ->orWhere('last_name', 'like', "%{$search}%")
+            $q->where('name', 'like', "%{$search}%")
+              ->orWhere('user', 'like', "%{$search}%")
               ;
         });
     }
@@ -75,8 +78,8 @@ class AdminController extends Controller
 
         // Create a new record in the users table
         $user = new User();
-        $user->first_name = $newUser->first_name;
-        $user->last_name = $newUser->last_name;
+        $user->first_name = $newUser->name;
+ 
         $user->email = $newUser->email;
         $user->birth_date = $newUser->birth_date;
         $user->contact_number = $newUser->contact_number;

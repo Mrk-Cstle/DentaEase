@@ -12,8 +12,8 @@ class newuser extends Model
 
 
     protected $fillable = [
-        'first_name',
-        'last_name',
+        'name',
+
        
         
         'birth_date',
