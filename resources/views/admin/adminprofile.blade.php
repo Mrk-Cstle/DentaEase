@@ -37,11 +37,24 @@
         </div>
     </div>
     <div class="flex flex-col  basis-[70%] gap-5">
-        <div class="border rounded-md grow-1">
- 
+        <div class=" rounded-md grow-1 bg-white flex flex-row gap-3 p-5">
+            <div class="basis-[50%] border">
+                QR
+            </div>
+            <div class="basis-[50%] border flex flex-col">
+                <div class="flex flex-row justify-between m-3">
+                    <p>Face Recognition</p><button class="bg-[#FF0000] p-1 rounded-sm">Remove</button>
+                </div>
+              
+
+               <form>
+                
+                <button type="submit">Capture</button>
+               </form>
+            </div>
         </div>
-        <div class="border rounded-md grow-1">
-  
+        <div class=" rounded-md grow-1 bg-white">
+            
         </div>
     </div>
 </div>

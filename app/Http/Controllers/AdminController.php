@@ -78,7 +78,7 @@ class AdminController extends Controller
 
         // Create a new record in the users table
         $user = new User();
-        $user->first_name = $newUser->name;
+        $user->name = $newUser->name;
  
         $user->email = $newUser->email;
         $user->birth_date = $newUser->birth_date;

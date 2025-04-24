@@ -71,9 +71,9 @@
             
             <div class="md:inline hidden">
                 
-                <h2 class="text-black text-sm " >First Name, Last Name</h2>
+                <h2 class="text-black text-sm " >{{Auth::user()->name}}</h2>
                 <div class="flex flex-row justify-between ">
-                    <h2 class="text-black text-xs " >Admin</h2>
+                    <h2 class="text-black text-xs " >{{Auth::user()->account_type}}</h2>
                     <button id="dropdownToggle" class="text-black text-xs focus:outline-none ">
                         <i class="fa-solid fa-caret-down"></i>
                     </button>

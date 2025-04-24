@@ -5,10 +5,10 @@
 @section('main-content')
 
 
-<form id="faceLoginForm" enctype="multipart/form-data">
+{{-- <form id="faceLoginForm" enctype="multipart/form-data">
     <input type="file" name="login_face_image" accept="image/*" required>
     <button type="submit">Login with Face</button>
-</form>
+</form> --}}
 <div id="response"></div>
 <script>
     document.getElementById('faceLoginForm').addEventListener('submit', async function (e) {
