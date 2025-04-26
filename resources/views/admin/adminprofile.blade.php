@@ -47,10 +47,14 @@
                 </div>
               
 
-               <form>
+                <video id="video" width="320" height="240" autoplay></video>
+                <br>
                 
-                <button type="submit">Capture</button>
-               </form>
+                <!-- Capture Button -->
+                <button id="capture">Capture & Register</button>
+                
+                <!-- Preview captured image -->
+                <canvas id="canvas" width="320" height="240" style="display:none;"></canvas>
             </div>
         </div>
         <div class=" rounded-md grow-1 bg-white">
@@ -58,6 +62,48 @@
         </div>
     </div>
 </div>
+<script>
+     const video = document.getElementById('video');
+    const canvas = document.getElementById('canvas');
+    const captureButton = document.getElementById('capture');
+    const context = canvas.getContext('2d');
+    navigator.mediaDevices.getUserMedia({ video: true })
+        .then(stream => {
+            video.srcObject = stream;
+        })
+        .catch(err => {
+            console.error("Error accessing webcam: ", err);
+        });
+
+    captureButton.addEventListener('click', () => {
+        // Draw the video frame onto the canvas
+        context.drawImage(video, 0, 0, canvas.width, canvas.height);
+
+        // Convert canvas to Blob
+        canvas.toBlob(function(blob) {
+            // Prepare form data
+            let formData = new FormData();
+            formData.append('face_image', blob, 'face_capture.jpg');
+
+            // Send to backend (adjust the URL to your backend endpoint!)
+            fetch('/register-face', {
+                method: 'POST',
+                headers: {
+                    'X-CSRF-TOKEN': '{{ csrf_token() }}' // if you are using Laravel Blade
+                },
+                body: formData
+            })
+            .then(response => response.json())
+            .then(data => {
+                console.log(data);
+                alert(data.message || 'Face registered!');
+            })
+            .catch(error => {
+                console.error('Error:', error);
+            });
+        }, 'image/jpeg');
+    });
+</script>
 
 
 @endsection

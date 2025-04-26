@@ -3,6 +3,7 @@
 use App\Http\Controllers\AdminController;
 use App\Http\Controllers\AuthUi;
 use App\Http\Controllers\Clientside;
+use App\Http\Controllers\Facerecognition;
 use App\Http\Controllers\FaceRecognitionController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Middleware\Admin;
@@ -49,6 +50,8 @@ Route::get('/userverify', [AdminController::class,'Userverify'])->name('Userveri
 Route::get('/newuserlist', [AdminController::class,'Newuserlist'])->name('Newuserlist')->middleware('auth');
 Route::post('/viewuser',[AdminController::class,'Viewuser'])->name("Viewuser")->middleware('auth');
 Route::post('/approveuser',[AdminController::class,'Approveuser'])->name("Approveuser")->middleware('auth');
+
+Route::post('/register-face',[Facerecognition::class,'registerFace'])->name("register-face")->middleware('auth');
 
 });
 
