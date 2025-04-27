@@ -21,13 +21,14 @@ Route::get('/', function () {
 //auth page
 Route::get('/signupui',[AuthUi::class,'SignUpUi'])->name('signupui');
 Route::get('/loginui',[AuthUi::class, 'LogInUi'])->name('loginui');
+Route::get('/faceui',[AuthUi::class, 'FaceUi'])->name('faceui');
 
 
 //signup form
 
 Route::post('/signupform', [AuthUi::class, 'SignUpForm'])->name('signupform');
-
 Route::post('/loginform', [AuthUi::class, 'LoginForm'])->name('loginform');
+Route::post('/login-face', [AuthUi::class, 'loginFace'])->name('login-face');
 
 
 //admin dashboard page

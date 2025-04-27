@@ -14,7 +14,7 @@ return new class extends Migration
         Schema::table('users', function (Blueprint $table) {
             //
 
-            $table->date(column: 'face_token')->nullable();
+            $table->string(column: 'face_token')->nullable();
         });
     }
 
