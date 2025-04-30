@@ -35,9 +35,10 @@ Route::post('/login-face', [AuthUi::class, 'loginFace'])->name('login-face');
 Route::middleware(['auth', Admin::class])->group(function () {
 
 Route::get('/dashboard', [AdminController::class,'Dashboard'])->name('dashboard')->middleware('auth');
-Route::get('/logout', [AdminController::class,'Logout'])->name('Logout')->middleware('auth');
+Route::get('/logouts', [AdminController::class,'Logout'])->name('Logout')->middleware('auth');
 Route::get('/profile', [AdminController::class,'Profile'])->name('Profile')->middleware('auth');
 
+Route::post('/remove-face-token', [AdminController::class, 'removeFaceToken'])->middleware('auth');
 
 //navigation link
 
@@ -54,12 +55,14 @@ Route::post('/approveuser',[AdminController::class,'Approveuser'])->name("Approv
 
 Route::post('/register-face',[Facerecognition::class,'registerFace'])->name("register-face")->middleware('auth');
 
+
+
 });
 
 //clent side
 Route::middleware(['auth', Client::class])->group(function(){
     Route::get('/cdashboard', [Clientside::class,'CDashboard'])->name('CDashboard')->middleware('auth');
-   
+    Route::get('/logout', [AdminController::class,'Logout'])->name('Logout')->middleware('auth');
 });
 
 Route::post('/get-face-landmarks', [FaceRecognitionController::class, 'getLandmarks']);

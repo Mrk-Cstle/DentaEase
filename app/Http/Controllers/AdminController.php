@@ -42,7 +42,7 @@ class AdminController extends Controller
 
     public function Newuserlist(Request $request)
     {
-        $perPage = 1;
+        $perPage = 5;
         $search = $request->input('search');
 
 
@@ -97,5 +97,14 @@ class AdminController extends Controller
             'message' => 'User approved and moved to users table.'
         ]);
 
+    }
+
+    public function removeFaceToken(Request $request)
+    {
+        $user = Auth::user();
+        $user->face_token = null;
+        $user->save();
+
+        return response()->json([ 'status' => 'success','message' => 'Face token removed successfully.']);
     }
 }

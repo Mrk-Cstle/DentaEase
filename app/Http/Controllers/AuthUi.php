@@ -54,7 +54,7 @@ class AuthUi extends Controller
             // Choose redirect URL based on account type
             $redirectUrl = match ($user->account_type) {
                 'admin' => route('dashboard'),
-                'client' => route('CDashboard'),
+                'patient' => route('CDashboard'),
                 default => route('login')
             };
             return response()->json(['status' => 'success','redirect' => $redirectUrl]);
@@ -114,7 +114,12 @@ class AuthUi extends Controller
     $verifyData = $verifyResponse->json();
 
     if (isset($verifyData['confidence']) && $verifyData['confidence'] > 70) {
-        return response()->json(['status'=> 'success','message' => 'Login successful!', 'verify_data' => $verifyData]);
+        $redirectUrl = match ($user->account_type) {
+            'admin' => route('dashboard'),
+            'patient' => route('CDashboard'),
+            default => route('login')
+        };
+        return response()->json(['status'=> 'success','message' => 'Login successful!', 'verify_data' => $verifyData,'redirect' => $redirectUrl]);
     } else {
         return response()->json(['status'=> 'error','message' => 'Login failed. Face does not match.', 'verify_data' => $verifyData], 401);
     }

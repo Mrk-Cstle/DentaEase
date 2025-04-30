@@ -20,7 +20,7 @@
         <div class="flex flex-col items-center text-center gap-2 mt-3">
             <p class="text-sm">
                 Login using 
-                <a class="text-blue-500 underline hover:text-blue-700 transition" href="{{ route('faceui') }}">Face Recognition</a> 
+                <a class="text-blue-500 underline hover:text-blue-700 transition" href="{{ route('loginui') }}">Login</a> 
                 or 
                 <a class="text-blue-500 underline hover:text-blue-700 transition" href="#">QR</a>
             </p>

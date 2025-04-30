@@ -16,7 +16,7 @@ class Client
      */
     public function handle(Request $request, Closure $next): Response
     {
-        if (Auth::check() && Auth::user()->account_type === 'client') {
+        if (Auth::check() && Auth::user()->account_type === 'patient') {
             return $next($request);
         }
 

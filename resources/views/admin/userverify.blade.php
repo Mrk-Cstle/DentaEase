@@ -133,7 +133,7 @@ function newuser(page = 1) {
                 response.data.forEach(function (user) {
                     rows += `
                     <tr>
-                        <td>${user.last_name}, ${user.first_name}</td>
+                        <td>${user.name}</td>
                         <td>${user.birth_date}</td>
                         <td>${user.contact_number}</td>
                         <td><button onclick="viewUser(${user.id})" >View</button></td>
