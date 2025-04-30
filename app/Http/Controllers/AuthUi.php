@@ -62,8 +62,11 @@ class AuthUi extends Controller
         return response()->json(['status' => 'error', 'message' => 'Invalid credentials']);
     }
 
-    private $apiKey = 'd6oKAAzVLTtgRyeecdED4eHFi9wfmq3I';
-    private $apiSecret = 'qe_nYezzGtNwf4WN_drOcrxfeg0ryJ7S';
+    // private $apiKey = 'd6oKAAzVLTtgRyeecdED4eHFi9wfmq3I';
+    // private $apiSecret = 'qe_nYezzGtNwf4WN_drOcrxfeg0ryJ7S';
+
+      private $apiKey = '-2y7KYjX1JuFECsjI_ANCAM5pugEm5R0';
+    private $apiSecret = 'QHRO96q2sagJUJ-4DAgVgmBDa2-H3n8v';
     public function loginFace(Request $request)
 {   
     
@@ -75,7 +78,7 @@ class AuthUi extends Controller
     $user = User::where('user', $request->user)->first();
 
     if (!$user || !$user->face_token) {
-        return response()->json(['message' => 'User not found or face not registered.'], 404);
+        return response()->json(['message' => 'User not found or face not registered.']);
     }
 
     // Decode the base64 image
@@ -98,7 +101,7 @@ class AuthUi extends Controller
     $detectData = $detectResponse->json();
 
     if (empty($detectData['faces'][0]['face_token'])) {
-        return response()->json(['message' => 'No face detected.'], 400);
+        return response()->json(['message' => 'No face detected.']);
     }
 
     $faceToken2 = $detectData['faces'][0]['face_token'];
@@ -113,7 +116,8 @@ class AuthUi extends Controller
 
     $verifyData = $verifyResponse->json();
 
-    if (isset($verifyData['confidence']) && $verifyData['confidence'] > 70) {
+    if (isset($verifyData['confidence']) && $verifyData['confidence'] > 80) {
+        Auth::login($user);
         $redirectUrl = match ($user->account_type) {
             'admin' => route('dashboard'),
             'patient' => route('CDashboard'),
@@ -121,7 +125,7 @@ class AuthUi extends Controller
         };
         return response()->json(['status'=> 'success','message' => 'Login successful!', 'verify_data' => $verifyData,'redirect' => $redirectUrl]);
     } else {
-        return response()->json(['status'=> 'error','message' => 'Login failed. Face does not match.', 'verify_data' => $verifyData], 401);
+        return response()->json(['status'=> 'error','message' => 'Login failed. Face does not match.', 'verify_data' => $verifyData]);
     }
 }
 }

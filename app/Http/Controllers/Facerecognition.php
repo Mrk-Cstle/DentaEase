@@ -9,8 +9,8 @@ use App\Models\User;
 class Facerecognition extends Controller
 {
     //
-    private $apiKey = 'd6oKAAzVLTtgRyeecdED4eHFi9wfmq3I';
-    private $apiSecret = 'qe_nYezzGtNwf4WN_drOcrxfeg0ryJ7S';
+    private $apiKey = '-2y7KYjX1JuFECsjI_ANCAM5pugEm5R0';
+    private $apiSecret = 'QHRO96q2sagJUJ-4DAgVgmBDa2-H3n8v';
 
     public function registerFace(Request $request)
     {
