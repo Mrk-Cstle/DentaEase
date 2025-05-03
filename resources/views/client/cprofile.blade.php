@@ -93,17 +93,13 @@
   
     openBtn.addEventListener('click', () => {
       modal.classList.remove('hidden');
-      if (window.isSecureContext) {
-    navigator.mediaDevices.getUserMedia({ video: true })
+      navigator.mediaDevices.getUserMedia({ video: true })
         .then(stream => {
             video.srcObject = stream;
         })
-        .catch(error => {
-            console.error("Error accessing media devices.", error);
+        .catch(err => {
+            console.error("Error accessing webcam: ", err);
         });
-} else {
-    console.error("getUserMedia requires a secure context (HTTPS).");
-}
     });
   
     closeBtn.addEventListener('click', () => {
@@ -131,7 +127,7 @@
         // Show loading spinner
         document.getElementById('loadingSpinner').classList.remove('hidden');
 
-        fetch('/register-face', {
+        fetch('/cregister-face', {
             method: 'POST',
             headers: {
                 'X-CSRF-TOKEN': '{{ csrf_token() }}' // for Laravel Blade
@@ -184,7 +180,7 @@
             confirmButtonText: 'Yes, remove it!'
         }).then((result) => {
             if (result.isConfirmed) {
-                fetch('/remove-face-token', {
+                fetch('/cremove-face-token', {
                     method: 'POST',
                     headers: {
                         'X-CSRF-TOKEN': '{{ csrf_token() }}',

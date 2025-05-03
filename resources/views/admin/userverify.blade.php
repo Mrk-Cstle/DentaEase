@@ -80,7 +80,7 @@ function viewUser(id) {
             const users = response.data;
             console.log(response.data.id);
             $('#modalContent').html(`
-                <p><strong>Name:</strong> ${users.first_name} ${users.last_name}</p>
+                <p><strong>Name:</strong> ${users.name}</p>
                 <p><strong>Birth Date:</strong> ${users.birth_date}</p>
                 <p><strong>Contact:</strong> ${users.contact_number}</p>
                 <p><strong>Email</strong>${users.email}</p>

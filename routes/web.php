@@ -63,6 +63,10 @@ Route::post('/register-face',[Facerecognition::class,'registerFace'])->name("reg
 Route::middleware(['auth', Client::class])->group(function(){
     Route::get('/cdashboard', [Clientside::class,'CDashboard'])->name('CDashboard')->middleware('auth');
     Route::get('/logout', [AdminController::class,'Logout'])->name('Logout')->middleware('auth');
+    Route::get('/cprofile', [Clientside::class,'CProfile'])->name('CProfile')->middleware('auth');
+    Route::post('/cregister-face',[Facerecognition::class,'registerFace'])->name("cregister-face")->middleware('auth');
+    Route::post('/cremove-face-token', [AdminController::class, 'removeFaceToken'])->middleware('auth');
+
 });
 
 Route::post('/get-face-landmarks', [FaceRecognitionController::class, 'getLandmarks']);
