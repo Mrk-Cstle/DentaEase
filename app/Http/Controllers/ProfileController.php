@@ -42,9 +42,9 @@ class ProfileController extends Controller
         $data['user'] = $request->user;
         $isUpdated = true;
    }
-   if ($request->has('password') && !Hash::check($request->password, $user->password)) {
-    
-    $data['password'] = Hash::make($request->password);  
+ 
+   if (!empty($request->password) && !Hash::check($request->password, $user->password)) {
+    $data['password'] = Hash::make($request->password);
     $isUpdated = true;
 }
     if (!empty($rules)) {
