@@ -5,9 +5,12 @@ use App\Http\Controllers\AuthUi;
 use App\Http\Controllers\Clientside;
 use App\Http\Controllers\Facerecognition;
 use App\Http\Controllers\FaceRecognitionController;
+use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Middleware\Admin;
 use App\Http\Middleware\Client;
+use Symfony\Component\HttpKernel\Profiler\Profile;
+
 Route::get('/', function () {
     return view('auth.login');
 })->name('login');
@@ -38,7 +41,9 @@ Route::get('/dashboard', [AdminController::class,'Dashboard'])->name('dashboard'
 Route::get('/logouts', [AdminController::class,'Logout'])->name('Logout')->middleware('auth');
 Route::get('/profile', [AdminController::class,'Profile'])->name('Profile')->middleware('auth');
 
+///profile tab
 Route::post('/remove-face-token', [AdminController::class, 'removeFaceToken'])->middleware('auth');
+Route::patch('/updateProfile', [ProfileController::class, 'updateProfile'])->middleware('auth')->name('updateProfile');
 
 //navigation link
 

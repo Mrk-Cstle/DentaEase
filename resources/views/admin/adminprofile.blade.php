@@ -66,8 +66,8 @@
         </div>
         <div class=" rounded-md grow-1 bg-white">
             <div class="basis-[70%]  flex flex-col p-5 overflow-y-auto">
-                <form class="flex flex-col gap-3" action="">
-                  
+                <form id="updateProfile" class="flex flex-col gap-3" >
+                
                     <label for="email">Email</label>
                     <input type="text" name="email" id="email" value="{{Auth::user()->email}}">
                     <label for="contact">Contact Number</label>
@@ -76,7 +76,7 @@
                     <input type="text" name="user" id="user" value="{{Auth::user()->user}}">
                     <label for="password">Password</label>
                     <input type="password" name="password" id="password" >
-                    <input type="hidden" name="oldpassword" id="oldpassword" value="{{Auth::user()->password}}">
+                    
     
                     <button class="border rounded-md p-3" type="submit">Update</button>
     
@@ -86,6 +86,7 @@
     </div>
 </div>
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script>
     const openBtn = document.getElementById('capturemodal');
     const modal = document.getElementById('modal');
@@ -174,6 +175,69 @@
 </script>
 
 <script>
+    ///update profile
+    $('#updateProfile').submit(function (event) {
+        event.preventDefault();
+        var formData = {
+                       
+                        email : $('input[name="email"]').val(),
+                       
+                        contact : $('input[name="contact"]').val(),
+                        user : $('input[name="user"]').val(),
+                        password : $('input[name="password"]').val(),
+                      
+
+                    }
+       $.ajax({
+            type: "patch",
+            url: "{{route('updateProfile')}}",
+            data:formData,
+            headers: {
+        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+    },
+            success: function (response) {
+                if (response.status == 'success') {
+                    Swal.fire({
+                                title: 'Success!',
+                                text: response.message,
+                                icon: 'success',
+                              
+                            })
+                } else {
+                    Swal.fire({
+                                title: 'Error!',
+                                text: response.message,
+                                icon: 'error',
+                              
+                            })
+                }
+            }, error: function (xhr) {
+        if (xhr.status === 422) {
+            const errors = xhr.responseJSON.errors;
+            let errorList = '';
+
+            for (let field in errors) {
+                errorList += `${errors[field].join(', ')}\n`;
+            }
+
+            Swal.fire({
+                icon: 'error',
+                title: 'Validation Error',
+                text: errorList.trim(),
+            });
+        } else {
+            Swal.fire({
+                icon: 'error',
+                title: 'Oops...',
+                text: 'Something went wrong!',
+            });
+        }
+    }
+        });
+    })
+
+
+    ///remove face token
     document.getElementById('removeFaceToken').addEventListener('click', () => {
         Swal.fire({
             title: 'Are you sure?',
