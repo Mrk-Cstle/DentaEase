@@ -3,6 +3,7 @@
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AdminController;
 use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\StaffController;
 use App\Http\Middleware\Admin;
 use App\Http\Controllers\Facerecognition;
 
@@ -20,7 +21,7 @@ Route::patch('/updateProfile', [ProfileController::class, 'updateProfile'])->mid
 //navigation link
 
 Route::get('/userverify', [AdminController::class,'Userverify'])->name('Userverify')->middleware('auth');
-
+Route::get('/useraccount', [AdminController::class,'Useraccount'])->name('Useraccount')->middleware('auth');
 
 
 
@@ -33,5 +34,6 @@ Route::post('/approveuser',[AdminController::class,'Approveuser'])->name("Approv
 Route::post('/register-face',[Facerecognition::class,'registerFace'])->name("register-face")->middleware('auth');
 
 
-
+//staff list tab
+Route::get('/stafflist', [StaffController::class,'ViewStaff'])->name('Stafflist')->middleware('auth');
 });

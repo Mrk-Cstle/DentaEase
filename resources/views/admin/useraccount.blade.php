@@ -22,9 +22,8 @@
             </tr>
         </thead>
         <tbody id="newtbody">
-            <tr>
-              
-            </tr>
+       
+            
           
         </tbody>
      
@@ -53,5 +52,65 @@
 
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script>
+  let currentPage = parseInt(localStorage.getItem('staffcurrentpage')) || 1;
+  let currentSearch='';
 
+  function stafflist(page = 1) {
+    currentPage = page;
+    localStorage.setItem('staffcurrentpage', page);
+    currentSearch = $('#searchInput').val();
+    var formdata = {
+      "search": currentSearch,
+      "page": page
+
+    }
+   $.ajax({
+      type: "get",
+      url: "{{Route('Stafflist')}}",
+      data: formdata,
+    
+      success: function (response) {
+        if (response.status === 'success') {
+                let rows = '';
+                response.data.forEach(function (user) {
+                    rows += `
+                    <tr>
+                        <td>${user.name}</td>
+                        <td>${user.email}</td>
+                        <td>${user.contact_number}</td>
+                        <td><button onclick="viewUser(${user.id})" >View</button></td>
+                    </tr>
+                    `;
+                });
+
+                $('#newtbody').html(rows);
+
+                let paginationHTML = '';
+
+                if (response.pagination.prev_page_url) {
+                    paginationHTML += `<button onclick="newuser(${parseInt(currentPage) - 1})">Previous</button>`;
+                }
+
+                if (response.pagination.next_page_url) {
+                    paginationHTML += `<button onclick="newuser(${parseInt(currentPage) + 1})">Next</button>`;
+                }
+
+                $('#pagination').html(paginationHTML);
+            } else {
+                console.error('Failed to fetch data.');
+            }
+      }
+    });
+    
+  }
+  $(document).ready(function () {
+    $('#searchInput').on('input', function () {
+        localStorage.setItem('currentPage', 1);
+            stafflist(1); // Reset to first page when searching
+        });
+    stafflist(currentPage); // Call it on load
+    window.stafflist = stafflist;
+});
+</script>
 @endsection
