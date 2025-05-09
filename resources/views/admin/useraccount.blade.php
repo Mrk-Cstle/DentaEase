@@ -2,15 +2,36 @@
 
 @section('title','New User Verification')
 @section('main-content')
-
-<div class="flex flex-row justify-end gap-3">
+<div class="flex flex-row justify-between">
+  <div class="flex flex-row ">
   
-    <input type="text" id="searchInput" placeholder="Search..." />
-        <button>Search</button>
-  
+    <button id="addUserBtn">Add User</button>
+     
+        
     
+  </div>
+  <div class="flex flex-row ">
+    
+      <input type="text" id="searchInput" placeholder="Search..." />
+          <button>Search</button>
+  
+      
+  </div>
+</div>
+{{-- Modal Add User --}}
+<div id="addUserModal" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.5);">
+  <div style="background:#fff; padding:20px; margin:100px auto; width:300px; position:relative;">
+    <h3>Add New User</h3>
+    <form id="addUserForm">
+      <input type="text" name="name" placeholder="Name" required><br><br>
+      <input type="text" name="user" placeholder="Username" required><br><br>
+      <button type="submit">Save</button>
+      <button type="button" id="closeModalBtn">Cancel</button>
+    </form>
+  </div>
 </div>
 <div>
+
     <table class="border-collapse border border-gray-400 table-auto w-full text-center">
     
         <thead class="bg-gray-200">
@@ -112,5 +133,26 @@
     stafflist(currentPage); // Call it on load
     window.stafflist = stafflist;
 });
+</script>
+
+<script>
+  $(document).ready(function() {
+    // Show modal
+    $('#addUserBtn').click(function() {
+      $('#addUserModal').show();
+    });
+
+    // Hide modal
+    $('#closeModalBtn').click(function() {
+      $('#addUserModal').hide();
+    });
+
+    // Optional: Hide modal on outside click
+    $(window).click(function(e) {
+      if ($(e.target).is('#addUserModal')) {
+        $('#addUserModal').hide();
+      }
+    });
+  });
 </script>
 @endsection
