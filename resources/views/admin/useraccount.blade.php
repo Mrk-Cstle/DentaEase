@@ -20,15 +20,30 @@
 </div>
 {{-- Modal Add User --}}
 <div id="addUserModal" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.5);">
-  <div style="background:#fff; padding:20px; margin:100px auto; width:300px; position:relative;">
+  <div class="flex flex-col"  style="background:#fff; padding:20px; margin:100px auto; width:50%; position:relative;">
     <h3>Add New User</h3>
-    <form id="addUserForm">
-      <input type="text" name="name" placeholder="Name" required><br><br>
-      <input type="text" name="user" placeholder="Username" required><br><br>
-      <button type="submit">Save</button>
-      <button type="button" id="closeModalBtn">Cancel</button>
+    <form class="flex flex-col p-2 gap-2" id="addUserForm">
+      <label>Name:</label>
+      <input type="text" name="name" placeholder="Name" required>
+      <label>User:</label>
+      <input type="text" name="user" placeholder="Username" required>
+      <label>Position:</label>
+      <select name="position" id="position" >
+        <option value="Admin">Admin</option>
+        <option value="Dentist">Dentist</option>
+        <option value="Assistant">Assistant</option>
+        
+      </select>
+      <div class="flex flex-row mt-5 gap-3">
+       
+        <div class="flex flex-row mt-5 gap-3">
+        <button type="submit">Save</button>
+        <button type="button" id="closeModalBtn">Cancel</button>
+      </div>
+     
     </form>
   </div>
+</div>
 </div>
 <div>
 
@@ -153,6 +168,45 @@
         $('#addUserModal').hide();
       }
     });
+
+    $('#addUserForm').submit(function (e) {
+    e.preventDefault();
+
+    const formData = {
+      name: $('input[name="name"]').val(),
+      user: $('input[name="user"]').val(),
+      position: $('#position').val(),
+      _token: '{{ csrf_token() }}' // Laravel CSRF token
+    };
+
+    $.ajax({
+      type: 'POST',
+      url: '{{ route("add-user") }}', // Replace with your actual route name
+      data: formData,
+      success: function (response) {
+        if (response.status ==='success') {
+          Swal.fire('Success!', response.message, 'success');
+        $('#addUserModal').fadeOut();
+        $('#addUserForm')[0].reset();
+        stafflist(currentPage);
+        }else{
+          Swal.fire({
+          icon: 'error',
+          title: 'Error',
+          text: response.message,
+});
+        }
+       
+      },
+      error: function (xhr) {
+        if (xhr.status === 409) {
+            Swal.fire('Error', xhr.responseJSON.message, 'error'); // Username already exists
+        } else {
+            Swal.fire('Error', xhr.responseJSON.message || 'Something went wrong.', 'error');
+        }
+      }
+    });
+  });
   });
 </script>
 @endsection

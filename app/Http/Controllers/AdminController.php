@@ -2,9 +2,11 @@
 
 namespace App\Http\Controllers;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Database\QueryException;
 use Illuminate\Http\Request;
 use  App\Models\newuser;
 use  App\Models\User;
+
 
 class AdminController extends Controller
 {
@@ -73,8 +75,31 @@ class AdminController extends Controller
             ]
         ]);
     }
+
+    public function Adduser(Request $request){
+        $name = $request->input('name');
+        $user = $request->input('user');
+        $position = $request->input('position');
+        $password = $user . 'Dentaease';
+        try {
+            $user = new User();
+            $user->name = $request->input('name');
+            $user->user = $request->input('user');
+            $user->position = $request->input('position');
+            $user->account_type = 'admin';
+            $user->password = $password;
+            $user->save();
+    
+            return response()->json(['status' => 'success', 'message' => 'User added successfully']);
+        } catch (QueryException $e) {
+            if ($e->errorInfo[1] == 1062) {
+                return response()->json(['message' => 'Username already exists.'], 409);
+            }
+            return response()->json(['message' => 'An error occurred.'], 500);
+        }
+    }
     public function Approveuser(Request $request){
-        $id = $request->input('userid');
+        $id = $request->input('userid'); 
         $accounttype = "patient";
           // Find the user in the newuser table
         $newUser = newuser::findOrFail($id);
@@ -99,7 +124,7 @@ class AdminController extends Controller
             'status' => 'success',
             'message' => 'User approved and moved to users table.'
         ]);
-
+        
     }
 
     public function removeFaceToken(Request $request)

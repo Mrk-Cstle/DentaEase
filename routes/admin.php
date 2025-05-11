@@ -33,6 +33,7 @@ Route::post('/approveuser',[AdminController::class,'Approveuser'])->name("Approv
 
 Route::post('/register-face',[Facerecognition::class,'registerFace'])->name("register-face")->middleware('auth');
 
+Route::post('/add-user',[AdminController::class,'Adduser'])->name("add-user")->middleware('auth');
 
 //staff list tab
 Route::get('/stafflist', [StaffController::class,'ViewStaff'])->name('Stafflist')->middleware('auth');

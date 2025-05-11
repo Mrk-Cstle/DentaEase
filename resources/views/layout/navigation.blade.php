@@ -6,6 +6,8 @@
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <meta name="csrf-token" content="{{ csrf_token() }}">
     <script src="https://unpkg.com/@tailwindcss/browser@4"></script>
+   
+
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
     <title>@yield('title', 'Navigation')</title>
     <style>
@@ -86,6 +88,9 @@
         </div>
         
     </div>
+  
+
+
     <script>
         const toggleBtn = document.getElementById('dropdownToggle');
         const dropdown = document.getElementById('dropdownMenu');
