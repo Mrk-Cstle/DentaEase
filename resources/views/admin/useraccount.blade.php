@@ -89,6 +89,45 @@
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <script>
+  // view user modal 
+  function closeModal() {
+    $('#viewModal').addClass('hidden');
+}
+
+function viewUser(id) {
+    $.ajax({
+        type: "post",
+        url: "{{route('Viewuser')}}",
+        data: {
+            id: id,
+            type: 'User',
+            _token: "{{csrf_token()}}"
+        },
+        
+        success: function (response) {
+
+            const users = response.data;
+            console.log(response.data.id);
+            $('#modalContent').html(`
+                <p><strong>Name:</strong> ${users.name}</p>
+                <p><strong>Birth Date:</strong> ${users.birth_date}</p>
+                <p><strong>Contact:</strong> ${users.contact_number}</p>
+                <p><strong>Email</strong>${users.email}</p>
+                
+
+            `);
+            $('#viewModal').removeClass('hidden');
+        },
+        error: function (xhr) {
+            console.error(xhr.responseJSON);
+        }
+    });
+}
+
+//end of user modal
+
+
+//user table list
   let currentPage = parseInt(localStorage.getItem('staffcurrentpage')) || 1;
   let currentSearch='';
 
@@ -115,7 +154,7 @@
                         <td>${user.name}</td>
                         <td>${user.email}</td>
                         <td>${user.contact_number}</td>
-                        <td><button onclick="viewUser(${user.id})" >View</button></td>
+                     <td><a href="/user/${user.id}">View</a></td>
                     </tr>
                     `;
                 });
@@ -148,6 +187,7 @@
     stafflist(currentPage); // Call it on load
     window.stafflist = stafflist;
 });
+//end of user list
 </script>
 
 <script>

@@ -72,6 +72,7 @@ function viewUser(id) {
         url: "{{route('Viewuser')}}",
         data: {
             id: id,
+            type: 'newuser',
             _token: "{{csrf_token()}}"
         },
         

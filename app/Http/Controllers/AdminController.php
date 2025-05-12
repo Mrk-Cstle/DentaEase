@@ -13,7 +13,14 @@ class AdminController extends Controller
     //
     public function Viewuser(Request $request){
         $id = $request->input('id');
-        $user = newuser::find($id);
+        $type = $request->input('type');
+        $user = '';
+        if ($type == 'User'){
+        $user = User::find($id);
+        }
+        if ($type == 'newuser'){
+            $user = newuser::find($id);
+            }
         if ($user) {
             return response()->json([
                 'status' => 'success',

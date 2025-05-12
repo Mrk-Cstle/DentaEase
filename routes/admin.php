@@ -37,4 +37,7 @@ Route::post('/add-user',[AdminController::class,'Adduser'])->name("add-user")->m
 
 //staff list tab
 Route::get('/stafflist', [StaffController::class,'ViewStaff'])->name('Stafflist')->middleware('auth');
+Route::get('/user/{id}', [StaffController::class, 'show'])->name('userview');
+Route::post('/deleteuser', [StaffController::class, 'DeleteUser'])->name('deleteuser');
+Route::patch('/updateUser', [StaffController::class, 'UpdateUser'])->middleware('auth')->name('updateUser');
 });
