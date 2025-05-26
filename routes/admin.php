@@ -4,6 +4,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AdminController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\StaffController;
+use App\Http\Controllers\BranchController;
 use App\Http\Middleware\Admin;
 use App\Http\Controllers\Facerecognition;
 
@@ -22,7 +23,7 @@ Route::patch('/updateProfile', [ProfileController::class, 'updateProfile'])->mid
 
 Route::get('/userverify', [AdminController::class,'Userverify'])->name('Userverify')->middleware('auth');
 Route::get('/useraccount', [AdminController::class,'Useraccount'])->name('Useraccount')->middleware('auth');
-
+Route::get('/branch', [AdminController::class,'Branch'])->name('Branch')->middleware('auth');
 
 
 //new user 
@@ -40,4 +41,9 @@ Route::get('/stafflist', [StaffController::class,'ViewStaff'])->name('Stafflist'
 Route::get('/user/{id}', [StaffController::class, 'show'])->name('userview');
 Route::post('/deleteuser', [StaffController::class, 'DeleteUser'])->name('deleteuser');
 Route::patch('/updateUser', [StaffController::class, 'UpdateUser'])->middleware('auth')->name('updateUser');
+
+
+//Branch tab\
+Route::post('/addbranch', [BranchController::class,'AddBranch'])->name('AddBranch')->middleware('auth');
+Route::get('/branchlist', [BranchController::class,'Branchlist'])->name('Branchlist')->middleware('auth');
 });

@@ -52,4 +52,12 @@ class User extends Authenticatable
             'password' => 'hashed',
         ];
     }
+
+public function stores()
+{
+    return $this->belongsToMany(Store::class, 'store_staff')
+                ->using(StoreStaff::class)     
+                ->withPivot('position')        
+                ->withTimestamps();           
+}
 }
