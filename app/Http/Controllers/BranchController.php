@@ -57,4 +57,28 @@ class BranchController extends Controller
             ]
         ]);
     }
+
+    public function getBranchDetails(Request $request)
+{
+    $storeId = $request->input('id');
+
+    $store = Store::with(['staff' => function ($query) {
+        $query->select('users.id', 'users.name', 'store_staff.position')
+              ->orderBy('store_staff.position');
+    }])->find($storeId);
+
+    if (!$store) {
+        return response()->json(['status' => 'error', 'message' => 'Branch not found.'], 404);
+    }
+
+    return response()->json([
+        'status' => 'success',
+        'data' => [
+            'id' => $store->id,
+            'name' => $store->name,
+            'address' => $store->address,
+            'staff' => $store->staff
+        ]
+    ]);
+}
 }

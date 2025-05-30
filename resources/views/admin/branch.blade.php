@@ -37,31 +37,103 @@
      
     </form>
   </div>
-  </div>
+</div>
+</div>
 
 
-{{-- View branch modal --}}
-<div id="branchmodal" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.5);">
-  <div class="flex flex-col"  style="background:#fff; padding:20px; margin:100px auto; width:50%; position:relative;">
-    <h3>Add Branch</h3>
-    <form class="flex flex-col p-2 gap-2" id="addUserForm">
-      <label>Branch Name:</label>
-      <input type="text" name="Branch" placeholder="Branch" required>
-      <label>Address:</label>
-      <input type="text" name="Address" placeholder="Address" required>
-     
-      <div class="flex flex-row mt-5 gap-3">
-       
-        <div class="flex flex-row mt-5 gap-3">
-        <button type="submit">Save</button>
-        <button type="button" id="closeModalBtn">Cancel</button>
+
+
+ <div id="branchModal" class="fixed inset-0 hidden z-50  bg-opacity-50 items-center justify-center">
+ 
+    <div class="bg-white w-full max-w-3xl p-6 rounded-lg shadow-lg flex flex-col ">
+         <div class="flex justify-end">
+      <button id="closeBranchModal" class="text-gray-500 hover:text-red-500 text-2xl">&times;</button>
+    </div>
+      <div class="flex flex-row">
+
+            <div class="basis-[30%]">
+              <div class="flex justify-between items-center mb-4">
+                  <h2 class="text-xl font-bold">Branch: <span id="modalBranchName"></span></h2>
+              
+            </div>
+            <p class="mb-4 text-gray-700">Address: <span id="modalBranchAddress"></span></p>
+          </div>
+          <div class="basis-[70%]">
+            
+            <div class="mb-4">
+              <div class="flex justify-between items-center mb-2">
+                
+                <h3 class="font-semibold">Receptionists</h3>
+                <button onclick="openUserModal('Receptionist')" class="bg-blue-500 text-white px-2 py-1 rounded text-sm">Add Receptionist</button>
+                
+              </div>
+              <ul id="receptionistList" class="space-y-1"></ul>
+            </div>
+
+            <div>
+              <div class="flex justify-between items-center mb-2">
+                <h3 class="font-semibold">Dentists</h3>
+                <button onclick="openUserModal('Dentist')" class="bg-blue-500 text-white px-2 py-1 rounded text-sm">Add Dentist</button>
+              </div>
+              <ul id="dentistList" class="space-y-1"></ul>
+            </div>
+          </div>
+
       </div>
      
+      
+     
+    </div>
+  </div>
+
+  <!--  Add user in branch Modal -->
+<div id="userModal" class="fixed inset-0 bg-gray-800 bg-opacity-50 hidden justify-center items-center z-50">
+  <div class="bg-white p-6 rounded-lg w-full max-w-md">
+    <h2 class="text-lg font-semibold mb-4" id="userModalTitle">Add User</h2>
+
+    <form id="addUserForm">
+      <input type="hidden" id="userBranchId" name="branch_id">
+
+      <div class="mb-4">
+        <label for="userName" class="block font-medium text-sm">Name</label>
+        <input type="text" id="userName" name="name" class="w-full border rounded p-2">
+      </div>
+
+    
+
+      <input type="hidden" id="userPosition" name="position">
+
+      <div class="flex justify-end gap-2">
+        <button type="button" class="bg-gray-300 px-4 py-2 rounded" onclick="closeUserModal()">Cancel</button>
+        <button type="submit" class="bg-blue-500 text-white px-4 py-2 rounded">Save</button>
+      </div>
     </form>
   </div>
 </div>
-</div>
-</div>
+
+  <!-- Add User Modal -->
+  <div id="addUserModal" class="fixed inset-0 hidden z-50 bg-black bg-opacity-50 items-center justify-center">
+    <div class="bg-white p-6 rounded-lg shadow-lg w-full max-w-md">
+      <div class="flex justify-between items-center mb-4">
+        <h2 class="text-lg font-bold">Add <span id="userRoleTitle"></span></h2>
+        <button onclick="closeAddUserModal()" class="text-gray-500 hover:text-red-500 text-2xl">&times;</button>
+      </div>
+      <form id="addUserForm">
+        <input type="hidden" name="role" id="userRole">
+        <input type="hidden" name="branch_id" id="userBranchId">
+        <div class="mb-4">
+          <label class="block text-sm font-medium">Name</label>
+          <input type="text" name="name" class="w-full border rounded px-3 py-2 mt-1" required>
+        </div>
+        <div class="mb-4">
+          <label class="block text-sm font-medium">Email</label>
+          <input type="email" name="email" class="w-full border rounded px-3 py-2 mt-1" required>
+        </div>
+        <button type="submit" class="bg-green-500 text-white px-4 py-2 rounded">Save</button>
+      </form>
+    </div>
+  </div>
+ 
 <div>
 
     <table class="border-collapse border border-gray-400 table-auto w-full text-center">
@@ -109,6 +181,60 @@
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <script>
+  function openUserModal(position) {
+  $('#userModalTitle').text(`Add ${position}`);
+  $('#userPosition').val(position);
+  $('#userModal').removeClass('hidden').addClass('flex');
+}
+
+function closeUserModal() {
+  $('#userModal').addClass('hidden').removeClass('flex');
+}
+
+
+  document.getElementById('closeBranchModal').addEventListener('click', function () {
+    document.getElementById('branchModal').classList.add('hidden');
+  });
+
+function openBranchModal(branchId) {
+  $('#branchModal').removeClass('hidden').addClass('flex');
+
+  
+  $.get('/branch-details', { id: branchId }, function (response) {
+    if (response.status === 'success') {
+      const branch = response.data;
+      currentBranch = branch;
+
+      // Populate branch details
+      $('#modalBranchName').text(branch.name);
+      $('#modalBranchAddress').text(branch.address);
+      $('#userBranchId').val(branch.id);
+
+      // Clear old lists
+      $('#receptionistList').empty();
+      $('#dentistList').empty();
+
+      // Add users to respective lists
+      branch.staff.forEach(user => {
+        let item = `
+          <li class="flex justify-between items-center border p-2 rounded mb-2">
+            <span>${user.name}</span>
+            <button class="text-red-500 text-sm" onclick="removeUser(${user.id})">Delete</button>
+          </li>
+        `;
+
+        if (user.position === 'Receptionist') {
+          $('#receptionistList').append(item);
+        } else if (user.position === 'Dentist') {
+          $('#dentistList').append(item);
+        }
+      });
+    } else {
+      alert('Failed to load branch details.');
+    }
+  });
+}
+  
   // view user modal 
   function closeModal() {
     $('#viewModal').addClass('hidden');
@@ -174,7 +300,7 @@ function viewUser(id) {
                         <td>${branch.name}</td>
                         <td>${branch.address}</td>
                       
-                     <td><a href="/user/${branch.id}">View</a></td>
+                     <td><button class="text-blue-600 underline" onclick="openBranchModal(${branch.id})">View</button></td>
                     </tr>
                     `;
                 });
@@ -249,7 +375,7 @@ function viewUser(id) {
           Swal.fire('Success!', response.message, 'success');
         $('#addUserModal').fadeOut();
         $('#addUserForm')[0].reset();
-        stafflist(currentPage);
+        branchlist(currentPage);
         }else{
           Swal.fire({
           icon: 'error',

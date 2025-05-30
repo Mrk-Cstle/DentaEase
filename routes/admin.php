@@ -46,4 +46,6 @@ Route::patch('/updateUser', [StaffController::class, 'UpdateUser'])->middleware(
 //Branch tab\
 Route::post('/addbranch', [BranchController::class,'AddBranch'])->name('AddBranch')->middleware('auth');
 Route::get('/branchlist', [BranchController::class,'Branchlist'])->name('Branchlist')->middleware('auth');
+Route::get('/branch-details', [BranchController::class, 'getBranchDetails']);
+
 });
