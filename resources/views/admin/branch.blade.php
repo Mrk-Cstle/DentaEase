@@ -95,8 +95,11 @@
       <input type="hidden" id="userBranchId" name="branch_id">
 
       <div class="mb-4">
-        <label for="userName" class="block font-medium text-sm">Name</label>
-        <input type="text" id="userName" name="name" class="w-full border rounded p-2">
+        <label for="userName" class="block font-medium text-sm">Select User</label>
+        <select id="userName" name="user_id" class="w-full border rounded p-2">
+          <option value="">-- Select User --</option>
+          <!-- Options will be added dynamically -->
+        </select>
       </div>
 
     
@@ -105,7 +108,7 @@
 
       <div class="flex justify-end gap-2">
         <button type="button" class="bg-gray-300 px-4 py-2 rounded" onclick="closeUserModal()">Cancel</button>
-        <button type="submit" class="bg-blue-500 text-white px-4 py-2 rounded">Save</button>
+        <button type="button" onclick="addUserToBranch()" class="bg-blue-500 text-white px-4 py-2 rounded">Save</button>
       </div>
     </form>
   </div>
@@ -181,10 +184,16 @@
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <script>
+
+  
   function openUserModal(position) {
   $('#userModalTitle').text(`Add ${position}`);
   $('#userPosition').val(position);
+
+  const pos = position;
   $('#userModal').removeClass('hidden').addClass('flex');
+    loadUsersByPosition(pos);
+  
 }
 
 function closeUserModal() {
@@ -234,7 +243,70 @@ function openBranchModal(branchId) {
     }
   });
 }
-  
+function addUserToBranch() {
+
+  const storeId = $('#userBranchId').val();
+  const userId = $('#userName').val();
+  const position = $('#userPosition').val();
+
+  $.post(`/branch/${storeId}/add-user`, {
+    user_id: userId,
+    position: position,
+    _token: $('meta[name="csrf-token"]').attr('content')
+  }, function (response) {
+    if (response.status === 'success') {
+      openBranchModal(storeId); 
+      $('#userModal').addClass('hidden').removeClass('flex');
+    }
+  });
+}
+function removeUser(userId) {
+  const storeId = $('#userBranchId').val(); // Or however you get the current store ID
+
+  if (!confirm('Are you sure you want to remove this user from the branch?')) {
+    return;
+  }
+
+  $.ajax({
+    url: `/branch/${storeId}/remove-user`,
+    method: 'POST',
+    data: {
+      user_id: userId,
+      _token: $('meta[name="csrf-token"]').attr('content')
+    },
+    success: function(response) {
+      if (response.status === 'success') {
+        alert('User removed successfully.');
+        openBranchModal(storeId); // Reload the modal or UI
+      } else {
+        alert('Failed to remove user.');
+      }
+    },
+    error: function() {
+      alert('Server error while removing user.');
+    }
+  });
+}
+
+
+function loadUsersByPosition(position) {
+  $.get(`/branch/users-by-position`, { position: position }, function (response) {
+    if (response.status === 'success') {
+      const users = response.data;
+      let options = '<option value="">-- Select User --</option>';
+
+      users.forEach(function (user) {
+        options += `<option value="${user.id}">${user.name}</option>`;
+      });
+
+      $('#userName').html(options);
+    } else {
+      alert('Failed to load users');
+    }
+  });
+}
+
+
   // view user modal 
   function closeModal() {
     $('#viewModal').addClass('hidden');

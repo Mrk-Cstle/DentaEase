@@ -3,16 +3,15 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
-
-class StoreStaff extends Model
+use Illuminate\Database\Eloquent\Relations\Pivot;
+class StoreStaff extends Pivot
 {
-    //
     protected $table = 'store_staff';
 
     protected $fillable = [
-        
-        'position', 
+        'position',
     ];
+
     public function store()
     {
         return $this->belongsTo(Store::class);

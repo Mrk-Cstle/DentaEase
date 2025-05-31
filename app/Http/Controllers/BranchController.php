@@ -4,7 +4,7 @@ namespace App\Http\Controllers;
 use App\Models\Store;
 use Illuminate\Database\QueryException;
 use Illuminate\Http\Request;
-
+use App\Models\User;
 class BranchController extends Controller
 {
     //
@@ -81,4 +81,54 @@ class BranchController extends Controller
         ]
     ]);
 }
+
+public function addUser(Request $request, Store $branch)
+{
+   
+
+    try {
+        $user = User::findOrFail($request->user_id); 
+
+        $branch->staff()->attach($user->id, [
+            'position' => $request->position,
+        ]);
+
+        return response()->json(['status' => 'success', 'message' => 'User added successfully']);
+    } catch (\Exception $e) {
+        return response()->json([
+            'status' => 'error',
+            'message' => 'Server error: ' . $e->getMessage(),
+        ], 500);
+    }
+}
+
+public function getUsersByPosition(Request $request)
+{
+    $position = $request->position;
+
+   $users = User::where('position', $position)
+             ->get(['id', 'name']);
+
+
+    return response()->json([
+        'status' => 'success',
+        'data' => $users
+    ]);
+}
+public function removeUser(Request $request, $storeId)
+{
+    $userId = $request->input('user_id');
+
+    $store = Store::findOrFail($storeId);
+    $user = User::findOrFail($userId);
+
+    // Assuming many-to-many: store_user pivot
+    $store->staff()->detach($userId);
+
+    return response()->json([
+        'status' => 'success',
+        'message' => 'User removed from store.'
+    ]);
+}
+
 }

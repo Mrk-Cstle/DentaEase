@@ -31,7 +31,7 @@
       <select name="position" id="position" >
         <option value="Admin">Admin</option>
         <option value="Dentist">Dentist</option>
-        <option value="Assistant">Assistant</option>
+        <option value="Receptionist">Receptionist</option>
         
       </select>
       <div class="flex flex-row mt-5 gap-3">
