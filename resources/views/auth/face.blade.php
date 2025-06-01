@@ -39,8 +39,9 @@
                 <video id="video" width="320" height="240" autoplay class="border border-gray-300"></video>
                 <canvas id="canvas" width="320" height="240" style="display: none;"></canvas>
                 <div class="flex justify-end gap-2 mt-3">
-                    <button type="submit" class=" bg-[#02ccfe] text-white rounded-md px-3 py-2">Login</button>
-                    <button onclick="closeModal()" class="bg-gray-400 text-white px-3 py-1 rounded">Close</button>
+                    {{-- <button type="submit" class=" bg-[#02ccfe] text-white rounded-md px-3 py-2">Login</button> --}}
+                    <span id="countdownText" class="text-sm text-gray-700 mr-auto">Logging in in 3 seconds...</span>
+                    <button onclick="closeModal()" type="button" class="bg-gray-400 text-white px-3 py-1 rounded">Close</button>
                 </div>
             </div>
         </div>
@@ -56,6 +57,8 @@
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <script>
+    let countdownInterval = null;
+let hasCancelled = false;
     function openModal() {
     document.getElementById('videoModal').classList.remove('hidden');
     navigator.mediaDevices.getUserMedia({ video: true })
@@ -65,12 +68,45 @@
             .catch(function(err) {
                 console.error("Error accessing webcam: " + err);
             });
- 
+            
+       if (countdownInterval) clearInterval(countdownInterval);
+    hasCancelled = false;
+            let countdown = 3;
+        countdownText.textContent = `Logging in in ${countdown} seconds...`;
+
+        const interval = setInterval(() => {
+
+            if (hasCancelled) {
+            clearInterval(countdownInterval);
+            countdownInterval = null;
+            return;
+        }
+            countdown--;
+            countdownText.textContent = `Logging in in ${countdown} seconds...`;
+            if (countdown <= 0) {
+                clearInterval(interval);
+                 countdownInterval = null;
+               if (!hasCancelled) {
+                $('#loginForm').submit();
+            }
+            }
+        }, 1000);
 }
 
 function closeModal() {
     document.getElementById('videoModal').classList.add('hidden');
-   
+     const video = document.getElementById('video');
+    if (video.srcObject) {
+        video.srcObject.getTracks().forEach(track => track.stop());
+        video.srcObject = null;
+    }
+      hasCancelled = true; // <--- IMPORTANT
+    if (countdownInterval) {
+        clearInterval(countdownInterval);
+        countdownInterval = null;
+    }
+    window.location.href = "/faceui";
+    document.getElementById('countdownText').textContent = '';
 }
     $(document).ready(function(){
             
@@ -105,8 +141,8 @@ function closeModal() {
                     icon: 'success',
                     confirmButtonText: 'OK'
                 }).then((result) => {
-           
-                           
+                
+                            
                                 
            window.location.href = response.redirect;
     
@@ -114,11 +150,13 @@ function closeModal() {
        }else{
         document.getElementById('loadingSpinner').classList.add('hidden');
            Swal.fire('Error', response.message);
+            document.getElementById('videoModal').classList.add('hidden');
        }
            },
            error: function(xhr, status, error){
                console.log(xhr.responseText);
-               
+                document.getElementById('loadingSpinner').classList.add('hidden');
+                ocument.getElementById('videoModal').classList.add('hidden');
                }
                });
 
