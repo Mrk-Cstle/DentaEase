@@ -130,5 +130,23 @@ public function removeUser(Request $request, $storeId)
         'message' => 'User removed from store.'
     ]);
 }
-
+ public function DeleteBranch(Request $request){
+            $id = $request->id;
+            $user = Store::find($id);
+            if ($user) {
+               
+                $user->delete();
+    
+               
+                return response()->json([
+                    'status' => 'success',
+                    'message' => 'Branch deleted successfully',
+                ] );
+            } else{
+                return response()->json([
+                    'status' => 'error',
+                    'message' => 'Branch not found',
+                ] );
+            }
+        }
 }

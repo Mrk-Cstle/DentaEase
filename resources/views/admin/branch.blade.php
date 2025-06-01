@@ -57,6 +57,8 @@
               
             </div>
             <p class="mb-4 text-gray-700">Address: <span id="modalBranchAddress"></span></p>
+            <input type="hidden" id="BranchId" name="branch_id">
+            <button id="deletebtn"  class="border rounded-md p-3 bg-[#FF0000] text-white" type="submit">Delete</button>
           </div>
           <div class="basis-[70%]">
             
@@ -184,7 +186,50 @@
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <script>
+$('#deletebtn').click(function (e) {
+    e.preventDefault(); // prevent default if inside a form or link
 
+
+ const storeId = $('#BranchId').val();
+    Swal.fire({
+        title: 'Are you sure?',
+        text: 'You will not be able to recover this user!',
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#3085d6',
+        cancelButtonColor: '#d33',
+        confirmButtonText: 'Yes, delete it!',
+        cancelButtonText: 'No, cancel!'
+    }).then((result) => {
+        if (result.isConfirmed) {
+            $.ajax({
+                type: "get",
+                url: "{{ route('DeleteBranch') }}",
+                data: {
+                    _token: '{{ csrf_token() }}',
+                    id: storeId
+                },
+                dataType: "json",
+                success: function (response) {
+                    Swal.fire({
+                        title: 'Deleted!',
+                        text: response.message,
+                        icon: 'success',
+                        confirmButtonText: 'OK'
+                        }).then((result) => {
+                        if (result.isConfirmed) {
+                           
+                            window.location.href = '/branch'; 
+                        }
+                        });
+                                        },
+                error: function (xhr) {
+                    Swal.fire('Error', xhr.responseJSON.message || 'Something went wrong.', 'error');
+                }
+            });
+        }
+    });
+    });
   
   function openUserModal(position) {
   $('#userModalTitle').text(`Add ${position}`);
@@ -218,6 +263,7 @@ function openBranchModal(branchId) {
       $('#modalBranchName').text(branch.name);
       $('#modalBranchAddress').text(branch.address);
       $('#userBranchId').val(branch.id);
+      $('#BranchId').val(branch.id);
 
       // Clear old lists
       $('#receptionistList').empty();
