@@ -52,7 +52,7 @@
         <thead class="bg-gray-200">
             <tr>
                 <th>Name</th>
-                <th>Birth Date</th>
+                <th>Position</th>
                 <th>Contact Number</th>
                 <th>Action</th>
             </tr>
@@ -152,7 +152,7 @@ function viewUser(id) {
                     rows += `
                     <tr>
                         <td>${user.name}</td>
-                        <td>${user.email}</td>
+                        <td>${user.position}</td>
                         <td>${user.contact_number}</td>
                      <td><a href="/user/${user.id}">View</a></td>
                     </tr>
