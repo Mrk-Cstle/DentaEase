@@ -66,14 +66,21 @@
                     <li class="p-4 border-b-1">
                         <span >
                             <a href="/useraccount" class="text-[#02ccfe] text">
-                            <i class="fa-solid fa-house"></i> Accounts</a>
+                            <i class="fa-solid fa-house"></i> Staff Accounts</a>
+    
+                        </span>
+                    </li>
+                     <li class="p-4 border-b-1">
+                        <span >
+                            <a href="/patientaccount" class="text-[#02ccfe] text">
+                            <i class="fa-solid fa-house"></i> Patient Accounts</a>
     
                         </span>
                     </li>
                     <li class="p-4 border-b-1 ">
                         <span >
                             <a href="/userverify" class="text-[#02ccfe] text">
-                            <i class="fa-solid fa-house"></i>New User</a>
+                            <i class="fa-solid fa-house"></i> New User</a>
     
                         </span>
                     </li>

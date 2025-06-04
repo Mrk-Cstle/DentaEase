@@ -46,6 +46,9 @@ class AdminController extends Controller
     public function Useraccount(){
         return view('admin.useraccount');
     }
+     public function Patientaccount(){
+        return view('admin.patientaccount');
+    }
 
     public function Userverify(){
         return view('admin.userverify');
@@ -53,6 +56,7 @@ class AdminController extends Controller
     public function Profile(){
         return view('admin.adminprofile');
     }
+    
      public function Branch(){
         return view('admin.branch');
     }
