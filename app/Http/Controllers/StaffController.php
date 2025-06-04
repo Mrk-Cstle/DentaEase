@@ -15,13 +15,17 @@ class StaffController extends Controller
         $perPage = 5;
 
         $search = $request->input('search');
-
+        $position = $request->input('position');
        
         $query = User::where('account_type', 'admin')->where(function($q) use ($search){
             $q->where('name', 'like', "%{$search}%");
             $q->orWhere('user', 'like', "%{$search}%");
         });
-
+        
+        
+    if ($position) {
+        $query->where('position', $position);
+    }
         $staff = $query->paginate($perPage);
 
         return response()->json([

@@ -10,8 +10,17 @@
         
     
   </div>
-  <div class="flex flex-row ">
-    
+
+ 
+
+  <div class="flex flex-row gap-5">
+  <select id="positionFilter" class="border p-2 rounded">
+  <option value="">All Positions</option>
+  <option value="Receptionist">Receptionist</option>
+  <option value="Dentist">Dentist</option>
+  <option value="Admin">Admin</option>
+
+  </select>
       <input type="text" id="searchInput" placeholder="Search..." />
           <button>Search</button>
   
@@ -94,35 +103,35 @@
     $('#viewModal').addClass('hidden');
 }
 
-function viewUser(id) {
-    $.ajax({
-        type: "post",
-        url: "{{route('Viewuser')}}",
-        data: {
-            id: id,
-            type: 'User',
-            _token: "{{csrf_token()}}"
-        },
+// function viewUser(id) {
+//     $.ajax({
+//         type: "post",
+//         url: "{{route('Viewuser')}}",
+//         data: {
+//             id: id,
+//             type: 'User',
+//             _token: "{{csrf_token()}}"
+//         },
         
-        success: function (response) {
+//         success: function (response) {
 
-            const users = response.data;
-            console.log(response.data.id);
-            $('#modalContent').html(`
-                <p><strong>Name:</strong> ${users.name}</p>
-                <p><strong>Birth Date:</strong> ${users.birth_date}</p>
-                <p><strong>Contact:</strong> ${users.contact_number}</p>
-                <p><strong>Email</strong>${users.email}</p>
+//             const users = response.data;
+//             console.log(response.data.id);
+//             $('#modalContent').html(`
+//                 <p><strong>Name:</strong> ${users.name}</p>
+//                 <p><strong>Birth Date:</strong> ${users.birth_date}</p>
+//                 <p><strong>Contact:</strong> ${users.contact_number}</p>
+//                 <p><strong>Email</strong>${users.email}</p>
                 
 
-            `);
-            $('#viewModal').removeClass('hidden');
-        },
-        error: function (xhr) {
-            console.error(xhr.responseJSON);
-        }
-    });
-}
+//             `);
+//             $('#viewModal').removeClass('hidden');
+//         },
+//         error: function (xhr) {
+//             console.error(xhr.responseJSON);
+//         }
+//     });
+// }
 
 //end of user modal
 
@@ -133,10 +142,15 @@ function viewUser(id) {
 
   function stafflist(page = 1) {
     currentPage = page;
+    
     localStorage.setItem('staffcurrentpage', page);
     currentSearch = $('#searchInput').val();
+    currentPosition = $('#positionFilter').val();
+     localStorage.setItem('staffPositionFilter', currentPosition);
+     
     var formdata = {
       "search": currentSearch,
+      "position": currentPosition,
       "page": page
 
     }
@@ -180,10 +194,19 @@ function viewUser(id) {
     
   }
   $(document).ready(function () {
+    const savedPosition = localStorage.getItem('staffPositionFilter');
+    if (savedPosition !== null) {
+        $('#positionFilter').val(savedPosition);
+    }
     $('#searchInput').on('input', function () {
         localStorage.setItem('currentPage', 1);
             stafflist(1); // Reset to first page when searching
         });
+    $('#positionFilter').on('change', function () {
+         localStorage.setItem('staffPositionFilter', $(this).val());
+        localStorage.setItem('currentPage', 1);
+        stafflist(1); // Reset to first page when filter changes
+    });
     stafflist(currentPage); // Call it on load
     window.stafflist = stafflist;
 });
