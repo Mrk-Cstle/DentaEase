@@ -5,7 +5,7 @@
 <div class="flex flex-row justify-between">
   <div class="flex flex-row ">
   
-    <button id="addUserBtn">Add User</button>
+    {{-- <button id="addUserBtn">Add User</button> --}}
      
         
     
