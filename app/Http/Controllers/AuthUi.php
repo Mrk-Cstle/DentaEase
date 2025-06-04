@@ -6,6 +6,7 @@ use App\Models\newuser;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Http;
+
 class AuthUi extends Controller
 {
     public function SignUpUi(Request $request){
@@ -57,6 +58,7 @@ class AuthUi extends Controller
                 'patient' => route('CDashboard'),
                 default => route('login')
             };
+           
             return response()->json(['status' => 'success','redirect' => $redirectUrl]);
         }
         return response()->json(['status' => 'error', 'message' => 'Invalid credentials']);

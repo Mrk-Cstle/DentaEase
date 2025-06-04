@@ -6,6 +6,8 @@ use Illuminate\Database\QueryException;
 use Illuminate\Http\Request;
 use  App\Models\newuser;
 use  App\Models\User;
+use Illuminate\Support\Facades\Mail;
+use App\Mail\mailresponse;
 
 
 class AdminController extends Controller
@@ -128,7 +130,7 @@ class AdminController extends Controller
 
         // Delete the user from the newuser table
         $newUser->delete();
-
+        Mail::to($user->email)->send(new mailresponse($user));
         return response()->json([
             'status' => 'success',
             'message' => 'User approved and moved to users table.'

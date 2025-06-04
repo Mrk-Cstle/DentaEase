@@ -21,7 +21,7 @@ return new class extends Migration
            
             $table->string('user')->unique();
             $table->string('email');
-            $table->integer('contact_number'); 
+            $table->string('contact_number'); 
             $table->string('password');
             $table->rememberToken();
             $table->timestamps();
