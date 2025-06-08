@@ -2,6 +2,7 @@
 
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AdminController;
+use App\Http\Controllers\AuthUi;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\StaffController;
 use App\Http\Controllers\PatientViewController;
@@ -10,7 +11,8 @@ use App\Http\Middleware\Admin;
 use App\Http\Controllers\Facerecognition;
 
 
-Route::middleware(['auth', Admin::class])->group(function () {
+
+Route::middleware(['web', 'auth', Admin::class])->group(function () {
 
 Route::get('/dashboard', [AdminController::class,'Dashboard'])->name('dashboard')->middleware('auth');
 Route::get('/logouts', [AdminController::class,'Logout'])->name('Logout')->middleware('auth');
@@ -57,6 +59,12 @@ Route::get('/branch/users-by-position', [BranchController::class, 'getUsersByPos
 Route::post('/branch/{store}/remove-user', [BranchController::class, 'removeUser']);
 Route::get('/branch/deletebranch', [BranchController::class, 'DeleteBranch'])->name('DeleteBranch');
 
+//branch selection
+
+
 
 
 });
+
+Route::get('/get-branch', [AuthUi::class,'GetBranchLogin'])->name('GetBranchLogin');
+Route::post('/select-branch', [AuthUi::class,'SelectBranchLogin'])->name('SelectBranchLogin');

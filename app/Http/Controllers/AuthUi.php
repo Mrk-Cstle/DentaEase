@@ -8,7 +8,16 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Http;
 
 class AuthUi extends Controller
-{
+{   
+    public function GetBranchLogin (Request $request){
+        $branches =Auth::user()->stores;
+         return view('auth.SelectBranch', compact('branches'));
+    }
+     public function SelectBranchLogin (Request $request){
+        $request->validate(['branch_id' => 'required|exists:stores,id']);
+        session(['active_branch_id' => $request->branch_id]);
+        return redirect()->intended('/dashboard');
+    }
     public function SignUpUi(Request $request){
         return view('auth.signup');
     }
@@ -51,13 +60,22 @@ class AuthUi extends Controller
         if(Auth::attempt($credentials)){
             $request->session()->regenerate();
             $user = Auth::user();
-    
-            // Choose redirect URL based on account type
-            $redirectUrl = match ($user->account_type) {
-                'admin' => route('dashboard'),
+            
+            if ($user->position == 'Admin') {
+                session(['active_branch_id' => 'admin']);
+                $redirectUrl = route('dashboard');
+
+            } else {
+                $redirectUrl = match ($user->account_type) {
+                'admin' => route('GetBranchLogin'),
                 'patient' => route('CDashboard'),
                 default => route('login')
-            };
+
+                 };
+            }
+            // Choose redirect URL based on account type
+          
+           
            
             return response()->json(['status' => 'success','redirect' => $redirectUrl]);
         }

@@ -4,10 +4,9 @@ namespace App\Http\Middleware;
 
 use Closure;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
 use Symfony\Component\HttpFoundation\Response;
 
-class Admin
+class EnsureBranchIsSelected
 {
     /**
      * Handle an incoming request.
@@ -16,14 +15,12 @@ class Admin
      */
     public function handle(Request $request, Closure $next): Response
     {
-        if (Auth::check() && Auth::user()->account_type === 'admin') {
-               
-            if (auth()->check() && !session()->has('active_branch_id')) {
-            return redirect()->route('GetBranchLogin');
-            }
-            return $next($request);
+
+       
+        if (auth()->check() && !session()->has('active_branch_id')) {
+            return redirect()->route('branch.select');
         }
 
-        abort(403, 'Unauthorized action.');
-    }
+            return $next($request);
+        }
 }
