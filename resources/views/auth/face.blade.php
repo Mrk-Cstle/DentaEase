@@ -71,7 +71,7 @@ let hasCancelled = false;
             
        if (countdownInterval) clearInterval(countdownInterval);
     hasCancelled = false;
-            let countdown = 3;
+            let countdown = 5;
         countdownText.textContent = `Logging in in ${countdown} seconds...`;
 
         const interval = setInterval(() => {

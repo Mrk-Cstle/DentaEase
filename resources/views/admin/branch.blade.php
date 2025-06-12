@@ -59,8 +59,8 @@
          <div class="flex justify-end">
       <button id="closeBranchModal" class="text-gray-500 hover:text-red-500 text-2xl">&times;</button>
     </div>
-      <div class="flex flex-row">
-
+      <div class="flex flex-col">
+          <div class="flex flex-row">
             <div class="basis-[30%]">
               <div class="flex justify-between items-center mb-4">
                   <h2 class="text-xl font-bold">Branch: <span id="modalBranchName"></span></h2>
@@ -90,6 +90,39 @@
               <ul id="dentistList" class="space-y-1"></ul>
             </div>
           </div>
+
+          </div>
+          
+          <!-- Store Schedule Section -->
+      <div class="mt-6 border-t pt-4">
+        <h3 class="font-semibold text-lg mb-3">Store Schedule</h3>
+        
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          <div>
+            <label for="opening_time" class="block text-sm font-medium text-gray-700">Opening Time</label>
+            <input type="time" id="opening_time" name="opening_time" class="mt-1 block w-full border-gray-300 rounded-md shadow-sm" />
+          </div>
+
+          <div>
+            <label for="closing_time" class="block text-sm font-medium text-gray-700">Closing Time</label>
+            <input type="time" id="closing_time" name="closing_time" class="mt-1 block w-full border-gray-300 rounded-md shadow-sm" />
+          </div>
+        </div>
+
+        <div class="mt-4">
+          <label class="block text-sm font-medium text-gray-700 mb-2">Open Days</label>
+          <div class="flex flex-wrap gap-3">
+            @foreach(['mon','tue','wed','thu','fri','sat','sun'] as $day)
+              <label class="inline-flex items-center space-x-2">
+                <input type="checkbox" name="open_days[]" value="{{ $day }}" class="form-checkbox rounded text-blue-600">
+                <span class="capitalize">{{ $day }}</span>
+              </label>
+            @endforeach
+          </div>
+        </div>
+        <button id="saveScheduleBtn" class="bg-blue-500 text-white p-3 my-5 rounded-md">Save</button>
+      </div>
+
 
       </div>
      
@@ -196,6 +229,37 @@
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <script>
+  $('#saveScheduleBtn').on('click', function () {
+    let opening_time = $('#opening_time').val();
+    let closing_time = $('#closing_time').val();
+    let branch_id = $('#BranchId').val();
+
+    let open_days = [];
+    $('input[name="open_days[]"]:checked').each(function () {
+      open_days.push($(this).val());
+    });
+
+    $.ajax({
+      url: '/branch/update-schedule/' + branch_id,
+      method: 'POST',
+      data: {
+        opening_time: opening_time,
+        closing_time: closing_time,
+        open_days: open_days,
+        _token: '{{ csrf_token() }}'
+      },
+      success: function (response) {
+        Swal.fire('Success', 'Branch schedule updated.', 'success');
+        // Optional: Close modal or refresh data
+      },
+      error: function (xhr) {
+        Swal.fire('Error', 'Something went wrong!', 'error');
+      }
+    });
+  });
+</script>
+<script>
+  
 $('#deletebtn').click(function (e) {
     e.preventDefault(); // prevent default if inside a form or link
 
@@ -294,6 +358,17 @@ function openBranchModal(branchId) {
           $('#dentistList').append(item);
         }
       });
+
+      $('#opening_time').val(branch.opening_time);   // e.g. "09:00"
+      $('#closing_time').val(branch.closing_time);   // e.g. "18:00"
+
+      // ✅ Populate open_days checkboxes
+      $('input[name="open_days[]"]').prop('checked', false); // Clear first
+      if (Array.isArray(branch.open_days)) {
+        branch.open_days.forEach(day => {
+          $(`input[name="open_days[]"][value="${day}"]`).prop('checked', true);
+        });
+      }
     } else {
       alert('Failed to load branch details.');
     }

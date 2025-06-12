@@ -8,6 +8,23 @@ use App\Models\User;
 class BranchController extends Controller
 {
     //
+    public function updateSchedule(Request $request, $id)
+{
+    $request->validate([
+        'opening_time' => 'required|date_format:H:i',
+        'closing_time' => 'required|date_format:H:i',
+        'open_days' => 'required|array',
+        'open_days.*' => 'in:mon,tue,wed,thu,fri,sat,sun'
+    ]);
+
+    $store = Store::findOrFail($id);
+    $store->opening_time = $request->opening_time;
+    $store->closing_time = $request->closing_time;
+    $store->open_days = $request->open_days;
+    $store->save();
+
+    return response()->json(['status' => 'success']);
+}
 
     public function AddBranch(Request $request){
 
@@ -81,7 +98,10 @@ class BranchController extends Controller
             'id' => $store->id,
             'name' => $store->name,
             'address' => $store->address,
-            'staff' => $store->staff
+            'staff' => $store->staff,
+            'opening_time' => optional($store->opening_time)->format('H:i'),
+            'closing_time' => optional($store->closing_time)->format('H:i'),
+            'open_days' => $store->open_days ?? [],
         ]
     ]);
 }
