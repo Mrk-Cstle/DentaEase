@@ -2,6 +2,7 @@
 
 @section('title','New User Verification')
 @section('main-content')
+<h1>Patient Management</h1>
 <div class="flex flex-row justify-between">
   <div class="flex flex-row ">
   
@@ -10,8 +11,8 @@
         
     
   </div>
-  <div class="flex flex-row ">
-    
+  <div class="flex flex-row gap-3">
+    <a href="/userverify" class="bg-blue-500 text-white  p-2  ">New Users</a>
       <input type="text" id="searchInput" placeholder="Search..." />
           <button>Search</button>
   

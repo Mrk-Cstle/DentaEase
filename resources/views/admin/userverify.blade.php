@@ -2,7 +2,7 @@
 
 @section('title','New User Verification')
 @section('main-content')
-
+<h1>New User List</h1>
 <div class="flex flex-row justify-end gap-3">
   
     <input type="text" id="searchInput" placeholder="Search..." />

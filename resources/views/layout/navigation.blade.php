@@ -25,9 +25,22 @@
                     <h1 class="text-white font-black ">Santiago-Amancio</h1> 
                     <h1 class="text-white font-black ">Dental Clinic</h1> 
                 </div>
-               
+                <div  class="flex flex-col mx-5">
+
+                    @php
+                        $branch = \App\Models\Store::find(session('active_branch_id'));
+                    @endphp
+    
+                    @if ($branch)
+                        <p class="text-lg font-semibold text-white font-black">{{ $branch->name }}</p>
+                        <p class="text-sm font-semibold text-white font-black">{{ $branch->address }}</p>
+                    @else
+                        <p class="text-red-500">Admin View</p>
+                    @endif
+                </div>
                
             </div>
+           
             <div class="flex flex-row h-auto p-3 gap-5 ">
                 
                 <i class="text-4xl fa-solid fa-circle-user"></i>
@@ -77,13 +90,13 @@
     
                         </span>
                     </li>
-                    <li class="p-4 border-b-1 ">
+                    {{-- <li class="p-4 border-b-1 ">
                         <span >
                             <a href="/userverify" class="text-[#02ccfe] text">
                             <i class="fa-solid fa-house"></i> New User</a>
     
                         </span>
-                    </li>
+                    </li> --}}
                     <li class="p-4 border-b-1 ">
                         <span >
                             <a href="/branch" class="text-[#02ccfe] text">

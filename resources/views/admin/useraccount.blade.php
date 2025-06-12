@@ -2,6 +2,7 @@
 
 @section('title','New User Verification')
 @section('main-content')
+<h1>Staff Management</h1>
 <div class="flex flex-row justify-between">
   <div class="flex flex-row ">
   

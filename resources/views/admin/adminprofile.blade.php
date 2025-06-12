@@ -10,7 +10,7 @@
     }
 </style>
 
-  
+<h1>My Profile</h1>
 
 <div class="flex flex-row h-full m-10 gap-5">
     <div class=" rounded-md flex flex-col basis-[30%] bg-white">
