@@ -31,9 +31,13 @@ class BranchController extends Controller
     {
         $perPage = 5;
         $search = $request->input('search');
-
+        $branch = $request->input('branch');
 
         $query = Store::query();
+
+        if ($branch != 'admin') {
+            $query->where('id', $branch);
+        }
        if ($search) {
         $query->where(function ($q) use ($search) {
             $q->where('name', 'like', "%{$search}%")

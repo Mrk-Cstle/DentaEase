@@ -14,9 +14,16 @@
     
   </div>
   <div class="flex flex-row ">
-    
-      <input type="text" id="searchInput" placeholder="Search..." />
-          <button>Search</button>
+
+    @if (session('active_branch_id') == "admin")
+    <input  type="text" id="searchInput" placeholder="Search..." />
+   
+     @else
+     <input class="opacity-50"  type="text" id="searchInput" placeholder="Search..."  disabled/>
+ 
+     @endif
+     
+         
   
       
   </div>
@@ -398,13 +405,19 @@ function viewUser(id) {
   let currentPage = parseInt(localStorage.getItem('branchcurrentpage')) || 1;
   let currentSearch='';
 
+  let branchid ="{{session('active_branch_id')}}"; 
+
+  
+
   function branchlist(page = 1) {
     currentPage = page;
     localStorage.setItem('branchcurrentpage', page);
     currentSearch = $('#searchInput').val();
+
     var formdata = {
       "search": currentSearch,
-      "page": page
+      "page": page,
+      "branch": branchid,
 
     }
    $.ajax({
