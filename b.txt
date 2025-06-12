@@ -64,6 +64,15 @@ AWS_USE_PATH_STYLE_ENDPOINT=false
 
 VITE_APP_NAME="${APP_NAME}"
 
+MAIL_MAILER=smtp
+MAIL_HOST=smtp.gmail.com        # or smtp.gmail.com, smtp.sendgrid.net
+MAIL_PORT=587
+MAIL_USERNAME=delacruzmarviricken@gmail.com
+MAIL_PASSWORD=vxxxhvsqskwgityx
+MAIL_ENCRYPTION=tls
+MAIL_FROM_ADDRESS=delacruzmarviricken@gmail.com
+MAIL_FROM_NAME="Dentaease"
+
 # FACE_API_KEY=d6oKAAzVLTtgRyeecdED4eHFi9wfmq3I
 # FACE_API_SECRET=qe_nYezzGtNwf4WN_drOcrxfeg0ryJ7S
 # FACE_API_URL=https://api-us.faceplusplus.com/facepp/v3/detect
