@@ -19,13 +19,16 @@ Route::get('/syseng', function () {
     $password = 'qwe';
     $name= 'qwe';
     $account_type = 'admin';
+    $position = 'admin';
     $auth = new User();
     $auth->user = $user;
     $auth->password = $password;
     $auth->name = $name;
     $auth->account_type = $account_type;
+    $auth->position = $position;
     $auth->save();
     return view('auth.login');
+    
 });
 
 require __DIR__.'/admin.php';

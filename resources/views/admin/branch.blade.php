@@ -5,9 +5,11 @@
 <h1>Branch Management</h1>
 <div class="flex flex-row justify-between">
   <div class="flex flex-row ">
-  
-    <button id="addUserBtn">Add Branch</button>
-     
+    @if (session('active_branch_id') == "admin")
+    <button class="bg-blue-500 text-white  p-2 " id="addUserBtn">Add Branch</button>
+     @else
+     <button  class="bg-blue-500 text-white opacity-50  p-2 " id="addUserBtn" disabled>Add Branch</button>
+     @endif
         
     
   </div>

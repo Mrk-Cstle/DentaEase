@@ -12,8 +12,14 @@
     
   </div>
   <div class="flex flex-row gap-3">
+
+    @if (session('active_branch_id') == "admin")
     <a href="/userverify" class="bg-blue-500 text-white  p-2  ">New Users</a>
-      <input type="text" id="searchInput" placeholder="Search..." />
+
+    @else
+    <a href="/userverify" class="bg-blue-500 text-white opacity-50  p-2  " disabled>New Users</a>
+      @endif
+    <input type="text" id="searchInput" placeholder="Search..." />
           <button>Search</button>
   
       

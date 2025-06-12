@@ -76,6 +76,7 @@
     
                         </span>
                     </li>
+                    @if (session('active_branch_id') == "admin")
                     <li class="p-4 border-b-1">
                         <span >
                             <a href="/useraccount" class="text-[#02ccfe] text">
@@ -83,6 +84,7 @@
     
                         </span>
                     </li>
+                    @endif
                      <li class="p-4 border-b-1">
                         <span >
                             <a href="/patientaccount" class="text-[#02ccfe] text">
