@@ -104,8 +104,8 @@
                 </li>
                 <li class="p-4 border-b-1">
                     <span >
-                        <a href="" class="text-[#02ccfe] text">
-                        <i class="fa-solid fa-house"></i> Dashboard</a>
+                        <a href="/booking" class="text-[#02ccfe] text">
+                        <i class="fa-solid fa-house"></i> Booking</a>
 
                     </span>
                 </li>
