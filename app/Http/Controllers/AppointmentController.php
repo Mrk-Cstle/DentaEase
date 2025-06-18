@@ -62,6 +62,8 @@ public function appointment(Request $request)
         'store_id' => 'required|exists:stores,id',
         'appointment_date' => 'required|date|after_or_equal:today',
         'appointment_time' => 'required|date_format:H:i',
+        'desc' =>'required',
+        
     ]);
 
     $store = Store::findOrFail($request->store_id);
@@ -96,9 +98,11 @@ public function appointment(Request $request)
         'user_id' => auth()->id(), // assumes you're logged in
         'appointment_date' => $request->appointment_date,
         'appointment_time' => $request->appointment_time,
+        'desc'=> $request->desc,
         'status' => 'pending',
     ]);
 
-    return redirect()->route('CBooking')->with('success', 'Appointment booked successfully!');
+    return back()->with('success','Appointment created successfully');
+    // return redirect()->route('CBooking')->with('success', 'Appointment booked successfully!');
 }
 }

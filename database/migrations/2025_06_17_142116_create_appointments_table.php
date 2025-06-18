@@ -18,6 +18,7 @@ return new class extends Migration
             $table->date('appointment_date');
             $table->time('appointment_time');
             $table->string('status')->default('pending'); // pending, approved, cancelled
+            $table->string('desc')->nullable();
             $table->timestamps();
         });
     }
