@@ -15,6 +15,8 @@ class AppointmentController extends Controller
 {
     return response()->json([
         'status' => 'success',
+        'name' => $store->name,
+        'address' => $store->address,
         'opening_time' => optional($store->opening_time)->format('H:i'),
         'closing_time' => optional($store->closing_time)->format('H:i'),
         'open_days' => $store->open_days ?? [],
@@ -28,33 +30,48 @@ public function getAvailableSlots(Request $request, Store $store)
         return response()->json(['error' => 'Date is required'], 422);
     }
 
-    $dayName = strtolower(Carbon::parse($date)->format('D')); // e.g. 'mon'
+    $dayName = strtolower(Carbon::parse($date)->format('D'));
 
+    // Check if store is open that day
     if (!in_array($dayName, $store->open_days ?? [])) {
-        return response()->json(['slots' => []]); // store closed on this day
+        return response()->json(['slots' => []]); // store closed
     }
 
-    // Generate all 30-minute slots
     $opening = Carbon::parse($store->opening_time);
     $closing = Carbon::parse($store->closing_time);
+    $slotDuration = 30; // minutes
 
-    $slots = [];
-    while ($opening < $closing) {
-        $slots[] = $opening->format('H:i');
-        $opening->addMinutes(30);
-    }
-
-    // Fetch already booked slots
-    $booked = Appointment::where('store_id', $store->id)
+    // Get all bookings on that day
+    $bookings = Appointment::where('store_id', $store->id)
         ->where('appointment_date', $date)
-        ->pluck('appointment_time')
-        ->map(fn($t) => Carbon::parse($t)->format('H:i'))
-        ->toArray();
+        ->orderBy('appointment_time')
+        ->get(['appointment_time', 'booking_end_time']);
 
-    $availableSlots = array_values(array_diff($slots, $booked));
+    $availableSlots = [];
+    $currentSlot = $opening->copy();
+
+    while ($currentSlot->lt($closing)) {
+        $slotEnd = $currentSlot->copy()->addMinutes($slotDuration);
+
+        // Check if this slot overlaps with any existing booking
+        $overlapping = $bookings->first(function ($booking) use ($currentSlot, $slotEnd) {
+            $bookingStart = Carbon::parse($booking->appointment_time);
+            $bookingEnd = Carbon::parse($booking->booking_end_time);
+            return $currentSlot->lt($bookingEnd) && $slotEnd->gt($bookingStart);
+        });
+
+        if (!$overlapping) {
+            $availableSlots[] = $currentSlot->format('H:i');
+            $currentSlot = $slotEnd; // Continue after this slot
+        } else {
+            // Skip to end of overlapping booking
+            $currentSlot = Carbon::parse($overlapping->booking_end_time);
+        }
+    }
 
     return response()->json(['slots' => $availableSlots]);
 }
+
 
 public function appointment(Request $request)
 {
@@ -74,6 +91,8 @@ public function appointment(Request $request)
         return back()->withErrors(['appointment_date' => 'Store is closed on this day.']);
     }
 
+   $booking_end = Carbon::parse($request->appointment_time)->addMinutes(30);
+
     // ✅ Check if time is within hours
     if (
         $request->appointment_time < $store->opening_time->format('H:i') ||
@@ -92,12 +111,16 @@ public function appointment(Request $request)
         return back()->withErrors(['appointment_time' => 'This time slot is already booked.']);
     }
 
+    if ($booking_end->format('H:i') > $store->closing_time->format('H:i')) {
+    return back()->withErrors(['appointment_time' => 'Booking ends after store closing time.']);
+    }
     // ✅ Create the appointment
     Appointment::create([
         'store_id' => $store->id,
         'user_id' => auth()->id(), // assumes you're logged in
         'appointment_date' => $request->appointment_date,
         'appointment_time' => $request->appointment_time,
+        'booking_end_time' => $booking_end->format('H:i'),
         'desc'=> $request->desc,
         'status' => 'pending',
     ]);

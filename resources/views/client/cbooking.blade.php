@@ -16,6 +16,9 @@
                 <option value="{{ $store->id }}">{{ $store->name }}</option>
             @endforeach
         </select>
+        <div id="storedetail">
+
+        </div>
     </div>
 
     <!-- Date -->
@@ -57,28 +60,60 @@ $('#store_id').on('change', function () {
     const storeId = $(this).val();
     if (!storeId) return;
 
-    $.get(`/store/${storeId}/schedule`, function (data) {
-        if (data.status === 'success') {
-            openDays = data.open_days.map(day => dayMap[day]);
+   $.get(`/store/${storeId}/schedule`, function (data) {
+    if (data.status === 'success') {
+        const dayNameToNumber = {
+            sun: 0,
+            mon: 1,
+            tue: 2,
+            wed: 3,
+            thu: 4,
+            fri: 5,
+            sat: 6
+        };
 
-            // Init or re-init the date picker
-            if (flatpickrInstance) {
-                flatpickrInstance.destroy();
-            }
+        const dayNameToLabel = {
+            sun: 'Sunday',
+            mon: 'Monday',
+            tue: 'Tuesday',
+            wed: 'Wednesday',
+            thu: 'Thursday',
+            fri: 'Friday',
+            sat: 'Saturday'
+        };
 
-            flatpickrInstance = flatpickr("#appointment_date", {
-                dateFormat: "Y-m-d",
-                minDate: new Date().fp_incr(2),
-                disable: [
-                    function (date) {
-                        return !openDays.includes(date.getDay());
-                    }
-                ]
-            });
+        // Get flatpickr days (numbers) and readable labels
+        openDays = (data.open_days || []).map(day => dayNameToNumber[day.toLowerCase()]);
+        const readableDays = (data.open_days || []).map(day => dayNameToLabel[day.toLowerCase()]).join(', ');
 
-            $('#appointment_date').prop('disabled', false);
+        // Re-initialize flatpickr
+        if (flatpickrInstance) {
+            flatpickrInstance.destroy();
         }
-    });
+
+        flatpickrInstance = flatpickr("#appointment_date", {
+            dateFormat: "Y-m-d",
+            minDate: new Date().fp_incr(2), // disables today & tomorrow
+            disable: [
+                function (date) {
+                    return !openDays.includes(date.getDay());
+                }
+            ]
+        });
+
+        $('#storedetail').html(`
+            <div class="bg-white p-4 rounded shadow">
+                <h2 class="text-xl font-bold mb-2">${data.name}</h2>
+                <p><strong>Address:</strong> ${data.address}</p>
+                <p><strong>Opening Time:</strong> ${data.opening_time}</p>
+                <p><strong>Closing Time:</strong> ${data.closing_time}</p>
+                <p><strong>Open Days:</strong> ${readableDays}</p>
+            </div>
+        `);
+
+        $('#appointment_date').prop('disabled', false);
+    }
+});
 });
 
 flatpickr("#appointment_date", {

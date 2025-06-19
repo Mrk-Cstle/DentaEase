@@ -7,6 +7,7 @@ use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\StaffController;
 use App\Http\Controllers\PatientViewController;
 use App\Http\Controllers\BranchController;
+use App\Http\Controllers\AdminBookingController;
 use App\Http\Middleware\Admin;
 use App\Http\Controllers\Facerecognition;
 
@@ -17,6 +18,7 @@ Route::middleware(['web', 'auth', Admin::class])->group(function () {
 Route::get('/dashboard', [AdminController::class,'Dashboard'])->name('dashboard')->middleware('auth');
 Route::get('/logouts', [AdminController::class,'Logout'])->name('Logout')->middleware('auth');
 Route::get('/profile', [AdminController::class,'Profile'])->name('Profile')->middleware('auth');
+
 
 ///profile tab
 Route::post('/remove-face-token', [AdminController::class, 'removeFaceToken'])->middleware('auth');
@@ -63,6 +65,11 @@ Route::post('/branch/update-schedule/{id}', [BranchController::class, 'updateSch
 //branch selection
 
 
+//booking
+Route::get('/appointments', [AdminBookingController::class, 'showBookings'])->name('admin.booking');
+Route::put('/appointments/{id}/approve', [AdminBookingController::class, 'approveBooking'])->name('appointments.approve');
+Route::get('/appointments/{id}/view', [AdminBookingController::class, 'view'])->name('appointments.view');
+Route::post('/appointments/{id}/settle', [AdminBookingController::class, 'settle'])->name('appointments.settle');
 
 
 });

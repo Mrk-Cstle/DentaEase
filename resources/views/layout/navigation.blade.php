@@ -102,10 +102,21 @@
                     <li class="p-4 border-b-1 ">
                         <span >
                             <a href="/branch" class="text-[#02ccfe] text">
-                            <i class="fa-solid fa-house"></i>Branch</a>
+                            <i class="fa-solid fa-house"></i> Branch</a>
     
                         </span>
                     </li>
+
+                   @if (session('active_branch_id') != "admin")
+                         <li class="p-4 border-b-1 ">
+                        <span >
+                            <a href="/appointments" class="text-[#02ccfe] text">
+                            <i class="fa-solid fa-house"></i> Appointments</a>
+    
+                        </span>
+                    </li>
+                    @endif
+                   
                 </ul>
             </aside>
             <main class=" bg-[#F5F5F5] bg-opacity-75 basis-4/5 ">

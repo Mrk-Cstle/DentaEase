@@ -14,6 +14,8 @@ class Appointment extends Model
         'user_id',
         'appointment_date',
         'appointment_time',
+        'booking_end_time',
+        'desc',
         'status', // pending, approved, cancelled
     ];
 
