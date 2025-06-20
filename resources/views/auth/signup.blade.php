@@ -56,52 +56,52 @@
 
              <script>
              $(document).ready(function(event){
-                $('#signupForm').submit(function (event) {
-                    event.preventDefault();
+      $('#signupForm').on('submit', function(e) {
+    e.preventDefault();
 
-                    var account_type = 'Admin'
-                    var formData = {
-                        _token: $('input[name="_token"]').val(),
-                        name : $('input[name="name"]').val(),
-                       
-                        email : $('input[name="email"]').val(),
-                        contact_number : $('input[name="contact_number"]').val(),
-                        user : $('input[name="user"]').val(),
-                        password : $('input[name="password"]').val(),
-                        account_type: account_type
+    const formData = {
+        name: $('input[name="name"]').val(),
+        email: $('input[name="email"]').val(),
+        password: $('input[name="password"]').val(),
+        contact_number: $('input[name="contact_number"]').val(),
+        user: $('input[name="user"]').val(),
+        account_type : "patient",
+        _token: '{{ csrf_token() }}'
+    };
 
-                    }
+    $.ajax({
+        url: '{{ route("send.otp") }}', // ✅ NOT "signupui"
+        method: 'get',
+        data: formData,
+        success: function(response) {
+            Swal.fire({
+                title: 'Enter OTP',
+                input: 'text',
+                inputLabel: 'We sent an OTP to your email',
+                inputPlaceholder: 'Enter OTP here',
+                showCancelButton: true,
+                confirmButtonText: 'Verify'
+            }).then(result => {
+                if (result.isConfirmed) {
+                    $.get('{{ route("verify.otp") }}', {
+                        ...formData,
+                        otp: result.value,
+                        _token: '{{ csrf_token() }}'
+                    }, function(res) {
+                        Swal.fire('Success!', res.message, 'success');
+                        $('#signupForm')[0].reset();
+                    }).fail(() => {
+                        Swal.fire('Error!', 'OTP verification failed.', 'error');
+                    });
+                }
+            });
+        },
+        error: function(xhr) {
+            Swal.fire('Error!', 'Could not send OTP.', 'error');
+        }
+    });
+});
 
-                    $.ajax({
-                        type: 'post',
-                        url: '{{route('signupform')}}',
-
-                        data: formData,
-                       
-                        success: function (response) {
-                            if (response.status === "success") {
-                                Swal.fire({
-                                title: 'Success!',
-                                text: response.message,
-                                icon: 'success',
-                                confirmButtonText: 'OK'
-                            }).then((result) => {
-           
-                           
-                                
-                                window.location.href = '/loginui';
-                         
-                        });
-                            }else{
-                                Swal.fire('Error', response.message);
-                            }
-                            },
-                            error: function(xhr) {
-                                console.error(xhr.responseText); // helpful info from Laravel
-                                Swal.fire('Error', 'Something went wrong on the server.', 'error');
-                            }
-                         });
-                })
              })
              </script>
             @endsection

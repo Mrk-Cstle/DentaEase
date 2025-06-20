@@ -6,6 +6,10 @@ use App\Models\newuser;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Http;
+use App\Mail\SendOtp;
+use Illuminate\Support\Facades\Mail;
+use Illuminate\Support\Facades\Session;
+use Carbon\Carbon;
 
 class AuthUi extends Controller
 {   
@@ -42,15 +46,31 @@ class AuthUi extends Controller
         ]);
 
             // Hash password
-        $validated['password'] = bcrypt($validated['password']);
+        $otp = rand(100000, 999999);
 
-        // Try saving user
-        $user = newuser::create($validated);
+    // Hash the password
+    $validated['password'] = bcrypt($validated['password']);
+    $validated['otp_code'] = $otp;
+    $validated['otp_expires_at'] = Carbon::now()->addMinutes(10); // OTP valid for 10 mins
+    $validated['is_verified'] = false;
+
+    // Create user
+    $user = newuser::create($validated);
 
     if ($user) {
-        return response()->json(['status' => 'success', 'message' => 'Account created successfully, Please wait for approval email from admin']);
+        // Send OTP to user's email
+        Mail::to($user->email)->send(new \App\Mail\SendOtp($otp));
+
+        return response()->json([
+            'status' => 'success',
+            'message' => 'Account created successfully. An OTP has been sent to your email for verification.',
+            'user_id' => $user->id
+        ]);
     } else {
-        return response()->json(['status' => 'error', 'message' => 'Failed to create account.'], 500);
+        return response()->json([
+            'status' => 'error',
+            'message' => 'Failed to create account.'
+        ], 500);
     }
     }
 
@@ -147,5 +167,46 @@ class AuthUi extends Controller
     } else {
         return response()->json(['status'=> 'error','message' => 'Login failed. Face does not match.', 'verify_data' => $verifyData]);
     }
+}
+
+
+
+
+
+public function sendOtp(Request $request)
+{
+    $request->validate([
+        'name' => 'required',
+        'email' => 'required|email',
+        'password' => 'required',
+        'contact_number' => 'required',
+        'account_type' => 'required',
+        'user' => 'required|unique:users,user',
+    ]);
+
+    $otp = rand(100000, 999999);
+
+    Session::put('pending_user', $request->all());
+    Session::put('signup_otp', $otp);
+
+    Mail::to($request->email)->send(new SendOtp($otp));
+
+    return response()->json(['message' => 'OTP sent to your email.']);
+}
+
+public function verifyOtp(Request $request)
+{
+    if ($request->otp != Session::get('signup_otp')) {
+        return response()->json(['message' => 'Invalid OTP.'], 400);
+    }
+
+    $data = Session::get('pending_user');
+    $data['password'] = bcrypt($data['password']);
+
+    $user = newuser::create($data);
+
+    Session::forget(['pending_user', 'signup_otp']);
+
+    return response()->json(['message' => 'Account created successfully!, Please wait for admin approval email.']);
 }
 }

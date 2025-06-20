@@ -52,6 +52,13 @@ Route::post('/loginform', [AuthUi::class, 'LoginForm'])->name('loginform');
 Route::post('/login-face', [AuthUi::class, 'loginFace'])->name('login-face');
 
 
+// web.php
+Route::get('/signup/send-otp', [AuthUi::class, 'sendOtp'])->name('send.otp');
+Route::get('/signup/verify-otp', [AuthUi::class, 'verifyOtp'])->name('verify.otp');
+
+
+
+
 Route::get('/logouts', [AdminController::class,'Logout'])->name('Logout')->middleware('auth');
 
 
