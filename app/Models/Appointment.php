@@ -12,6 +12,7 @@ class Appointment extends Model
     protected $fillable = [
         'store_id',
         'user_id',
+        'dentist_id',
         'appointment_date',
         'appointment_time',
         'booking_end_time',
@@ -35,4 +36,8 @@ class Appointment extends Model
     {
         return $this->belongsTo(User::class);
     }
+    public function dentist()
+{
+    return $this->belongsTo(User::class, 'dentist_id');
+}
 }

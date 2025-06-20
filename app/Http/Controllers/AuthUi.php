@@ -61,7 +61,7 @@ class AuthUi extends Controller
             $request->session()->regenerate();
             $user = Auth::user();
             
-            if ($user->position == 'Admin') {
+            if ($user->position == 'admin') {
                 session(['active_branch_id' => 'admin']);
                 $redirectUrl = route('dashboard');
 

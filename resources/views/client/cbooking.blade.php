@@ -20,7 +20,13 @@
 
         </div>
     </div>
-
+    <!-- Dentist Selection -->
+    <div>
+        <label for="dentist_id" class="block font-semibold">Select Dentist</label>
+        <select id="dentist_id" name="dentist_id" class="w-full p-2 border rounded" required disabled>
+            <option value="">-- Choose Dentist --</option>
+        </select>
+    </div>
     <!-- Date -->
     <div>
         <label for="appointment_date" class="block font-semibold">Select Date</label>
@@ -114,6 +120,17 @@ $('#store_id').on('change', function () {
         $('#appointment_date').prop('disabled', false);
     }
 });
+$.get(`/branch/${storeId}/dentists`, function (response) {
+    if (response.dentists && response.dentists.length > 0) {
+        let dentistOptions = '<option value="">-- Choose Dentist --</option>';
+        response.dentists.forEach(dentist => {
+            dentistOptions += `<option value="${dentist.id}">${dentist.name}</option>`;
+        });
+        $('#dentist_id').html(dentistOptions).prop('disabled', false);
+    } else {
+        $('#dentist_id').html('<option value="">No dentists available</option>').prop('disabled', true);
+    }
+});
 });
 
 flatpickr("#appointment_date", {
@@ -123,23 +140,26 @@ flatpickr("#appointment_date", {
         }
     ]
 });
-$('#appointment_date').on('change', function () {
-     const selectedDate = $(this).val();
-    const storeId = $('#store_id').val();
-    const selectedDay = new Date(selectedDate).toLocaleDateString('en-US', { weekday: 'short' }).toLowerCase(); // 'mon'
 
-    // // Validate open day
-    // if (!openDays.includes(selectedDay)) {
-    //     alert('Store is closed on this day.');
-    //     $(this).val('');
-    //     $('#appointment_time').html('<option value="">Store closed on this day</option>').prop('disabled', true);
-    //     return;
-    // }
+$('#dentist_id').on('change', function () {
+ 
+    document.getElementById('appointment_date').value = "";
+});
+
+$('#appointment_date').on('change', function () {
+    const selectedDate = $(this).val();
+    const storeId = $('#store_id').val();
+    const dentistId = $('#dentist_id').val();
+
+    if (!storeId || !dentistId) {
+        $('#appointment_time').html('<option>Please select a branch and dentist</option>');
+        return;
+    }
 
     $('#appointment_time').html('<option>Loading...</option>').prop('disabled', false);
 
-    // Fetch available slots
-    $.get(`/branch/${storeId}/available-slots`, { date: selectedDate }, function (response) {
+    // Updated endpoint to include dentist
+    $.get(`/branch/${storeId}/dentist/${dentistId}/slots`, { date: selectedDate }, function (response) {
         if (response.slots && response.slots.length > 0) {
             let options = `<option value="">-- Select Time --</option>`;
             response.slots.forEach(time => {
@@ -152,12 +172,42 @@ $('#appointment_date').on('change', function () {
     });
 });
 
+// $('#appointment_date').on('change', function () {
+//      const selectedDate = $(this).val();
+//     const storeId = $('#store_id').val();
+//     const selectedDay = new Date(selectedDate).toLocaleDateString('en-US', { weekday: 'short' }).toLowerCase(); // 'mon'
+
+//     // // Validate open day
+//     // if (!openDays.includes(selectedDay)) {
+//     //     alert('Store is closed on this day.');
+//     //     $(this).val('');
+//     //     $('#appointment_time').html('<option value="">Store closed on this day</option>').prop('disabled', true);
+//     //     return;
+//     // }
+
+//     $('#appointment_time').html('<option>Loading...</option>').prop('disabled', false);
+
+//     // Fetch available slots
+//     $.get(`/branch/${storeId}/available-slots`, { date: selectedDate }, function (response) {
+//         if (response.slots && response.slots.length > 0) {
+//             let options = `<option value="">-- Select Time --</option>`;
+//             response.slots.forEach(time => {
+//                 options += `<option value="${time}">${time}</option>`;
+//             });
+//             $('#appointment_time').html(options);
+//         } else {
+//             $('#appointment_time').html('<option value="">No slots available</option>');
+//         }
+//     });
+// });
+
 $('#bookingForm').on('submit', function(e) {
     e.preventDefault();
 
     const formData = {
         _token: '{{ csrf_token() }}',
         store_id: $('#store_id').val(),
+         dentist_id: $('#dentist_id').val(),
         appointment_date: $('#appointment_date').val(),
         appointment_time: $('#appointment_time').val(),
         desc: $('#desc').val()
@@ -174,6 +224,11 @@ $('#bookingForm').on('submit', function(e) {
             $('#appointment_time').html('<option value="">-- Select Date First --</option>').prop('disabled', true);
             
              Swal.fire('Success!', response.message, 'success');
+              $('#storedetail').html(`
+           
+        `);
+
+        $('#appointment_date').prop('disabled', false);
 
         },
         error: function(xhr) {

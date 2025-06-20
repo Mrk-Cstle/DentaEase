@@ -23,6 +23,10 @@ Route::middleware(['auth', Client::class])->group(function(){
 // Returns available time slots for a date
     Route::get('/branch/{store}/available-slots', [AppointmentController::class, 'getAvailableSlots']);
     Route::post('/appointments', [AppointmentController::class, 'appointment'])->name('appointments.store');
+    Route::get('/branch/{branchId}/dentists', [AppointmentController::class, 'getDentists']);
+    Route::get('/branch/{branchId}/dentist/{dentistId}/slots', [AppointmentController::class, 'getDentistSlots']);
+    
+
 
 
 });

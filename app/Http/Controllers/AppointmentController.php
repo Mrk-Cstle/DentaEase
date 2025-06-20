@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use Carbon\Carbon;
 use App\Models\Appointment;
 use App\Models\Store;
+use App\Models\User;
 
 class AppointmentController extends Controller
 {
@@ -22,6 +23,87 @@ class AppointmentController extends Controller
         'open_days' => $store->open_days ?? [],
     ]);
 }
+public function getDentists($branchId)
+{
+    $store = Store::find($branchId);
+
+    if (!$store) {
+        return response()->json([
+            'status' => 'error',
+            'message' => 'Store not found'
+        ], 404);
+    }
+
+    $dentists = $store->staff()
+        ->wherePivot('position', 'dentist')
+        ->get(['users.id', 'users.name']); // columns from users table
+
+    return response()->json([
+        'status' => 'success',
+        'dentists' => $dentists,
+    ]);
+}
+public function getDentistSlots($branchId, $dentistId, Request $request)
+{
+    $date = $request->input('date');
+
+    if (!$date || !strtotime($date)) {
+        return response()->json([
+            'status' => 'error',
+            'message' => 'Invalid date provided.'
+        ], 400);
+    }
+
+    $store = Store::findOrFail($branchId);
+    $dentist = User::findOrFail($dentistId);
+
+    $dayName = strtolower(Carbon::parse($date)->format('D'));
+
+    // Check if the store is open that day
+    if (!in_array($dayName, $store->open_days ?? [])) {
+        return response()->json(['slots' => []]); // Store closed
+    }
+
+    $opening = Carbon::parse($store->opening_time);
+    $closing = Carbon::parse($store->closing_time);
+    $slotDuration = 30; // minutes
+
+    // Fetch bookings for this dentist on this date
+    $bookings = Appointment::where('store_id', $store->id)
+        ->where('dentist_id', $dentistId)
+        ->where('appointment_date', $date)
+        ->orderBy('appointment_time')
+        ->get(['appointment_time', 'booking_end_time']);
+
+    $availableSlots = [];
+    $currentSlot = $opening->copy();
+
+    while ($currentSlot->lt($closing)) {
+        $slotEnd = $currentSlot->copy()->addMinutes($slotDuration);
+
+        // Check if this slot overlaps with any of the dentist's bookings
+        $overlapping = $bookings->first(function ($booking) use ($currentSlot, $slotEnd) {
+            $bookingStart = Carbon::parse($booking->appointment_time);
+            $bookingEnd = Carbon::parse($booking->booking_end_time);
+            return $currentSlot->lt($bookingEnd) && $slotEnd->gt($bookingStart);
+        });
+
+        if (!$overlapping) {
+            $availableSlots[] = $currentSlot->format('H:i');
+            $currentSlot = $slotEnd;
+        } else {
+            // Skip to end of overlapping booking
+            $currentSlot = Carbon::parse($overlapping->booking_end_time);
+        }
+    }
+
+    return response()->json([
+        'status' => 'success',
+        'slots' => $availableSlots
+    ]);
+}
+
+
 public function getAvailableSlots(Request $request, Store $store)
 {
     $date = $request->input('date');
@@ -77,6 +159,7 @@ public function appointment(Request $request)
 {
     $request->validate([
         'store_id' => 'required|exists:stores,id',
+        'dentist_id' => 'required|exists:users,id',
         'appointment_date' => 'required|date|after_or_equal:today',
         'appointment_time' => 'required|date_format:H:i',
         'desc' =>'required',
@@ -102,10 +185,11 @@ public function appointment(Request $request)
     }
 
     // ✅ Check if time slot is already taken
-    $alreadyBooked = Appointment::where('store_id', $store->id)
-        ->where('appointment_date', $request->appointment_date)
-        ->where('appointment_time', $request->appointment_time)
-        ->exists();
+ $alreadyBooked = Appointment::where('store_id', $store->id)
+    ->where('dentist_id', $request->dentist_id) // ✅ check per dentist
+    ->where('appointment_date', $request->appointment_date)
+    ->where('appointment_time', $request->appointment_time)
+    ->exists();
 
     if ($alreadyBooked) {
         return back()->withErrors(['appointment_time' => 'This time slot is already booked.']);
@@ -118,6 +202,7 @@ public function appointment(Request $request)
     Appointment::create([
         'store_id' => $store->id,
         'user_id' => auth()->id(), // assumes you're logged in
+        'dentist_id' => $request->dentist_id,
         'appointment_date' => $request->appointment_date,
         'appointment_time' => $request->appointment_time,
         'booking_end_time' => $booking_end->format('H:i'),

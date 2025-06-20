@@ -2,6 +2,47 @@
 
 @section('title','Appointment Booking')
 @section('main-content')
+
+@if(auth()->user()->position === 'Receptionist')
+<form method="GET" action="{{ route('admin.booking') }}" class="flex items-end space-x-4 mb-4">
+    <div class="flex flex-col">
+        <label for="dentist_id" class="mb-1">Filter by Dentist:</label>
+        <select name="dentist_id" id="dentist_id" class="border rounded p-2">
+            <option value="">-- All Dentists --</option>
+            @foreach ($dentists as $dentist)
+                <option value="{{ $dentist->id }}" {{ request('dentist_id') == $dentist->id ? 'selected' : '' }}>
+                    {{ $dentist->name }}
+                </option>
+            @endforeach
+        </select>
+    </div>
+
+    <div class="flex flex-col">
+        <label for="date" class="mb-1">Filter by Date:</label>
+        <input type="date" name="date" id="date" value="{{ request('date') }}" class="border rounded p-2">
+    </div>
+
+    <div>
+        <button type="submit" class="bg-blue-500 text-white px-4 py-2 rounded">Filter</button>
+    </div>
+</form>
+@endif
+@if(auth()->user()->position == 'Dentist')
+   <form method="GET" action="{{ route('admin.booking') }}" class="mb-4">
+    <label for="date">Filter by Date:</label>
+    <input type="date" id="date" name="date" value="{{ request('date') }}">
+    <button type="submit" class="bg-blue-500 text-white px-2 py-1 rounded">Filter</button>
+</form>
+@endif
+
+<div class="mb-4 flex justify-between items-center">
+    <h2 class="text-xl font-semibold">Appointment Booking</h2>
+
+    <a href="{{ route('admin.booking.history') }}" 
+       class="bg-gray-700 text-white px-4 py-2 rounded hover:bg-gray-800">
+        View History Logs
+    </a>
+</div>
 <table class="table-auto w-full border-collapse border">
     <thead>
         <tr class="bg-gray-200">
@@ -14,50 +55,9 @@
             <th>Action</th>
         </tr>
     </thead>
-   <tbody>
-    @foreach($appointments as $appointment)
-        <tr class="border-t text-center" data-id="{{ $appointment->id }}">
-            <td>{{ $appointment->user->name ?? 'N/A' }}</td>
-            <td>{{ $appointment->appointment_date }}</td>
-
-            <td>
-                <input type="time" name="appointment_time"
-                       class="appointment-time"
-                       value="{{ \Carbon\Carbon::parse($appointment->appointment_time)->format('H:i') }}"
-                       required>
-            </td>
-
-            <td>
-                <input type="time" name="booking_end_time"
-                       class="booking-end-time"
-                       value="{{ \Carbon\Carbon::parse($appointment->booking_end_time)->format('H:i') }}"
-                       required>
-            </td>
-
-            <td>{{ $appointment->desc }}</td>
-            <td class="status">{{ ucfirst($appointment->status) }}</td>
-            <td>
-                @if ($appointment->status == "pending")
-                     <button type="button"
-                        class="approve-btn bg-green-500 text-white px-3 py-1 rounded"
-                        data-id="{{ $appointment->id }}">
-                    Approve
-                </button>
-              
-                    
-                @elseif ($appointment->status == "approved")
-                    <a href="{{ route('appointments.view', $appointment->id) }}"
-                    class="bg-blue-500 text-white px-3 py-1 rounded">
-                    View
-                    </a>
-                    @else
-                 
-                @endif
-             
-               
-            </td>
-        </tr>
-    @endforeach
+   <tbody id="appointments-table-body">
+    @include('admin.partials.appointments-table', ['appointments' => $appointments])
+    
 </tbody>
 </table>
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
@@ -85,7 +85,10 @@
                     text: 'Appointment has been approved.'
                 });
 
-                row.find('.status').text('Approved');
+                // ✅ Reload the appointments table body
+                $.get('{{ route('appointments.fetch') }}', function (html) {
+                    $('#appointments-table-body').html(html);
+                });
             },
             error: function (xhr) {
                 Swal.fire({
@@ -96,5 +99,50 @@
             }
         });
     });
+
+    $(document).on('click', '.cancel-btn', function () {
+    const button = $(this);
+    const appointmentId = button.data('id');
+
+    Swal.fire({
+        title: 'Are you sure?',
+        text: "This will cancel the appointment.",
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#d33',
+        cancelButtonColor: '#6c757d',
+        confirmButtonText: 'Yes, cancel it!'
+    }).then((result) => {
+        if (result.isConfirmed) {
+            $.ajax({
+                url: `/appointments/${appointmentId}/cancel`,
+                type: 'PUT',
+                data: {
+                    _token: '{{ csrf_token() }}',
+                },
+                success: function (res) {
+                    Swal.fire({
+                        icon: 'success',
+                        title: 'Cancelled!',
+                        text: 'Appointment has been cancelled.'
+                    });
+
+                    // ✅ Reload the table body
+                    $.get('{{ route('appointments.fetch') }}', function (html) {
+                        $('#appointments-table-body').html(html);
+                    });
+                },
+                error: function (xhr) {
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Error!',
+                        text: xhr.responseJSON?.message || 'Something went wrong.'
+                    });
+                }
+            });
+        }
+    });
+});
 </script>
+
 @endsection
