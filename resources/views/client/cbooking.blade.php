@@ -4,54 +4,95 @@
 @section('main-content')
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
 <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
-<form id="bookingForm" class="space-y-4">
-    @csrf
+<div class="flex flex-row gap-6">
+    <!-- 70% Booking Form -->
+    <div class="w-[70%]">
+        <form id="bookingForm" class="space-y-4">
+            @csrf
 
-    <!-- Store Selection -->
-    <div>
-        <label for="store_id" class="block font-semibold">Select Branch</label>
-        <select id="store_id" name="store_id" class="w-full p-2 border rounded" required>
-            <option value="">-- Choose Branch --</option>
-            @foreach ($stores as $store)
-                <option value="{{ $store->id }}">{{ $store->name }}</option>
-            @endforeach
-        </select>
-        <div id="storedetail">
+            <!-- Store Selection -->
+            <div>
+                <label for="store_id" class="block font-semibold">Select Branch</label>
+                <select id="store_id" name="store_id" class="w-full p-2 border rounded" required>
+                    <option value="">-- Choose Branch --</option>
+                    @foreach ($stores as $store)
+                        <option value="{{ $store->id }}">{{ $store->name }}</option>
+                    @endforeach
+                </select>
+                <div id="storedetail"></div>
+            </div>
 
-        </div>
-    </div>
-    <!-- Dentist Selection -->
-    <div>
-        <label for="dentist_id" class="block font-semibold">Select Dentist</label>
-        <select id="dentist_id" name="dentist_id" class="w-full p-2 border rounded" required disabled>
-            <option value="">-- Choose Dentist --</option>
-        </select>
-    </div>
-    <!-- Date -->
-    <div>
-        <label for="appointment_date" class="block font-semibold">Select Date</label>
-        <input type="date" id="appointment_date" name="appointment_date"
-               class="w-full p-2 border rounded" required disabled>
+            <!-- Dentist Selection -->
+            <div>
+                <label for="dentist_id" class="block font-semibold">Select Dentist</label>
+                <select id="dentist_id" name="dentist_id" class="w-full p-2 border rounded" required disabled>
+                    <option value="">-- Choose Dentist --</option>
+                </select>
+            </div>
+
+            <!-- Date -->
+            <div>
+                <label for="appointment_date" class="block font-semibold">Select Date</label>
+                <input type="date" id="appointment_date" name="appointment_date"
+                       class="w-full p-2 border rounded" required disabled>
+            </div>
+
+            <!-- Time -->
+            <div>
+                <label for="appointment_time" class="block font-semibold">Select Time</label>
+                <select id="appointment_time" name="appointment_time" class="w-full p-2 border rounded" required disabled>
+                    <option value="">-- Select Date First --</option>
+                </select>
+            </div>
+
+            <!-- Description -->
+            <div>
+                <label for="desc" class="block font-semibold">Appointment Description</label>
+                <textarea class="w-full p-2 border rounded" rows="10" cols="30" id="desc" name="desc" required></textarea>
+            </div>
+
+            <!-- Submit -->
+            <button type="submit" class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700">
+                Book Appointment
+            </button>
+        </form>
     </div>
 
-    <!-- Time -->
-    <div>
-        <label for="appointment_time" class="block font-semibold">Select Time</label>
-        <select id="appointment_time" name="appointment_time" class="w-full p-2 border rounded" required disabled>
-            <option value="">-- Select Date First --</option>
-        </select>
-    </div>
+    <!-- 30% Incomplete Appointments Table -->
+    <div class="w-[30%] bg-white p-4 rounded shadow">
+        <h2 class="text-lg font-bold mb-3">Your Pending Appointments</h2>
 
-     <div>
-        <label for="desc" class="block font-semibold">Appointment Description</label>
-        <textarea class="w-full p-2 border rounded" rows="10" cols="30"  id="desc" name="desc" required></textarea>
+        @if($incompleteAppointments->isEmpty())
+            <p class="text-gray-500">You have no upcoming appointments.</p>
+        @else
+            <table class="w-full text-sm border-collapse">
+                <thead class="bg-gray-100">
+                    <tr>
+                        
+                        <th class="border px-2 py-1">Time</th>
+                        <th class="border px-2 py-1">Dentist</th>
+                        <th class="border px-2 py-1">Status</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach($incompleteAppointments as $appt)
+                        <tr>
+                         
+                            <td class="border px-2 py-1">{{ $appt->appointment_time }} - {{ $appt->booking_end_time }}</td>
+                            <td class="border px-2 py-1">{{ $appt->dentist->name ?? 'N/A' }}</td>
+                            <td class="border px-2 py-1">{{ ucfirst($appt->status) }}</td>
+                        </tr>
+                    @endforeach
+                </tbody>
+            </table>
+        @endif
     </div>
+</div>
 
-    <!-- Submit -->
-    <button type="submit" class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700">
-        Book Appointment
-    </button>
-</form>
+
+
+
+
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <script>
@@ -225,11 +266,13 @@ $('#bookingForm').on('submit', function(e) {
             
              Swal.fire('Success!', response.message, 'success');
               $('#storedetail').html(`
+
+              
            
         `);
 
         $('#appointment_date').prop('disabled', false);
-
+         window.location.href = '{{ route('appointments.incomplete') }}';   
         },
         error: function(xhr) {
             const errors = xhr.responseJSON.errors;

@@ -7,6 +7,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Validation\Rule;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Log;
+use App\Models\Appointment;
 class ProfileController extends Controller
 {
 
@@ -61,4 +62,16 @@ class ProfileController extends Controller
     return response()->json(['status' => 'error', 'message' => 'No changes made to your profile.']);
 
     }
+
+
+    public function showProfile()
+{
+    $completedAppointments = Appointment::with(['user', 'dentist'])
+        ->where('user_id', auth()->id())
+        ->where('status', 'completed')
+        ->orderBy('appointment_date', 'desc')
+        ->get();
+
+    return view('client.cprofile', compact('completedAppointments'));
+}
 }

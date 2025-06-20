@@ -48,7 +48,7 @@ class AuthUi extends Controller
         $user = newuser::create($validated);
 
     if ($user) {
-        return response()->json(['status' => 'success', 'message' => 'Account created successfully.']);
+        return response()->json(['status' => 'success', 'message' => 'Account created successfully, Please wait for approval email from admin']);
     } else {
         return response()->json(['status' => 'error', 'message' => 'Failed to create account.'], 500);
     }

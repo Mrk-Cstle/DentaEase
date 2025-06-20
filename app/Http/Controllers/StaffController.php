@@ -6,7 +6,7 @@ use Illuminate\Http\Request;
 use App\Models\User;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Validation\Rule;
-
+use App\Models\Appointment;
 class StaffController extends Controller
 {
     //
@@ -129,5 +129,19 @@ class StaffController extends Controller
      
          }
    
+
+
+public function showProfile($id)
+{
+    $user = User::findOrFail($id);
+
+    $completedAppointments = Appointment::with(['user', 'dentist'])
+        ->where('user_id', $id)
+        ->where('status', 'completed')
+        ->orderBy('appointment_date', 'desc')
+        ->get();
+
+    return view('admin.viewuserdetails', compact('user', 'completedAppointments'));
+}
      
 }

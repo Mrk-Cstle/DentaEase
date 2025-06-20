@@ -84,7 +84,7 @@
                 <ul id="dropdownMenu" class="absolute mt-2 right-0 bg-white border rounded shadow-lg text-sm hidden z-50">
                     <li><a href="/cprofile" class="block px-4 py-2 hover:bg-gray-100">Profile</a></li>
                     <li><a href="#" class="block px-4 py-2 hover:bg-gray-100">Settings</a></li>
-                    <li><a href="/logout" class="block px-4 py-2 hover:bg-gray-100 text-red-500">Sign out</a></li>
+                    <li><a href="/logouts" class="block px-4 py-2 hover:bg-gray-100 text-red-500">Sign out</a></li>
                 </ul>
                 
             </div>

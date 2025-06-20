@@ -16,7 +16,7 @@ use App\Http\Controllers\Facerecognition;
 Route::middleware(['web', 'auth', Admin::class])->group(function () {
 
 Route::get('/dashboard', [AdminController::class,'Dashboard'])->name('dashboard')->middleware('auth');
-Route::get('/logouts', [AdminController::class,'Logout'])->name('Logout')->middleware('auth');
+
 Route::get('/profile', [AdminController::class,'Profile'])->name('Profile')->middleware('auth');
 
 
@@ -44,9 +44,10 @@ Route::post('/add-user',[AdminController::class,'Adduser'])->name("add-user")->m
 
 //staff list tab
 Route::get('/stafflist', [StaffController::class,'ViewStaff'])->name('Stafflist')->middleware('auth');
-Route::get('/user/{id}', [StaffController::class, 'show'])->name('userview');
+//Route::get('/user/{id}', [StaffController::class, 'show'])->name('userview');
 Route::post('/deleteuser', [StaffController::class, 'DeleteUser'])->name('deleteuser');
 Route::patch('/updateUser', [StaffController::class, 'UpdateUser'])->middleware('auth')->name('updateUser');
+Route::get('/user/{id}', [StaffController::class, 'showProfile'])->name('userviewappointment');
 
 //Paient list tab
 Route::get('/patientlist', [PatientViewController::class,'ViewPatient'])->name('Patientlist')->middleware('auth');

@@ -5,16 +5,18 @@ use App\Http\Controllers\Clientside;
 use App\Http\Middleware\Client;
 use App\Http\Controllers\Facerecognition;
 use App\Http\Controllers\AppointmentController;
+use App\Http\Controllers\ProfileController;
+
 
 Route::middleware(['auth', Client::class])->group(function(){
     Route::get('/cdashboard', [Clientside::class,'CDashboard'])->name('CDashboard')->middleware('auth');
      Route::get('/booking', [Clientside::class,'CBooking'])->name('CBooking')->middleware('auth');
-    Route::get('/logout', [AdminController::class,'Logout'])->name('Logout')->middleware('auth');
+    
 
     Route::get('/cprofile', [Clientside::class,'CProfile'])->name('CProfile')->middleware('auth');
     Route::post('/cregister-face',[Facerecognition::class,'registerFace'])->name("cregister-face")->middleware('auth');
     Route::post('/cremove-face-token', [AdminController::class, 'removeFaceToken'])->middleware('auth');
-
+    Route::get('/cprofile', [ProfileController::class, 'showProfile'])->name('CProfile');
 
     //appointment
 
@@ -25,6 +27,8 @@ Route::middleware(['auth', Client::class])->group(function(){
     Route::post('/appointments', [AppointmentController::class, 'appointment'])->name('appointments.store');
     Route::get('/branch/{branchId}/dentists', [AppointmentController::class, 'getDentists']);
     Route::get('/branch/{branchId}/dentist/{dentistId}/slots', [AppointmentController::class, 'getDentistSlots']);
+    Route::get('/booking', [AppointmentController::class, 'showProfile'])->name('appointments.incomplete');
+
     
 
 

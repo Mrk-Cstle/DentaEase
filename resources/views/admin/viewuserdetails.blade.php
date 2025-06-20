@@ -11,8 +11,8 @@
 </style>
 
   <h1>View User Details</h1>
-
-<div class="flex flex-row h-full m-10 gap-5">
+<div class="flex flex-col h-full ">
+<div class="flex flex-row h-full  gap-5">
     <div class=" rounded-md flex flex-col basis-[30%] bg-white">
         <div class="basis-[30%] bg-cover bg-no-repeat bg-center bg-[url({{ asset('images/defaultp.jpg') }})]  ">
           
@@ -52,6 +52,41 @@
             </div>
         </div>
     </div>
+    </div>
+     <div class="mt-10 bg-white p-6 rounded shadow w-full">
+    <h2 class="text-lg font-bold mb-4">Completed Appointments</h2>
+    @if($completedAppointments->isEmpty())
+        <p class="text-gray-500">You have no completed appointments.</p>
+    @else
+    <table class="table-auto w-full border-collapse border">
+        <thead>
+            <tr class="bg-gray-200 text-left">
+                <th class="px-3 py-2">Date</th>
+                <th class="px-3 py-2">Time</th>
+                <th class="px-3 py-2">End Time</th>
+                <th class="px-3 py-2">Dentist</th>
+                <th class="px-3 py-2">Description</th>
+                <th class="px-3 py-2">Work Done</th>
+                <th class="px-3 py-2">Total Price</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach($completedAppointments as $appointment)
+                <tr class="border-t">
+                    <td class="px-3 py-2">{{ $appointment->appointment_date }}</td>
+                    <td class="px-3 py-2">{{ $appointment->appointment_time }}</td>
+                    <td class="px-3 py-2">{{ $appointment->booking_end_time }}</td>
+                    <td class="px-3 py-2">{{ $appointment->dentist->name ?? 'N/A' }}</td>
+                    <td class="px-3 py-2">{{ $appointment->desc }}</td>
+                    <td class="px-3 py-2">{{ $appointment->work_done }}</td>
+                    <td class="px-3 py-2">₱{{ number_format($appointment->total_price, 2) }}</td>
+                </tr>
+            @endforeach
+        </tbody>
+    </table>
+    @endif
+     </div>
+
 </div>
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>

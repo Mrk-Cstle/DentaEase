@@ -2,10 +2,11 @@
 
 @section('title','Appoinment Details')
 @section('main-content')
-<div class="max-w-3xl mx-auto bg-white p-6 rounded shadow">
+<div class="w-full mx-auto bg-white p-6 rounded shadow">
     <h2 class="text-2xl font-bold mb-4">Finalize Appointment</h2>
 
     <p><strong>Client:</strong> {{ $appointment->user->name ?? 'N/A' }}</p>
+    <p><strong>Dentist:</strong> {{ $appointment->dentist->name ?? 'N/A' }}</p>
    @php
     use Carbon\Carbon;
 
@@ -33,7 +34,7 @@
     </div>
 
     <div class="mt-6">
-        <button type="submit" class="bg-green-600 text-white px-4 py-2 rounded">Finalize</button>
+        <button type="submit" class="bg-green-600 text-white px-4 py-2 rounded">Complete</button>
     </div>
 </form>
 </div>

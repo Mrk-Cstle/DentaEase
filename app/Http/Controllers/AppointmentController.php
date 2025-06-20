@@ -7,7 +7,7 @@ use Carbon\Carbon;
 use App\Models\Appointment;
 use App\Models\Store;
 use App\Models\User;
-
+use Illuminate\Support\Facades\Auth;
 class AppointmentController extends Controller
 {
     //
@@ -213,4 +213,33 @@ public function appointment(Request $request)
     return back()->with('success','Appointment created successfully');
     // return redirect()->route('CBooking')->with('success', 'Appointment booked successfully!');
 }
+
+
+// public function index()
+// {
+//     $stores = Store::all(); // or however you're fetching branches
+
+//     $incompleteAppointments = Appointment::with('dentist', 'store')
+//         ->where('user_id', Auth::id())
+//         ->where('status', '!=', 'completed') // or just `pending`, adjust based on your DB
+//         ->orderBy('appointment_date', 'desc')
+//         ->get();
+
+//     return view('booking.index', compact('stores', 'incompleteAppointments'));
+// }
+
+public function showProfile()
+{
+    $incompleteAppointments = Appointment::with(['user', 'dentist', 'store'])
+        ->where('user_id', auth()->id())
+        ->where('status', '!=', 'completed') 
+        ->where('status', '!=', 'cancelled')// show only non-completed ones
+        ->orderBy('appointment_date', 'desc')
+        ->get();
+
+    $stores = Store::all(); // Assuming you're passing this too
+
+    return view('client.cbooking', compact('incompleteAppointments', 'stores'));
+}
+
 }

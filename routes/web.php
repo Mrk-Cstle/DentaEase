@@ -6,7 +6,7 @@ use App\Http\Controllers\FaceRecognitionController;
 use Illuminate\Support\Facades\Route;
 use Symfony\Component\HttpKernel\Profiler\Profile;
 use  App\Models\User;
-
+use App\Http\Controllers\AdminController;
 use function Laravel\Prompts\password;
 
 Route::get('/', function () {
@@ -52,7 +52,7 @@ Route::post('/loginform', [AuthUi::class, 'LoginForm'])->name('loginform');
 Route::post('/login-face', [AuthUi::class, 'loginFace'])->name('login-face');
 
 
-
+Route::get('/logouts', [AdminController::class,'Logout'])->name('Logout')->middleware('auth');
 
 
 
