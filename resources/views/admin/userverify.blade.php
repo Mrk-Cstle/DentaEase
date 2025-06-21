@@ -2,6 +2,12 @@
 
 @section('title','New User Verification')
 @section('main-content')
+<div class="mb-4">
+    <a href="{{ route('Patientaccount') }}" 
+       class="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600">
+        Back to Patients List
+    </a>
+</div>
 <h1>New User List</h1>
 <div class="flex flex-row justify-end gap-3">
   
@@ -66,34 +72,39 @@ function closeModal() {
     $('#viewModal').addClass('hidden');
 }
 
-function viewUser(id) {
-    $.ajax({
-        type: "post",
-        url: "{{route('Viewuser')}}",
-        data: {
-            id: id,
-            type: 'newuser',
-            _token: "{{csrf_token()}}"
-        },
+// function viewUser(id) {
+//     $.ajax({
+//         type: "post",
+//         url: "{{route('Viewuser')}}",
+//         data: {
+//             id: id,
+//             type: 'newuser',
+//             _token: "{{csrf_token()}}"
+//         },
         
-        success: function (response) {
+//         success: function (response) {
 
-            const users = response.data;
-            console.log(response.data.id);
-            $('#modalContent').html(`
-                <p><strong>Name:</strong> ${users.name}</p>
-                <p><strong>Birth Date:</strong> ${users.birth_date}</p>
-                <p><strong>Contact:</strong> ${users.contact_number}</p>
-                <p><strong>Email</strong>${users.email}</p>
-                <button class="border p-2 rounded-sm" onclick="approveuser(${users.id})">Approve</button>
+//             const users = response.data;
+//             console.log(response.data.id);
+//             $('#modalContent').html(`
+//                 <p><strong>Name:</strong> ${users.name}</p>
+//                 <p><strong>Birth Date:</strong> ${users.birth_date}</p>
+//                 <p><strong>Contact:</strong> ${users.contact_number}</p>
+//                 <p><strong>Email</strong>${users.email}</p>
+//                 <button class="border p-2 rounded-sm" onclick="approveuser(${users.id})">Approve</button>
 
-            `);
-            $('#viewModal').removeClass('hidden');
-        },
-        error: function (xhr) {
-            console.error(xhr.responseJSON);
-        }
-    });
+//             `);
+//             $('#viewModal').removeClass('hidden');
+//         },
+//         error: function (xhr) {
+//             console.error(xhr.responseJSON);
+//         }
+//     });
+// }
+
+
+function viewUser(id) {
+    window.location.href = "{{ url('/users') }}/" + id;
 }
 
 function approveuser(userid) {

@@ -10,6 +10,7 @@ use Illuminate\Support\Facades\Mail;
 use App\Mail\mailresponse;
 
 
+use Illuminate\Support\Facades\Storage;
 class AdminController extends Controller
 {
     //
@@ -74,7 +75,8 @@ class AdminController extends Controller
               ;
         });
     }
-
+    
+    
     $users = $query->paginate($perPage);
     
         return response()->json([
@@ -91,6 +93,14 @@ class AdminController extends Controller
         ]);
     }
 
+    //new user view
+     public function show($id)
+    {
+        $user = newuser::findOrFail($id); // Fetch user by ID, fail if not found
+        $users = User::where('account_type', 'patient')->get();
+
+        return view('admin.partials.newuser-approval', compact('user','users')); // Pass user to the view
+    }
     public function Adduser(Request $request){
         $name = $request->input('name');
         $user = $request->input('user');
@@ -148,6 +158,21 @@ class AdminController extends Controller
         ]);
         
     }
+
+    public function destroy($id)
+{
+    $user = NewUser::findOrFail($id);
+
+    // Optionally delete the verification image
+    if ($user->verification_id && Storage::disk('public')->exists($user->verification_id)) {
+        Storage::disk('public')->delete('temp_verifications/' . $user->verification_id);
+
+    }
+
+    $user->delete();
+
+    return response()->json(['message' => 'User deleted successfully.']);
+}
 
     public function removeFaceToken(Request $request)
     {

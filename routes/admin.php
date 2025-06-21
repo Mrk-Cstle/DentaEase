@@ -10,6 +10,7 @@ use App\Http\Controllers\BranchController;
 use App\Http\Controllers\AdminBookingController;
 use App\Http\Middleware\Admin;
 use App\Http\Controllers\Facerecognition;
+use App\Http\Controllers\FileController;
 
 
 
@@ -35,8 +36,14 @@ Route::get('/branch', [AdminController::class,'Branch'])->name('Branch')->middle
 //new user 
 
 Route::get('/newuserlist', [AdminController::class,'Newuserlist'])->name('Newuserlist')->middleware('auth');
-Route::post('/viewuser',[AdminController::class,'Viewuser'])->name("Viewuser")->middleware('auth');
+Route::post('/viewuser',[AdminController::class,'Viewuser'])->name("Viewuser")->middleware('auth');//removed
 Route::post('/approveuser',[AdminController::class,'Approveuser'])->name("Approveuser")->middleware('auth');
+Route::get('/users/{id}', [AdminController::class, 'show'])->name('users.show');
+Route::get('/files/verification/{filename}', [FileController::class, 'servePrivateFile'])->name('file.serve');
+Route::delete('/users/{id}', [AdminController::class, 'destroy'])->name('users.destroy');
+
+
+
 
 Route::post('/register-face',[Facerecognition::class,'registerFace'])->name("register-face")->middleware('auth');
 

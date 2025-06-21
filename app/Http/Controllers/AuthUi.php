@@ -196,7 +196,7 @@ public function sendOtp(Request $request)
 
     $uploadedFile = $request->file('verification_id');
     $filename = uniqid('verify_') . '.' . $uploadedFile->getClientOriginalExtension();
-    $uploadedFile->storeAs('temp_verifications', $filename); // Store in `storage/app/temp_verifications`
+    $uploadedFile->storeAs('temp_verifications', $filename, 'public'); // Store in `storage/app/temp_verifications`
 
     // Save both file name and user info
     Session::put('pending_user', array_merge($request->except('verification_id'), ['verification_id' => $filename]));

@@ -2,6 +2,7 @@
 
 @section('title','New User Verification')
 @section('main-content')
+
 <h1>Patient Management</h1>
 <div class="flex flex-row justify-between">
   <div class="flex flex-row ">
@@ -59,7 +60,7 @@
         <thead class="bg-gray-200">
             <tr>
                 <th>Name</th>
-                <th>Position</th>
+               
                 <th>Contact Number</th>
                 <th>Action</th>
             </tr>
@@ -159,7 +160,7 @@
                     rows += `
                     <tr>
                         <td>${user.name}</td>
-                        <td>${user.position}</td>
+                        
                         <td>${user.contact_number}</td>
                      <td><a href="/user/${user.id}">View</a></td>
                     </tr>
