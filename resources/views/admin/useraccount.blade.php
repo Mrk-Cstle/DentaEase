@@ -39,7 +39,7 @@
       <input type="text" name="user" placeholder="Username" required>
       <label>Position:</label>
       <select name="position" id="position" >
-        <option value="Admin">Admin</option>
+        <option value="admin">Admin</option>
         <option value="Dentist">Dentist</option>
         <option value="Receptionist">Receptionist</option>
         
