@@ -122,12 +122,19 @@ class AdminController extends Controller
         // Create a new record in the users table
         $user = new User();
         $user->name = $newUser->name;
- 
+        $user->middlename = $newUser->middlename;
+        $user->lastname = $newUser->lastname;
+        $user->suffix = $newUser->suffix;
+
         $user->email = $newUser->email;
         $user->birth_date = $newUser->birth_date;
+        $user->birthplace = $newUser->birthplace;
+        $user->current_address = $newUser->current_address;
+
         $user->contact_number = $newUser->contact_number;
         $user->password = $newUser->password;
-        $user->user = $newUser->user; // Optional: hash again if needed
+        $user->user = $newUser->user;
+        $user->verification_id = $newUser->verification_id;
         // Add other fields as needed
         $user->account_type = $accounttype;
         $user->save();

@@ -12,15 +12,21 @@ class newuser extends Model
 
 
     protected $fillable = [
-        'name',
-
-       
-        
-        'birth_date',
-        'email',
-        'contact_number',
-        'user',
-        'password',
+      'name',
+    'middlename',
+    'lastname',
+    'suffix',
+    'birth_date',
+    'birthplace',
+    'current_address',
+    'email',
+    'contact_number',
+    'user',
+    'password',
+    'account_type',
+    'position',
+    'status',
+    'verification_id',
     ];
 
     protected $casts = [      

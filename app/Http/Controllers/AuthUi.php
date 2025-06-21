@@ -10,7 +10,7 @@ use App\Mail\SendOtp;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Session;
 use Carbon\Carbon;
-
+use Illuminate\Support\Facades\Storage;
 class AuthUi extends Controller
 {   
     public function GetBranchLogin (Request $request){
@@ -85,7 +85,7 @@ class AuthUi extends Controller
                 session(['active_branch_id' => 'admin']);
                 $redirectUrl = route('dashboard');
 
-            } else {
+            } else { 
                 $redirectUrl = match ($user->account_type) {
                 'admin' => route('GetBranchLogin'),
                 'patient' => route('CDashboard'),
@@ -176,17 +176,30 @@ class AuthUi extends Controller
 public function sendOtp(Request $request)
 {
     $request->validate([
-        'name' => 'required',
-        'email' => 'required|email',
-        'password' => 'required',
-        'contact_number' => 'required',
-        'account_type' => 'required',
-        'user' => 'required|unique:users,user',
-    ]);
+            'name' => 'required',
+            'middlename' => 'nullable|string',
+            'lastname' => 'required|string',
+            'suffix' => 'nullable|string|max:10',
+            'birth_date' => 'required|date',
+            'birthplace' => 'required|string',
+            'current_address' => 'required|string',
+            'email' => 'required|email|unique:users,email',
+            'password' => 'required',
+            'contact_number' => 'required',
+            'account_type' => 'required',
+            'user' => 'required|unique:users,user',
+            'verification_id' => 'required|image|mimes:jpg,jpeg,png|max:2048', // max 2MB
+        
+        ]);
 
     $otp = rand(100000, 999999);
 
-    Session::put('pending_user', $request->all());
+    $uploadedFile = $request->file('verification_id');
+    $filename = uniqid('verify_') . '.' . $uploadedFile->getClientOriginalExtension();
+    $uploadedFile->storeAs('temp_verifications', $filename); // Store in `storage/app/temp_verifications`
+
+    // Save both file name and user info
+    Session::put('pending_user', array_merge($request->except('verification_id'), ['verification_id' => $filename]));
     Session::put('signup_otp', $otp);
 
     Mail::to($request->email)->send(new SendOtp($otp));
@@ -202,6 +215,20 @@ public function verifyOtp(Request $request)
 
     $data = Session::get('pending_user');
     $data['password'] = bcrypt($data['password']);
+
+
+      $tempFileName = $data['verification_id'] ?? null;
+
+    if ($tempFileName) {
+        $tempPath = storage_path('app/temp_verifications/' . $tempFileName);
+        $newPath = 'verifications/' . $tempFileName;
+
+        if (file_exists($tempPath)) {
+            Storage::disk('public')->put($newPath, file_get_contents($tempPath));
+            unlink($tempPath); // delete from temp
+            $data['verification_id'] = $newPath;
+        }
+    }
 
     $user = newuser::create($data);
 
