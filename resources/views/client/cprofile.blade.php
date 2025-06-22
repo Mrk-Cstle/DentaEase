@@ -1,6 +1,6 @@
-@extends('layout.navigation')
+@extends('layout.cnav')
 
-@section('title','Profile')
+@section('title','CProfile')
 @section('main-content')
 <style>
     input{
@@ -20,9 +20,9 @@
         <div class="basis-[70%]  flex flex-col p-5 overflow-y-auto">
             <form class="flex flex-col gap-3" action="">
                 <label for="fname">Name:</label>
-                <input type="text" name="fname" id="fname" value="{{ Auth::user()->name}}">
+                <input type="text" name="fname" id="fname" value="{{ Auth::user()->last_name}},{{ Auth::user()->name}} {{ Auth::user()->middle_name}} {{ Auth::user()->suffix}}" readonly>
                 <label for="bday">Birth Day</label>
-                <input type="date" name="bday" id="bday" value="{{Auth::user()->birth_date}}">
+                <input type="date" name="bday" id="bday" value="{{Auth::user()->birth_date}}" readonly>
                
 
             </form>
@@ -66,7 +66,7 @@
         </div>
         <div class=" rounded-md grow-1 bg-white">
             <div class="basis-[70%]  flex flex-col p-5 overflow-y-auto">
-                <form class="flex flex-col gap-3" action="">
+                <form id="updateProfile" class="flex flex-col gap-3" action="">
                   
                     <label for="email">Email</label>
                     <input type="text" name="email" id="email" value="{{Auth::user()->email}}">
@@ -95,7 +95,7 @@
             <tr class="bg-gray-200 text-left">
                 <th class="px-3 py-2">Date</th>
                 <th class="px-3 py-2">Time</th>
-                <th class="px-3 py-2">End Time</th>
+                <th class="px-3 py-2">Branch</th>
                 <th class="px-3 py-2">Dentist</th>
                 <th class="px-3 py-2">Description</th>
                 <th class="px-3 py-2">Work Done</th>
@@ -105,9 +105,12 @@
         <tbody>
             @foreach($completedAppointments as $appointment)
                 <tr class="border-t">
-                    <td class="px-3 py-2">{{ $appointment->appointment_date }}</td>
-                    <td class="px-3 py-2">{{ $appointment->appointment_time }}</td>
-                    <td class="px-3 py-2">{{ $appointment->booking_end_time }}</td>
+                   <td class="px-3 py-2">{{ \Carbon\Carbon::parse($appointment->appointment_date)->format('F j, Y') }}</td>
+
+                    <td class="px-3 py-2">  
+                        {{ \Carbon\Carbon::parse($appointment->appointment_time)->format('h:i A') }} -
+                         {{ \Carbon\Carbon::parse($appointment->booking_end_time)->format('h:i A') }}</td>
+                    <td class="px-3 py-2">{{ $appointment->store->name }}</td>
                     <td class="px-3 py-2">{{ $appointment->dentist->name ?? 'N/A' }}</td>
                     <td class="px-3 py-2">{{ $appointment->desc }}</td>
                     <td class="px-3 py-2">{{ $appointment->work_done }}</td>
@@ -121,6 +124,8 @@
 </div>
 </div>
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script>
     const openBtn = document.getElementById('capturemodal');
     const modal = document.getElementById('modal');
@@ -235,6 +240,69 @@
             }
         });
     });
+
+
+    ///update profile
+    $('#updateProfile').submit(function (event) {
+        event.preventDefault();
+        var formData = {
+                       
+                        email : $('input[name="email"]').val(),
+                       
+                        contact : $('input[name="contact"]').val(),
+                        user : $('input[name="user"]').val(),
+                        password : $('input[name="password"]').val(),
+                      
+
+                    }
+       $.ajax({
+            type: "patch",
+            url: "{{route('updateProfile')}}",
+            data:formData,
+            headers: {
+        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+    },
+            success: function (response) {
+                if (response.status == 'success') {
+                    Swal.fire({
+                                title: 'Success!',
+                                text: response.message,
+                                icon: 'success',
+                              
+                            })
+                } else {
+                    Swal.fire({
+                                title: 'Error!',
+                                text: response.message,
+                                icon: 'error',
+                              
+                            })
+                }
+            }, error: function (xhr) {
+        if (xhr.status === 422) {
+            const errors = xhr.responseJSON.errors;
+            let errorList = '';
+
+            for (let field in errors) {
+                errorList += `${errors[field].join(', ')}\n`;
+            }
+
+            Swal.fire({
+                icon: 'error',
+                title: 'Validation Error',
+                text: errorList.trim(),
+            });
+        } else {
+            Swal.fire({
+                icon: 'error',
+                title: 'Oops...',
+                text: 'Something went wrong!',
+            });
+        }
+    }
+        });
+    })
+
     </script>
 
 @endsection

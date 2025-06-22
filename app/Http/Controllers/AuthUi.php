@@ -158,11 +158,24 @@ class AuthUi extends Controller
 
     if (isset($verifyData['confidence']) && $verifyData['confidence'] > 80) {
         Auth::login($user);
-        $redirectUrl = match ($user->account_type) {
-            'admin' => route('dashboard'),
-            'patient' => route('CDashboard'),
-            default => route('login')
-        };
+
+        if ($user->position == 'admin') {
+                session(['active_branch_id' => 'admin']);
+                $redirectUrl = route('dashboard');
+
+            } else { 
+                $redirectUrl = match ($user->account_type) {
+                'admin' => route('GetBranchLogin'),
+                'patient' => route('CDashboard'),
+                default => route('login')
+
+                 };
+            }
+        // $redirectUrl = match ($user->account_type) {
+        //     'admin' => route('dashboard'),
+        //     'patient' => route('CDashboard'),
+        //     default => route('login')
+        // };
         return response()->json(['status'=> 'success','message' => 'Login successful!', 'verify_data' => $verifyData,'redirect' => $redirectUrl]);
     } else {
         return response()->json(['status'=> 'error','message' => 'Login failed. Face does not match.', 'verify_data' => $verifyData]);

@@ -1,7 +1,12 @@
 @foreach($appointments as $appointment)
 <tr class="border-t text-center" data-id="{{ $appointment->id }}">
-    <td>{{ $appointment->user->name ?? 'N/A' }}</td>
-    <td>{{ $appointment->appointment_date }}</td>
+     <td>
+    <button onclick="showUserModal({{ $appointment->user->id }})"
+        class="text-blue-600 underline">
+        {{ $appointment->user->last_name }}, {{ $appointment->user->name ?? 'N/A' }}
+    </button>
+</td>
+    <td>{{ \Carbon\Carbon::parse($appointment->appointment_date)->format('F j, Y') }}</td>
     <td>
         <input type="time" name="appointment_time"
                class="appointment-time"
@@ -31,6 +36,11 @@
         </button>
 
     @elseif ($appointment->status == 'approved')
+    <button type="button"
+                class="approve-btn bg-green-500 text-white px-3 py-1 rounded"
+                data-id="{{ $appointment->id }}">
+            Change Time
+        </button>
         <a href="{{ route('appointments.view', $appointment->id) }}"
            class="bg-blue-500 text-white px-3 py-1 rounded">
             View
@@ -39,5 +49,6 @@
 </td>
 
 </tr>
+
 
 @endforeach

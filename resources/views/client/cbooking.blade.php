@@ -4,9 +4,9 @@
 @section('main-content')
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
 <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
-<div class="flex flex-row gap-6">
+<div class="flex flex-col md:flex-row md:gap-10">
     <!-- 70% Booking Form -->
-    <div class="w-[70%]">
+    <div class="md:w-[70%]">
         <form id="bookingForm" class="space-y-4">
             @csrf
 
@@ -59,7 +59,7 @@
     </div>
 
     <!-- 30% Incomplete Appointments Table -->
-    <div class="w-[30%] bg-white p-4 rounded shadow">
+    <div class="md:w-[30%] bg-white p-4 rounded shadow">
         <h2 class="text-lg font-bold mb-3">Your Pending Appointments</h2>
 
         @if($incompleteAppointments->isEmpty())
@@ -70,6 +70,7 @@
                     <tr>
                         
                         <th class="border px-2 py-1">Time</th>
+                        <th class="border px-2 py-1">Branch</th>
                         <th class="border px-2 py-1">Dentist</th>
                         <th class="border px-2 py-1">Status</th>
                     </tr>
@@ -78,7 +79,9 @@
                     @foreach($incompleteAppointments as $appt)
                         <tr>
                          
-                            <td class="border px-2 py-1">{{ $appt->appointment_time }} - {{ $appt->booking_end_time }}</td>
+                            <td class="border px-2 py-1">{{ \Carbon\Carbon::parse($appt->appointment_date)->format('F j, Y') }}   {{ \Carbon\Carbon::parse($appt->appointment_time)->format('h:i A') }} -
+    {{ \Carbon\Carbon::parse($appt->booking_end_time)->format('h:i A') }}</td>
+                            <td class="border px-2 py-1">{{ $appt->store->name }}</td>
                             <td class="border px-2 py-1">{{ $appt->dentist->name ?? 'N/A' }}</td>
                             <td class="border px-2 py-1">{{ ucfirst($appt->status) }}</td>
                         </tr>

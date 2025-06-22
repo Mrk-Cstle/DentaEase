@@ -13,6 +13,8 @@ use App\Http\Controllers\Facerecognition;
 use App\Http\Controllers\FileController;
 
 
+Route::post('/remove-face-token', [AdminController::class, 'removeFaceToken'])->middleware('auth');
+Route::patch('/updateProfile', [ProfileController::class, 'updateProfile'])->middleware('auth')->name('updateProfile');
 
 Route::middleware(['web', 'auth', Admin::class])->group(function () {
 
@@ -22,8 +24,7 @@ Route::get('/profile', [AdminController::class,'Profile'])->name('Profile')->mid
 
 
 ///profile tab
-Route::post('/remove-face-token', [AdminController::class, 'removeFaceToken'])->middleware('auth');
-Route::patch('/updateProfile', [ProfileController::class, 'updateProfile'])->middleware('auth')->name('updateProfile');
+
 
 //navigation link
 
@@ -81,6 +82,8 @@ Route::post('/appointments/{id}/settle', [AdminBookingController::class, 'settle
 Route::get('/appointments/fetch', [AdminBookingController::class, 'fetch'])->name('appointments.fetch');
 Route::get('/admin/bookings/history', [AdminBookingController::class, 'showHistory'])->name('admin.booking.history');
 Route::put('/appointments/{id}/cancel', [AdminBookingController::class, 'cancelBooking'])->name('appointments.cancel');
+Route::get('/user/details/{id}', [AdminBookingController::class, 'modalDetails']);
+
 
 
 });

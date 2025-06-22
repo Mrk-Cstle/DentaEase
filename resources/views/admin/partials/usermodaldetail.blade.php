@@ -1,7 +1,4 @@
-@extends('layout.navigation')
 
-@section('title','Profile')
-@section('main-content')
 <style>
     input{
         border: 1px;
@@ -26,7 +23,7 @@
                
 
             </form>
-            <button id="deletebtn" data-id="{{ $user->id}}" class="border rounded-md p-3 bg-[#FF0000] text-white" type="submit">Delete</button>
+           
         </div>
     </div>
     <div class="flex flex-col  basis-[70%] gap-5">
@@ -46,7 +43,7 @@
                     <input type="password" name="password" id="password" >
                     
     
-                    <button class="border rounded-md p-3" type="submit">Update</button>
+          
     
                 </form>
             </div>
@@ -322,4 +319,3 @@ const userId = $(this).data('id');
     });
     </script>
 
-@endsection

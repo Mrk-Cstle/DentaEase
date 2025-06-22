@@ -112,7 +112,7 @@
                 
                 <li class="p-4 border-b-1 md:hidden">
                     <span >
-                        <a href="/userverify" class="text-[#02ccfe] text">
+                        <a href="/cprofile" class="text-[#02ccfe] text">
                         <i class="fa-solid fa-circle-user"></i>Profile</a>
 
                     </span>

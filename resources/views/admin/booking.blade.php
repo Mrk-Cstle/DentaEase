@@ -60,8 +60,25 @@
     
 </tbody>
 </table>
+@include('admin.partials.usermodal')
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script>
+function showUserModal(userId) {
+    $('#userModalContent').html('<p class="text-center text-gray-500">Loading...</p>');
+    document.getElementById('userModal').classList.remove('hidden');
+
+    $.get(`/user/details/${userId}`, function (html) {
+        $('#userModalContent').html(html);
+    }).fail(function () {
+        $('#userModalContent').html('<p class="text-red-500">Failed to load user details.</p>');
+    });
+}
+
+function closeUserModal() {
+    document.getElementById('userModal').classList.add('hidden');
+}
+</script>
 <script>
     $(document).on('click', '.approve-btn', function () {
         const button = $(this);

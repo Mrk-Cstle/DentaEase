@@ -140,4 +140,11 @@ public function showHistory(Request $request)
     return view('admin.booking_history', compact('appointments'));
 }
 
+public function modalDetails($id)
+{
+    $user = User::findOrFail($id);
+    $completedAppointments = $user->Appointment->where('status', 'completed');
+
+    return view('admin.partials.usermodaldetail', compact('user', 'completedAppointments'));
+}
 }
