@@ -61,6 +61,9 @@ class AdminController extends Controller
      public function Branch(){
         return view('admin.branch');
     }
+    public function Services(){
+        return view('admin.services');
+    }
     public function Newuserlist(Request $request)
     {
         $perPage = 5;

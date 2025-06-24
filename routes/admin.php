@@ -11,7 +11,7 @@ use App\Http\Controllers\AdminBookingController;
 use App\Http\Middleware\Admin;
 use App\Http\Controllers\Facerecognition;
 use App\Http\Controllers\FileController;
-
+use App\Http\Controllers\ServicesController;
 
 Route::post('/remove-face-token', [AdminController::class, 'removeFaceToken'])->middleware('auth');
 Route::patch('/updateProfile', [ProfileController::class, 'updateProfile'])->middleware('auth')->name('updateProfile');
@@ -32,7 +32,7 @@ Route::get('/userverify', [AdminController::class,'Userverify'])->name('Userveri
 Route::get('/useraccount', [AdminController::class,'Useraccount'])->name('Useraccount')->middleware('auth');
 Route::get('/patientaccount', [AdminController::class,'Patientaccount'])->name('Patientaccount')->middleware('auth');
 Route::get('/branch', [AdminController::class,'Branch'])->name('Branch')->middleware('auth');
-
+Route::get('/services', [AdminController::class,'Services'])->name('Services')->middleware('auth');
 
 //new user 
 
@@ -84,7 +84,10 @@ Route::get('/admin/bookings/history', [AdminBookingController::class, 'showHisto
 Route::put('/appointments/{id}/cancel', [AdminBookingController::class, 'cancelBooking'])->name('appointments.cancel');
 Route::get('/user/details/{id}', [AdminBookingController::class, 'modalDetails']);
 
+//Services
 
+Route::get('/serviceslist', [ServicesController::class,'Serviceslist'])->name('Serviceslist');
+Route::post('/add-services', [ServicesController::class,'Addservices'])->name('add-services');
 
 });
 

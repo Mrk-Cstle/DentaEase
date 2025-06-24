@@ -92,6 +92,13 @@
     
                         </span>
                     </li>
+                    <li class="p-4 border-b-1">
+                        <span >
+                            <a href="/services" class="text-[#02ccfe] text">
+                            <i class="fa-solid fa-house"></i> Services</a>
+    
+                        </span>
+                    </li>
                     {{-- <li class="p-4 border-b-1 ">
                         <span >
                             <a href="/userverify" class="text-[#02ccfe] text">
