@@ -7,6 +7,7 @@
     <meta name="csrf-token" content="{{ csrf_token() }}">
     <script src="https://unpkg.com/@tailwindcss/browser@4"></script>
     <title>@yield('title', 'Auth Page')</title>
+ 
 </head>
 
 {{-- <body class="bg-cover bg-center relative " style="background-image: url('{{ asset('images/bg.jpg') }}' );  overflow-x: hidden; "> --}}
@@ -21,7 +22,7 @@
             </div>
         </header>
     
-        <div class="flex items-center justify-center min-h-screen min-w-screen">
+      <div class="min-h-screen flex items-center justify-center bg-gray-50">
             @yield('auth-content')
         </div>
     
