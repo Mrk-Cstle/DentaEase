@@ -12,7 +12,7 @@ class ServicesController extends Controller
         $perPage = 5;
 
         $search = $request->input('search');
-        $position = $request->input('filter');
+        $filters = $request->input('filter');
        
         $query = Service::where(function($q) use ($search){
             $q->where('name', 'like', "%{$search}%");
@@ -20,8 +20,8 @@ class ServicesController extends Controller
         });
         
         
-    if ($position) {
-        $query->where('position', $position);
+    if ($filters) {
+        $query->where('type', $filters);
     }
         $staff = $query->paginate($perPage);
 
@@ -62,4 +62,31 @@ class ServicesController extends Controller
 
     return response()->json(['status'=> 'success', 'message' => 'Service created successfully', 'service' => $service]);
     }
+
+    public function update(Request $request)
+{
+    $service = Service::findOrFail($request->id);
+
+    $data = $request->only(['name', 'type', 'approx_time', 'approx_price', 'description']);
+
+    if ($request->hasFile('image')) {
+        $file = $request->file('image');
+        $filename = uniqid('service_') . '.' . $file->getClientOriginalExtension();
+        $file->storeAs('service_images', $filename, 'public');
+        $data['image'] = $filename;
+    }
+
+    $service->update($data);
+
+    return response()->json(['message' => 'Service updated successfully.']);
+}
+
+
+public function destroy($id)
+{
+    $service = Service::findOrFail($id);
+    $service->delete();
+
+    return response()->json(['status' => 'success','message' => 'Service deleted successfully.']);
+}
 }

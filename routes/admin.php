@@ -88,6 +88,9 @@ Route::get('/user/details/{id}', [AdminBookingController::class, 'modalDetails']
 
 Route::get('/serviceslist', [ServicesController::class,'Serviceslist'])->name('Serviceslist');
 Route::post('/add-services', [ServicesController::class,'Addservices'])->name('add-services');
+Route::post('/service/update', [ServicesController::class,'update'])->name('service-update');
+Route::delete('services/{id}', [ServicesController::class, 'destroy'])->name('services.destroy');
+
 
 });
 

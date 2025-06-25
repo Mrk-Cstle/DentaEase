@@ -15,11 +15,11 @@
  
 
   <div class="flex flex-row gap-5">
-  <select id="positionFilter" class="border p-2 rounded">
-  <option value="">All Positions</option>
-  <option value="Receptionist">Receptionist</option>
-  <option value="Dentist">Dentist</option>
-  <option value="Admin">Admin</option>
+  <select id="Filter" class="border p-2 rounded">
+  <option value="">All Services</option>
+  <option value="General Dentistry">General Dentistry</option>
+          <option value="Orthodontics">Orthodontics</option>
+          <option value="Oral Surgery">Oral Surgery</option>
 
   </select>
       <input type="text" id="searchInput" placeholder="Search..." />
@@ -28,7 +28,7 @@
       
   </div>
 </div>
-{{-- Modal Add User --}}
+{{-- Modal Add Service --}}
 <div id="addUserModal" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.5);">
   <div class="flex flex-col"  style="background:#fff; padding:20px; margin:100px auto; width:50%; position:relative;">
     <h3>Add Services</h3>
@@ -43,9 +43,9 @@
       <input type="number" name="price" placeholder="Approx. Time" required>
       <label>Position:</label>
       <select name="type" id="type" >
-        <option value="general">General Dentistry</option>
-        <option value="orthodontics">Orthodontics</option>
-        <option value="oral">Oral Surgery</option>
+        <option value="General Dentistry">General Dentistry</option>
+        <option value="Orthodontics">Orthodontics</option>
+        <option value="Oral Surgery">Oral Surgery</option>
         
       </select>
       <div class="flex flex-row mt-5 gap-3">
@@ -65,9 +65,10 @@
     
         <thead class="bg-gray-200">
             <tr>
-                <th>Name</th>
-                <th>Position</th>
-                <th>Contact Number</th>
+                <th>Service</th>
+                <th>Type</th>
+                <th>Time</th>
+                <th>Price</th>
                 <th>Action</th>
             </tr>
         </thead>
@@ -81,24 +82,56 @@
     <div id="pagination" class="mt-4 flex gap-2"></div>
    
     
+<!-- Service Modal -->
+<div id="serviceModal" class="fixed inset-0 hidden z-50 bg-black bg-opacity-50 flex items-center justify-center">
+  <div class="bg-white w-full max-w-lg p-6 rounded shadow-lg relative">
+    <button id="closeModal" class="absolute top-2 right-2 text-gray-500 hover:text-red-600">&times;</button>
 
-    <!-- Modal -->
-<div id="viewModal" class="fixed inset-0 flex items-center justify-center backdrop-blur-sm bg-black/5 hidden z-50">
-    <div class="bg-white p-6 rounded-lg shadow-lg w-full max-w-md relative">
-      <button onclick="closeModal()" class="absolute top-2 right-2 text-gray-500 hover:text-black">&times;</button>
+    <h2 class="text-xl font-bold mb-4">View & Update Service</h2>
+    <form id="updateServiceForm" enctype="multipart/form-data">
+        @csrf
+        <input type="hidden" name="id" id="service_id">
+
+        <label>Name:</label>
+        <input type="text" name="name" id="service_name" class="w-full border p-2 rounded mb-2">
+
+        <label>Type:</label><br>
+        <select id="service_type" name="type"  class="w-full border p-2 rounded mb-2">
+          <option value="General Dentistry">General Dentistry</option>
+          <option value="Orthodontics">Orthodontics</option>
+          <option value="Oral Surgery">Oral Surgery</option>
+      </select><br>
+
+        <label>Approx Time (min):</label>
+        <input type="number" name="approx_time" id="service_time" class="w-full border p-2 rounded mb-2">
+
+        <label>Approx Price:</label>
+        <input type="number" name="approx_price" id="service_price" class="w-full border p-2 rounded mb-2">
+
+        <label>Description:</label>
+        <textarea name="description" id="service_description" class="w-full border p-2 rounded mb-4"></textarea>
+
+            <!-- Image Upload -->
+        <label>Service Image:</label>
+        <input type="file" name="image" id="service_image_input" accept="image/*" class="mb-2">
+
+        <!-- Preview -->
+        <div id="imagePreviewWrapper" class="mb-4">
+            <img id="service_image_preview" src="" alt="Service Image" class="w-32 h-32 object-cover rounded border" />
+        </div>
+        <div class="flex justify-end gap-2 mt-6">
+          <button id="updateServiceBtn" class="bg-yellow-500 text-white px-4 py-2 rounded hover:bg-yellow-600">
+              Update
+          </button>
       
-      <h2 class="text-xl font-semibold mb-4">User Info</h2>
-      
-      <div id="modalContent">
-        <!-- User data will be injected here -->
+          <button id="deleteServiceBtn" class="bg-red-600 text-white px-4 py-2 rounded hover:bg-red-700">
+              Delete
+          </button>
       </div>
-      
-      <div class="mt-4 text-right">
-        <button onclick="closeModal()" class="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded">Close</button>
-      </div>
-    </div>
+    </form>
   </div>
 </div>
+
 
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
@@ -150,7 +183,7 @@
     
     localStorage.setItem('Servicescurrentpage', page);
     currentSearch = $('#searchInput').val();
-    currentFilter = $('#positionFilter').val();
+    currentFilter = $('#Filter').val();
      localStorage.setItem('ServicesPositionFilter', currentFilter);
      
     var formdata = {
@@ -167,13 +200,24 @@
       success: function (response) {
         if (response.status === 'success') {
                 let rows = '';
-                response.data.forEach(function (user) {
+                response.data.forEach(function (service) {
                     rows += `
                     <tr>
-                        <td>${user.name}</td>
-                        <td>${user.position}</td>
-                        <td>${user.contact_number}</td>
-                     <td><a href="/user/${user.id}">View</a></td>
+                        <td>${service.name}</td>
+                        <td>${service.type}</td>
+                        <td>${service.approx_time}</td>
+                          <td>${service.approx_price}</td>
+                    <td><button class="view-service bg-blue-500 text-white px-2 py-1 rounded" 
+            data-id="${service.id}" 
+            data-name="${service.name}" 
+            data-type="${service.type}" 
+            data-time="${service.approx_time}" 
+            data-price="${service.approx_price}" 
+            data-description="${service.description ?? ''
+            }"
+             data-image="${service.image ?? ''}">
+            View
+        </button></td>
                     </tr>
                     `;
                 });
@@ -201,13 +245,14 @@
   $(document).ready(function () {
     const savedPosition = localStorage.getItem('ServicesPositionFilter');
     if (savedPosition !== null) {
-        $('#positionFilter').val(savedPosition);
+        $('#filter').val(savedPosition);
     }
     $('#searchInput').on('input', function () {
         localStorage.setItem('Servicescurrentpage', 1);
         serviceslist(1); // Reset to first page when searching
         });
-    $('#positionFilter').on('change', function () {
+    $('#Filter').on('change', function () {
+      console.log("clicked")
          localStorage.setItem('ServicesPositionFilter', $(this).val());
         localStorage.setItem('Servicescurrentpage', 1);
         serviceslist(1); // Reset to first page when filter changes
@@ -258,7 +303,7 @@
           Swal.fire('Success!', response.message, 'success');
         $('#addUserModal').fadeOut();
         $('#addUserForm')[0].reset();
-        stafflist(currentPage);
+        serviceslist(currentPage);
         }else{
           Swal.fire({
           icon: 'error',
@@ -278,5 +323,93 @@
     });
   });
   });
+
+
+  $(document).on('click', '.view-service', function () {
+    $('#service_id').val($(this).data('id'));
+    $('#service_name').val($(this).data('name'));
+    $('#service_type').val($(this).data('type'));
+
+    $('#service_time').val($(this).data('time'));
+    $('#service_price').val($(this).data('price'));
+    $('#service_description').val($(this).data('description'));
+
+    const imageUrl = $(this).data('image');
+    if (imageUrl) {
+      $('#service_image_preview').attr('src', '{{ asset("storage/service_images") }}/' + imageUrl);
+
+        $('#imagePreviewWrapper').show();
+    } else {
+        $('#imagePreviewWrapper').hide();
+    }
+
+    $('#serviceModal').removeClass('hidden');
+});
+
+
+// Close modal
+$('#closeModal').on('click', function () {
+    $('#serviceModal').addClass('hidden');
+});
+
+// Update service via AJAX
+$('#updateServiceBtn').on('click', function (e) {
+  e.preventDefault();
+    const formElement = document.getElementById('updateServiceForm');
+    const formData = new FormData(formElement);
+
+    formData.append('_token', '{{ csrf_token() }}');
+
+    $.ajax({
+        url: '/service/update',
+        method: 'POST',
+        data: formData,
+        processData: false,
+        contentType: false,
+        success: function (res) {
+            Swal.fire('Updated', res.message, 'success');
+            $('#serviceModal').fadeOut();
+          
+            // Optionally refresh your table here
+            serviceslist(currentPage);
+        },
+        error: function () {
+            Swal.fire('Error', 'Something went wrong.', 'error');
+        }
+    });
+});
+
+
+$(document).on('click', '#deleteServiceBtn', function (e) {
+  e.preventDefault();
+    const serviceId = $('#service_id').val();
+
+    Swal.fire({
+        title: 'Are you sure?',
+        text: 'You will not be able to recover this service!',
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonText: 'Yes, delete it!'
+    }).then(result => {
+        if (result.isConfirmed) {
+            $.ajax({
+                url: `/services/${serviceId}`, // Adjust if using named route
+                method: 'DELETE',
+                data: {
+                    _token: '{{ csrf_token() }}'
+                },
+                success: function (response) {
+                    Swal.fire('Deleted!', response.message, 'success');
+                    $('#serviceModal').fadeOut();
+                    // Optionally: reload service list
+                    serviceslist(currentPage);
+                },
+                error: function () {
+                    Swal.fire('Error', 'Failed to delete service.', 'error');
+                }
+            });
+        }
+    });
+});
 </script>
 @endsection
