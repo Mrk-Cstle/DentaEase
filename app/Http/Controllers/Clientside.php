@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Store;
+use App\Models\Service;
 class Clientside extends Controller
 {
     //
@@ -16,6 +17,8 @@ class Clientside extends Controller
     }
     public function CBooking(){
         $stores = Store::all(); // ✅ This provides the variable to the view
+      
+      
         return view('client.cbooking', compact('stores'));
     }
  }

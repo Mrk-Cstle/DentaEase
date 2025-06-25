@@ -12,6 +12,7 @@ class Appointment extends Model
     protected $fillable = [
         'store_id',
         'user_id',
+        'service_name',
         'dentist_id',
         'appointment_date',
         'appointment_time',

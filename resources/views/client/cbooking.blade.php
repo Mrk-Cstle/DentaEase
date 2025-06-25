@@ -22,6 +22,17 @@
                 <div id="storedetail"></div>
             </div>
 
+            {{-- Services --}}
+            <div>
+                <label for="service_id" class="block font-semibold">Select Service</label>
+                <select id="service_id" name="service_id" class="w-full p-2 border rounded" required>
+                    <option value="">-- Choose Service --</option>
+                    @foreach ($services as $service)
+                        <option value="{{ $service->id }}">{{ $service->name }}</option>
+                    @endforeach
+                </select>
+                <div id="servicedetail"></div>
+            </div>
             <!-- Dentist Selection -->
             <div>
                 <label for="dentist_id" class="block font-semibold">Select Dentist</label>
@@ -164,6 +175,30 @@ $('#store_id').on('change', function () {
         $('#appointment_date').prop('disabled', false);
     }
 });
+
+
+$('#service_id').on('change', function () {
+    const serviceId = $(this).val();
+    $.get(`/service/${serviceId}`, function (servdata) {
+
+        if (servdata.status == 'success') {
+
+
+
+            $('#servicedetail').html(`
+            <div class="bg-white p-4 rounded shadow">
+                <h2 class="text-xl font-bold mb-2">${servdata.name}</h2>
+                <p><strong>Description:</strong> ${servdata.desc}</p>
+                <p><strong>Type:</strong> ${servdata.type}</p>
+                <p><strong>Approx. Time:</strong> ${servdata.time}</p>
+                <p><strong>Approx. Price:</strong> ${servdata.price}</p>
+            </div>
+        `);
+        }
+   
+        });
+});
+
 $.get(`/branch/${storeId}/dentists`, function (response) {
     if (response.dentists && response.dentists.length > 0) {
         let dentistOptions = '<option value="">-- Choose Dentist --</option>';
@@ -251,6 +286,7 @@ $('#bookingForm').on('submit', function(e) {
     const formData = {
         _token: '{{ csrf_token() }}',
         store_id: $('#store_id').val(),
+        service_id: $('#service_id').val(),
          dentist_id: $('#dentist_id').val(),
         appointment_date: $('#appointment_date').val(),
         appointment_time: $('#appointment_time').val(),

@@ -28,6 +28,7 @@ Route::middleware(['auth', Client::class])->group(function(){
     Route::get('/branch/{branchId}/dentists', [AppointmentController::class, 'getDentists']);
     Route::get('/branch/{branchId}/dentist/{dentistId}/slots', [AppointmentController::class, 'getDentistSlots']);
     Route::get('/booking', [AppointmentController::class, 'showProfile'])->name('appointments.incomplete');
+    Route::get('/service/{service}', [AppointmentController::class, 'getServiceDetail']);
 
     
 

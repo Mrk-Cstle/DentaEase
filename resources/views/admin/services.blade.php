@@ -102,7 +102,7 @@
           <option value="Oral Surgery">Oral Surgery</option>
       </select><br>
 
-        <label>Approx Time (min):</label>
+        <label>Approx Time (mins):</label>
         <input type="number" name="approx_time" id="service_time" class="w-full border p-2 rounded mb-2">
 
         <label>Approx Price:</label>

@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use Carbon\Carbon;
 use App\Models\Appointment;
 use App\Models\Store;
+use App\Models\Service;
 use App\Models\User;
 use Illuminate\Support\Facades\Auth;
 class AppointmentController extends Controller
@@ -21,6 +22,20 @@ class AppointmentController extends Controller
         'opening_time' => optional($store->opening_time)->format('H:i'),
         'closing_time' => optional($store->closing_time)->format('H:i'),
         'open_days' => $store->open_days ?? [],
+    ]);
+}
+
+public function getServiceDetail(Service $service)
+{
+    return response()->json([
+        'status' => 'success',
+        'name' => $service->name,
+        'desc' => $service->description,
+        'type' => $service->type,
+        'time' => $service->approx_time,
+        'price' => $service->approx_price,
+
+       
     ]);
 }
 public function getDentists($branchId)
@@ -159,14 +174,17 @@ public function appointment(Request $request)
 {
     $request->validate([
         'store_id' => 'required|exists:stores,id',
+        'service_id' => 'required|exists:services,id',
         'dentist_id' => 'required|exists:users,id',
         'appointment_date' => 'required|date|after_or_equal:today',
         'appointment_time' => 'required|date_format:H:i',
         'desc' =>'required',
         
     ]);
-
+    
     $store = Store::findOrFail($request->store_id);
+
+    $service = Service::findOrFail($request->service_id);
 
     // ✅ Check if store is open that day
     $day = strtolower(Carbon::parse($request->appointment_date)->format('D'));
@@ -174,7 +192,7 @@ public function appointment(Request $request)
         return back()->withErrors(['appointment_date' => 'Store is closed on this day.']);
     }
 
-   $booking_end = Carbon::parse($request->appointment_time)->addMinutes(30);
+   $booking_end = Carbon::parse($request->appointment_time)->addMinutes($service->approx_time);
 
     // ✅ Check if time is within hours
     if (
@@ -203,6 +221,7 @@ public function appointment(Request $request)
         'store_id' => $store->id,
         'user_id' => auth()->id(), // assumes you're logged in
         'dentist_id' => $request->dentist_id,
+        'service_name' => $service->name,
         'appointment_date' => $request->appointment_date,
         'appointment_time' => $request->appointment_time,
         'booking_end_time' => $booking_end->format('H:i'),
@@ -238,8 +257,8 @@ public function showProfile()
         ->get();
 
     $stores = Store::all(); // Assuming you're passing this too
-
-    return view('client.cbooking', compact('incompleteAppointments', 'stores'));
+    $services = Service::all();
+    return view('client.cbooking', compact('incompleteAppointments', 'stores', 'services'));
 }
 
 }
