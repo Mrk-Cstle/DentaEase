@@ -6,6 +6,7 @@
         {{ $appointment->user->last_name }}, {{ $appointment->user->name ?? 'N/A' }}
     </button>
 </td>
+<td>{{ $appointment->service_name}}</td>
     <td>{{ \Carbon\Carbon::parse($appointment->appointment_date)->format('F j, Y') }}</td>
     <td>
         <input type="time" name="appointment_time"

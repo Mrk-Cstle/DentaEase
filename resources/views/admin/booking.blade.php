@@ -47,6 +47,7 @@
     <thead>
         <tr class="bg-gray-200">
             <th>User</th>
+            <th>Service</th>
             <th>Date</th>
             <th>Start</th>
             <th>End</th>

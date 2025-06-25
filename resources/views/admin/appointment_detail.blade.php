@@ -27,15 +27,27 @@
         <label class="block font-semibold">Work Done</label>
         <textarea name="work_done" rows="4" class="w-full border rounded p-2" required></textarea>
     </div>
+    <div class="mt-4">
+        <label class="block font-semibold">Payment Type</label>
+        <select class="w-full border rounded p-2" name="paytype" id="paytype">
+            <option value="GCASH">GCASH</option>
+            <option value="CASH">CASH</option>
 
+        </select>
+        
+    </div>
     <div class="mt-4">
         <label class="block font-semibold">Total Price (₱)</label>
         <input type="number" name="total_price" step="0.01" min="0" class="w-full border rounded p-2" required>
     </div>
 
-    <div class="mt-6">
+    
+
+    <div class="mt-6 flex flex-row gap-5">
         <button type="submit" class="bg-green-600 text-white px-4 py-2 rounded">Complete</button>
+        <button type="submit" class="bg-red-600 text-white px-4 py-2 rounded">No Show</button>
     </div>
+   
 </form>
 </div>
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
