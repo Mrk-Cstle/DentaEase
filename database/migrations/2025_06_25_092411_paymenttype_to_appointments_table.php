@@ -13,7 +13,7 @@ return new class extends Migration
     {
         Schema::table('appointments', function (Blueprint $table) {
             //
-            $table->string('payment_type')->after('total_price');
+            $table->string('payment_type')->after('total_price')->nullable();
             $table->string('payment_image')->nullable();
 
         });
