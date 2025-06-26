@@ -17,11 +17,23 @@ class User extends Authenticatable
      *
      * @var list<string>
      */
-    protected $fillable = [
-        'name',
-        'email',
-        'password',
-    ];
+  protected $fillable = [
+    'name',
+    'middlename',
+    'lastname',
+    'suffix',
+    'birth_date',
+    'birthplace',
+    'current_address',
+    'email',
+    'contact_number',
+    'user',
+    'password',
+    'account_type',
+    'position',
+    'status',
+    'verification_id',
+];
 
     /**
      * The attributes that should be hidden for serialization.
@@ -45,4 +57,17 @@ class User extends Authenticatable
             'password' => 'hashed',
         ];
     }
+
+public function stores()
+{
+    return $this->belongsToMany(Store::class, 'store_staff')
+                ->using(StoreStaff::class)     
+                ->withPivot('position')        
+                ->withTimestamps();           
+}
+
+public function appointment()
+{
+    return $this->hasMany(Appointment::class);
+}
 }
