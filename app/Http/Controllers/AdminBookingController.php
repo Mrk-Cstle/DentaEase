@@ -80,18 +80,43 @@ public function view($id)
 }
 public function settle(Request $request, $id)
 {
-    $request->validate([
-        'work_done' => 'required|string',
-        'total_price' => 'required|numeric|min:0',
-    ]);
-    
     $appointment = Appointment::findOrFail($id);
-    $appointment->work_done = $request->work_done;
-    $appointment->total_price = $request->total_price;
-    $appointment->status = 'completed';
-    $appointment->save();
 
-   return response()->json(['message' => 'Appointment finalized successfully.']);
+    if ($request->status === 'no_show') {
+        $appointment->status = 'no_show';
+        $appointment->save();
+
+        return response()->json(['message' => 'Marked as No Show.']);
+    }
+
+    // ✅ Validate the full request (not mapped manually)
+    $validated = $request->validate([
+        'work_done' => 'required|string',
+        'paytype' => 'required|string',
+        'total_price' => 'required|numeric',
+        'payment_receipt' => 'nullable|image|max:2048',
+    ]);
+
+    // ✅ Build the data to update
+    $data = [
+        'work_done' => $validated['work_done'],
+        'payment_type' => $validated['paytype'],
+        'total_price' => $validated['total_price'],
+        'status' => 'completed',
+    ];
+
+    // ✅ Handle receipt image upload
+    if ($request->hasFile('payment_receipt')) {
+        $file = $request->file('payment_receipt');
+        $filename = uniqid('receipt_') . '.' . $file->getClientOriginalExtension();
+        $file->storeAs('payment_receipts', $filename, 'public');
+        $data['payment_image'] = $filename; // Make sure column is named `payment_image`
+    }
+
+    // ✅ Save to database
+    $appointment->update($data);
+
+    return response()->json(['status' => 'success', 'message' => 'Appointment finalized successfully.']);
 }
 
 

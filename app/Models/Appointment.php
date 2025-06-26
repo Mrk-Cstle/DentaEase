@@ -17,6 +17,10 @@ class Appointment extends Model
         'appointment_date',
         'appointment_time',
         'booking_end_time',
+        'work_done',
+        'total_price',
+        'payment_type',
+        'payment_image',
         'desc',
         'status', // pending, approved, cancelled
     ];
