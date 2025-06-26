@@ -24,11 +24,7 @@
 
             {{-- Services --}}
             <div>
-                <select name="service_ids[]" id="service_ids" class="w-full p-2 border rounded" multiple required>
-                    @foreach ($services as $service)
-                        <option value="{{ $service->id }}">{{ $service->name }}</option>
-                    @endforeach
-                </select>
+                
                 <label for="service_id" class="block font-semibold">Select Service</label>
                 <select id="service_id" name="service_id" class="w-full p-2 border rounded"  required>
                     <option value="">-- Choose Service --</option>
