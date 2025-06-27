@@ -47,14 +47,20 @@
     <h2 class="text-xl font-bold mb-2">Select a Service</h2>
     <input type="hidden" name="service_id" id="service_id" required>
 
-    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-        @foreach ($services as $service)
-            <div class="card-selectable border rounded p-4 shadow hover:shadow-lg" data-id="{{ $service->id }}">
-                <h3 class="text-lg font-bold">{{ $service->name }}</h3>
-                <p>{{ $service->desc }}</p>
+  <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+    @foreach ($services as $service)
+        <div class="card-selectable border rounded p-4 shadow hover:shadow-lg" data-id="{{ $service->id }}">
+            <div class="flex justify-center mb-2">
+                <img class="w-[200px] h-auto" src="{{ asset('storage/service_images/' . $service->image) }}" alt="Verification ID" />
             </div>
-        @endforeach
-    </div>
+            <h3 class="text-lg font-bold">{{ $service->name }}</h3>
+            <p>{{ $service->description }}</p>
+            <p>Approx. Time: {{ $service->approx_time }}mins</p>
+            <p>Approx. Price: ₱{{ $service->approx_price }}</p>
+        </div>
+    @endforeach
+</div>
+
 
     <textarea class="w-full p-2 border rounded" rows="5" id="desc" name="desc" required placeholder="Describe your concern..."></textarea>
 
