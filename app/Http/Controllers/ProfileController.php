@@ -8,10 +8,31 @@ use Illuminate\Validation\Rule;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Log;
 use App\Models\Appointment;
+use Illuminate\Support\Facades\Storage;
 class ProfileController extends Controller
 {
 
+    public function uploadprofileimage(Request $request)
+{
+    $request->validate([
+        'profile_image' => 'required|image|mimes:jpeg,png,jpg,gif|max:2048',
+    ]);
 
+    $user = Auth::user();
+
+    // Optionally delete old photo
+    if ($user->profile_image) {
+        Storage::disk('public')->delete('profile_pictures/' . $user->profile_picture);
+    }
+
+    $filename = uniqid() . '.' . $request->file('profile_image')->getClientOriginalExtension();
+    $request->file('profile_image')->storeAs('profile_pictures', $filename , 'public');
+
+    $user->profile_image = $filename;
+    $user->save();
+
+    return back()->with('success', 'Profile picture updated!');
+}
     public function updateProfile(Request $request){
        
        $user =Auth::user();
@@ -68,7 +89,7 @@ class ProfileController extends Controller
 {
     $completedAppointments = Appointment::with(['user', 'dentist'])
         ->where('user_id', auth()->id())
-        ->where('status', 'completed')
+        ->whereIn('status', ['completed', 'no_show'])
         ->orderBy('appointment_date', 'desc')
         ->get();
 

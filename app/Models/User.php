@@ -33,6 +33,7 @@ class User extends Authenticatable
     'position',
     'status',
     'verification_id',
+    'profile_image',
 ];
 
     /**
