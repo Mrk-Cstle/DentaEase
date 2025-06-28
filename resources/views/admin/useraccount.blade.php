@@ -30,29 +30,41 @@
 </div>
 {{-- Modal Add User --}}
 <div id="addUserModal" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.5);">
-  <div class="flex flex-col"  style="background:#fff; padding:20px; margin:100px auto; width:50%; position:relative;">
+  <div class="flex flex-col" style="background:#fff; padding:20px; margin:100px auto; width:50%; position:relative;">
     <h3>Add New User</h3>
     <form class="flex flex-col p-2 gap-2" id="addUserForm">
-      <label>Name:</label>
-      <input type="text" name="name" placeholder="Name" required>
-      <label>User:</label>
+      
+      <label>Last Name:</label>
+      <input type="text" name="last_name" placeholder="Last Name" required>
+
+      <label>First Name:</label>
+      <input type="text" name="name" placeholder="First Name" required>
+
+      <label>Middle Name:</label>
+      <input type="text" name="middle_name" placeholder="Middle Name">
+
+      <label>Suffix:</label>
+      <input type="text" name="suffix" placeholder="Suffix (e.g. Jr, Sr)">
+
+      <label>Username:</label>
       <input type="text" name="user" placeholder="Username" required>
+
       <label>Position:</label>
-      <select name="position" id="position" >
+      <select name="position" id="position" required>
+        <option value="">-- Select Position --</option>
         <option value="admin">Admin</option>
         <option value="Dentist">Dentist</option>
         <option value="Receptionist">Receptionist</option>
-        
       </select>
+
       <div class="flex flex-row mt-5 gap-3">
-       
-        <div class="flex flex-row mt-5 gap-3">
         <button type="submit">Save</button>
         <button type="button" id="closeModalBtn">Cancel</button>
       </div>
-     
     </form>
-  </div>
+
+
+
 </div>
 </div>
 <div>
@@ -237,11 +249,15 @@
     e.preventDefault();
 
     const formData = {
-      name: $('input[name="name"]').val(),
-      user: $('input[name="user"]').val(),
-      position: $('#position').val(),
-      _token: '{{ csrf_token() }}' // Laravel CSRF token
-    };
+  last_name: $('input[name="last_name"]').val(),
+  name: $('input[name="name"]').val(), // first name
+  middle_name: $('input[name="middle_name"]').val(),
+  suffix: $('input[name="suffix"]').val(),
+  user: $('input[name="user"]').val(),
+  position: $('#position').val(),
+  _token: '{{ csrf_token() }}' // Laravel CSRF token
+};
+
 
     $.ajax({
       type: 'POST',

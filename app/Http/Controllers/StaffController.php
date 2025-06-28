@@ -71,64 +71,82 @@ class StaffController extends Controller
         public function UpdateUser(Request $request){
             $id = $request->id;
             $user = User::find($id);
-            \Log::info('Request data:', $request->all());
-            \Log::info('Current user data:', $user->toArray());
+            // \Log::info('Request data:', $request->all());
+            // \Log::info('Current user data:', $user->toArray());
             $rules = [];
             $data = [];
             $isUpdated = false;
      
-            if ($request->filled('email') &&  $request->email !== $user->email) {
-                 $rules['email'] = 'email';
-                 $data['email'] = $request->email;
-                 $isUpdated = true;
-            }
-            if ($request->filled('names') &&  $request->names !== $user->name) {
-                $rules['name'] = 'name';
-                $data['name'] = $request->names;
+            if ($request->filled('email') && $request->email !== $user->email) {
+                $rules['email'] = ['required', 'email'];
+                $data['email'] = $request->email;
                 $isUpdated = true;
-           }
-           if ($request->filled('bday') &&  $request->bday !== $user->birth_date) {
-            $rules['birth_date'] = 'bday';
-            $data['birth_date'] = $request->bday;
-            $isUpdated = true;
-       }
-     
-            if ($request->filled('contact') && $request->contact !== $user->contact_number) {
-             $rules['contact'] = 'nullable|regex:/^09\d{9}$/';
-             $data['contact_number'] = $request->contact;     
-             $isUpdated = true;  
             }
-            if ($request->filled('user') &&  $request->user !== $user->user) {
-             $rules['user'] = [
-                 'required',
-                 'string',
-                 'max:255',
-                 Rule::unique('users')->ignore(auth()->id()),  
-                 
-             ];
-             $data['user'] = $request->user;
-             $isUpdated = true;
-        }
-      
-        if (!empty($request->password) && !Hash::check($request->password, $user->password)) {
-         $data['password'] = Hash::make($request->password);
-         $isUpdated = true;
-     }
-         if (!empty($rules)) {
-             $request->validate($rules);
-         }
-     
-      
-         if ($isUpdated && !empty($data)) {
-             $user->update($data); 
-             return response()->json(['status' => 'success', 'message' => 'Profile updated successfully.']);
-         }
-     
         
-         return response()->json(['status' => 'error', 'message' => 'No changes made to your profile.']);
-     
-         }
-   
+            if ($request->filled('name') && $request->name !== $user->name) {
+                $rules['name'] = ['required', 'string', 'max:255'];
+                $data['name'] = $request->name;
+                $isUpdated = true;
+            }
+        
+            if ($request->filled('lastname') && $request->lastname !== $user->lastname) {
+                $rules['lastname'] = ['required', 'string', 'max:255'];
+                $data['lastname'] = $request->lastname;
+                $isUpdated = true;
+            }
+        
+            if ($request->filled('middlename') && $request->middlename !== $user->middlename) {
+                $rules['middlename'] = ['nullable', 'string', 'max:255'];
+                $data['middlename'] = $request->middlename;
+                $isUpdated = true;
+            }
+        
+            if ($request->filled('suffix') && $request->suffix !== $user->suffix) {
+                $rules['suffix'] = ['nullable', 'string', 'max:50'];
+                $data['suffix'] = $request->suffix;
+                $isUpdated = true;
+            }
+        
+            if ($request->filled('birthdate') && $request->birthdate !== $user->birth_date) {
+                $rules['birthdate'] = ['required', 'date'];
+                $data['birth_date'] = $request->birthdate;
+                $isUpdated = true;
+            }
+        
+            if ($request->filled('contact') && $request->contact !== $user->contact_number) {
+                $rules['contact'] = ['nullable', 'regex:/^09\d{9}$/'];
+                $data['contact_number'] = $request->contact;
+                $isUpdated = true;
+            }
+        
+            if ($request->filled('user') && $request->user !== $user->user) {
+                $rules['user'] = [
+                    'required',
+                    'string',
+                    'max:255',
+                    Rule::unique('users')->ignore($user->id),
+                ];
+                $data['user'] = $request->user;
+                $isUpdated = true;
+            }
+        
+            if (!empty($request->password) && !Hash::check($request->password, $user->password)) {
+                $rules['password'] = ['required', 'string', 'min:8'];
+                $data['password'] = Hash::make($request->password);
+                $isUpdated = true;
+            }
+        
+            if (!empty($rules)) {
+                $request->validate($rules);
+            }
+        
+            if ($isUpdated && !empty($data)) {
+                $user->update($data);
+                return response()->json(['status' => 'success', 'message' => 'Profile updated successfully.']);
+            }
+        
+            return response()->json(['status' => 'error', 'message' => 'No changes made to your profile.']);
+        }
 
 
 public function showProfile($id)
@@ -137,7 +155,7 @@ public function showProfile($id)
 
     $completedAppointments = Appointment::with(['user', 'dentist'])
         ->where('user_id', $id)
-        ->where('status', 'completed')
+        ->whereIn('status', ['completed', 'no_show'])
         ->orderBy('appointment_date', 'desc')
         ->get();
 

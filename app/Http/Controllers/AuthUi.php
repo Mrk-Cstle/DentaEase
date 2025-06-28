@@ -88,7 +88,7 @@ class AuthUi extends Controller
             } else { 
                 $redirectUrl = match ($user->account_type) {
                 'admin' => route('GetBranchLogin'),
-                'patient' => route('CDashboard'),
+                'patient' => route('CBookingo'),
                 default => route('login')
 
                  };

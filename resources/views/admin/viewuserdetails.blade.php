@@ -14,15 +14,25 @@
 <div class="flex flex-col h-full ">
 <div class="flex flex-row h-full  gap-5">
     <div class=" rounded-md flex flex-col basis-[30%] bg-white">
+        @if ($user->profile_image == null)
         <div class="basis-[30%] bg-cover bg-no-repeat bg-center bg-[url({{ asset('images/defaultp.jpg') }})]  ">
-          
+        @else
+        <div class="basis-[30%] bg-cover bg-no-repeat bg-center bg-[url({{ asset('storage/profile_pictures/' . $user->profile_image) }})]  ">
+        @endif
         </div>
         <div class="basis-[70%]  flex flex-col p-5 overflow-y-auto gap-5 ">
             <form class="flex flex-col gap-3" action="">
+                <label for="lastname">Last Name:</label>
+                <input type="text" name="lastname" id="lastname" value="{{ $user->lastname}}">
                 <label for="name">Name:</label>
                 <input type="text" name="name" id="name" value="{{ $user->name}}">
-                <label for="bday">Birth Day</label>
-                <input type="date" name="bday" id="bday" value="{{$user->birth_date}}">
+                <label for="middlename">Middle Name:</label>
+                <input type="text" name="middlename" id="middlename" value="{{ $user->middlename}}">
+                <label for="suffix">Suffix:</label>
+                <input type="text" name="suffix" id="suffix" value="{{ $user->suffix}}">
+                <label for="birth_date">Birth Day</label>
+                <input type="date" name="birthdate" id="birthdate" value="{{ $user->birth_date }}">
+
                
 
             </form>
@@ -70,18 +80,20 @@
                 <th class="px-3 py-2">Description</th>
                 <th class="px-3 py-2">Work Done</th>
                 <th class="px-3 py-2">Total Price</th>
+                <th class="px-3 py-2">Status</th>
             </tr>
         </thead>
         <tbody>
             @foreach($completedAppointments as $appointment)
                 <tr class="border-t">
-                    <td class="px-3 py-2">{{ $appointment->appointment_date }}</td>
-                    <td class="px-3 py-2">{{ $appointment->appointment_time }}</td>
-                    <td class="px-3 py-2">{{ $appointment->booking_end_time }}</td>
+                    <td class="px-3 py-2">{{ \Carbon\Carbon::parse($appointment->appointment_date)->format('F j, Y') }} </td>
+                    <td class="px-3 py-2">  {{ \Carbon\Carbon::parse($appointment->appointment_time)->format('h:i A') }}</td>
+                    <td class="px-3 py-2">  {{ \Carbon\Carbon::parse($appointment->booking_end_time)->format('h:i A') }}</td>
                     <td class="px-3 py-2">{{ $appointment->dentist->name ?? 'N/A' }}</td>
                     <td class="px-3 py-2">{{ $appointment->desc }}</td>
                     <td class="px-3 py-2">{{ $appointment->work_done }}</td>
                     <td class="px-3 py-2">₱{{ number_format($appointment->total_price, 2) }}</td>
+                    <td class="px-3 py-2">{{ $appointment->status }}</td>
                 </tr>
             @endforeach
         </tbody>
@@ -232,8 +244,11 @@ const userId = $(this).data('id');
         var formData = {
                         id : $('input[name="id"]').val(),
                         email : $('input[name="email"]').val(),
-                        names : $('input[name="name"]').val(),
-                        bday : $('input[name="bday"]').val(),
+                        name : $('input[name="name"]').val(),
+                        lastname : $('input[name="lastname"]').val(),
+                        middlename : $('input[name="middlename"]').val(),
+                        suffix : $('input[name="suffix"]').val(),
+                        birthdate : $('input[name="birthdate"]').val(),
                         contact : $('input[name="contact"]').val(),
                         user : $('input[name="user"]').val(),
                         password : $('input[name="password"]').val(),
