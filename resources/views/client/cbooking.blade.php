@@ -186,13 +186,13 @@ $('#store_id').on('change', function () {
                         if (dentist.profile_image == null) {
                             imgSrc = '{{ asset('images/logo.png') }}';
                         } else {
-                            imgSrc = `/storage/service_images/${dentist.profile_image}`;
+                            imgSrc = `{{ asset('storage/profile_pictures/' . Auth::user()->profile_image) }}`;
                         }
 
                         cards += `
                             <div class="card-selectable border rounded p-4 shadow hover:shadow-lg" data-id="${dentist.id}">
                                 <div class="flex justify-center mb-2">
-                                    <img class="w-[200px] h-[100px]" src="${imgSrc}" alt="Verification ID" />
+                                    <img class="w-[200px] h-[100px]" src="${imgSrc}" alt="Profile Picture" />
                                 </div>
                                 <h3 class="text-lg font-bold">${dentist.lastname}, ${dentist.name}</h3>
                                 <p>${dentist.contact_number}</p>

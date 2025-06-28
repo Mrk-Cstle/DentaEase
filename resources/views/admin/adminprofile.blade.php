@@ -14,17 +14,30 @@
 
 <div class="flex flex-row h-full m-10 gap-5">
     <div class=" rounded-md flex flex-col basis-[30%] bg-white">
+        @if (Auth::user()->profile_image == null)
         <div class="basis-[30%] bg-cover bg-no-repeat bg-center bg-[url({{ asset('images/defaultp.jpg') }})]  ">
-          
+        @else
+        <div class="basis-[30%] bg-cover bg-no-repeat bg-center bg-[url({{ asset('storage/profile_pictures/' . Auth::user()->profile_image) }})]  ">
+        @endif
+      
+            
         </div>
-        <div class="basis-[70%]  flex flex-col p-5 overflow-y-auto">
-            <form class="flex flex-col gap-3" action="">
+        <div class="basis-[70%] flex flex-col p-5 overflow-y-auto">
+            <form class="flex flex-col gap-3" method="POST" action="{{ route('profile.upload') }}" enctype="multipart/form-data">
+                @csrf
+        
                 <label for="fname">Name:</label>
-                <input type="text" name="fname" id="fname" value="{{ Auth::user()->name}}">
-                <label for="bday">Birth Day</label>
-                <input type="date" name="bday" id="bday" value="{{Auth::user()->birth_date}}">
-               
-
+                <input type="text" name="fname" id="fname"
+                    value="{{ Auth::user()->last_name }}, {{ Auth::user()->name }} {{ Auth::user()->middle_name }} {{ Auth::user()->suffix }}"
+                    readonly>
+        
+                <label for="bday">Birth Day:</label>
+                <input type="date" name="bday" id="bday" value="{{ Auth::user()->birth_date }}" readonly>
+        
+                <label for="profile_picture">Upload Profile Picture:</label>
+                <input type="file" name="profile_image" id="profile_image" accept="image/*" class="p-2 border rounded">
+        
+                <button type="submit" class="bg-blue-600 text-white px-4 py-2 rounded mt-3 w-max">Upload</button>
             </form>
         </div>
     </div>
