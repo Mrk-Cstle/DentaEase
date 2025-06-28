@@ -27,7 +27,7 @@
 
 
   
-    <div class="w-full max-w-3xl bg-white rounded-lg shadow-lg relative">
+    <div class="w-full max-w-3xl bg-white rounded-lg shadow-lg relative m-5">
   <form id="signupForm" method="POST" enctype="multipart/form-data" class="p-8 max-w-3xl mx-auto bg-white rounded-lg shadow space-y-8">
     @csrf
 

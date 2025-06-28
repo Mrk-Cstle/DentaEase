@@ -17,7 +17,7 @@
         <div class="basis-[70%]  flex flex-col p-5 overflow-y-auto gap-5 ">
             <form class="flex flex-col gap-3" action="">
                 <label for="name">Name:</label>
-                <input type="text" name="name" id="name" value="{{ $user->name}}">
+                <input type="text" name="name" id="name" value="{{ $user->lastname}},{{ $user->name}} {{ $user->middlename}} {{ $user->suffix}}">
                 <label for="bday">Birth Day</label>
                 <input type="date" name="bday" id="bday" value="{{$user->birth_date}}">
                
