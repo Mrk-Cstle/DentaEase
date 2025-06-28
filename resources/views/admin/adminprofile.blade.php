@@ -28,7 +28,7 @@
         
                 <label for="fname">Name:</label>
                 <input type="text" name="fname" id="fname"
-                    value="{{ Auth::user()->last_name }}, {{ Auth::user()->name }} {{ Auth::user()->middle_name }} {{ Auth::user()->suffix }}"
+                    value="{{ Auth::user()->lastname }}, {{ Auth::user()->name }} {{ Auth::user()->middlename }} {{ Auth::user()->suffix }}"
                     readonly>
         
                 <label for="bday">Birth Day:</label>
