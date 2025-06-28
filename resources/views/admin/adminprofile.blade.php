@@ -12,8 +12,8 @@
 
 <h1>My Profile</h1>
 
-<div class="flex flex-row h-full m-10 gap-5">
-    <div class=" rounded-md flex flex-col basis-[30%] bg-white">
+<div class="flex flex-row h-full gap-5">
+    <div class=" rounded-md flex flex-col w-[30%] bg-white">
         @if (Auth::user()->profile_image == null)
         <div class="basis-[30%] bg-cover bg-no-repeat bg-center bg-[url({{ asset('images/defaultp.jpg') }})]  ">
         @else

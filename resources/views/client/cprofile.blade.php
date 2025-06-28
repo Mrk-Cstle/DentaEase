@@ -13,7 +13,7 @@
   
 <div class="flex flex-col h-full ">
 <div class="flex flex-row h-full  gap-5">
-    <div class=" rounded-md flex flex-col basis-[30%] bg-white">
+    <div class=" rounded-md flex flex-col w-[30%] bg-white">
         @if (Auth::user()->profile_image == null)
         <div class="basis-[30%] bg-cover bg-no-repeat bg-center bg-[url({{ asset('images/defaultp.jpg') }})]  ">
         @else
@@ -98,45 +98,66 @@
         </div>
     </div>
 </div>
-    <div class="mt-10 bg-white p-6 rounded shadow w-full">
+<div class="mt-10 bg-white p-6 rounded shadow w-full">
     <h2 class="text-lg font-bold mb-4">Completed Appointments</h2>
+
     @if($completedAppointments->isEmpty())
         <p class="text-gray-500">You have no completed appointments.</p>
     @else
-    <table class="table-auto w-full border-collapse border">
-        <thead>
-            <tr class="bg-gray-200 text-left">
-                <th class="px-3 py-2">Date</th>
-                <th class="px-3 py-2">Time</th>
-                <th class="px-3 py-2">Branch</th>
-                <th class="px-3 py-2">Dentist</th>
-                <th class="px-3 py-2">Description</th>
-                <th class="px-3 py-2">Work Done</th>
-                <th class="px-3 py-2">Total Price</th>
-                <th class="px-3 py-2">Status</th>
-            </tr>
-        </thead>
-        <tbody>
+        <div class="hidden md:block">
+            {{-- Desktop Table --}}
+            <table class="w-full text-sm border-collapse border border-gray-300">
+                <thead>
+                    <tr class="bg-gray-200 text-left">
+                        <th class="px-3 py-2">Date</th>
+                        <th class="px-3 py-2">Time</th>
+                        <th class="px-3 py-2">Branch</th>
+                        <th class="px-3 py-2">Dentist</th>
+                        <th class="px-3 py-2">Description</th>
+                        <th class="px-3 py-2">Work Done</th>
+                        <th class="px-3 py-2">Total</th>
+                        <th class="px-3 py-2">Status</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach($completedAppointments as $appointment)
+                        <tr class="border-t border-gray-300">
+                            <td class="px-3 py-2">{{ \Carbon\Carbon::parse($appointment->appointment_date)->format('F j, Y') }}</td>
+                            <td class="px-3 py-2">
+                                {{ \Carbon\Carbon::parse($appointment->appointment_time)->format('h:i A') }} -
+                                {{ \Carbon\Carbon::parse($appointment->booking_end_time)->format('h:i A') }}
+                            </td>
+                            <td class="px-3 py-2">{{ $appointment->store->name }}</td>
+                            <td class="px-3 py-2">{{ $appointment->dentist->name ?? 'N/A' }}</td>
+                            <td class="px-3 py-2">{{ $appointment->desc }}</td>
+                            <td class="px-3 py-2">{{ $appointment->work_done }}</td>
+                            <td class="px-3 py-2">₱{{ number_format($appointment->total_price, 2) }}</td>
+                            <td class="px-3 py-2 capitalize">{{ $appointment->status }}</td>
+                        </tr>
+                    @endforeach
+                </tbody>
+            </table>
+        </div>
+
+        <div class="md:hidden flex flex-col gap-4">
+            {{-- Mobile Card Layout --}}
             @foreach($completedAppointments as $appointment)
-                <tr class="border-t">
-                   <td class="px-3 py-2">{{ \Carbon\Carbon::parse($appointment->appointment_date)->format('F j, Y') }}</td>
-
-                    <td class="px-3 py-2">  
-                        {{ \Carbon\Carbon::parse($appointment->appointment_time)->format('h:i A') }} -
-                         {{ \Carbon\Carbon::parse($appointment->booking_end_time)->format('h:i A') }}</td>
-                    <td class="px-3 py-2">{{ $appointment->store->name }}</td>
-                    <td class="px-3 py-2">{{ $appointment->dentist->name ?? 'N/A' }}</td>
-                    <td class="px-3 py-2">{{ $appointment->desc }}</td>
-                    <td class="px-3 py-2">{{ $appointment->work_done }}</td>
-                    <td class="px-3 py-2">₱{{ number_format($appointment->total_price, 2) }}</td>
-                     <td class="px-3 py-2">{{ $appointment->status }}</td>
-                </tr>
+                <div class="border border-gray-300 rounded p-3 shadow-sm text-sm">
+                    <p><strong>Date:</strong> {{ \Carbon\Carbon::parse($appointment->appointment_date)->format('F j, Y') }}</p>
+                    <p><strong>Time:</strong> {{ \Carbon\Carbon::parse($appointment->appointment_time)->format('h:i A') }} - {{ \Carbon\Carbon::parse($appointment->booking_end_time)->format('h:i A') }}</p>
+                    <p><strong>Branch:</strong> {{ $appointment->store->name }}</p>
+                    <p><strong>Dentist:</strong> {{ $appointment->dentist->name ?? 'N/A' }}</p>
+                    <p><strong>Description:</strong> {{ $appointment->desc }}</p>
+                    <p><strong>Work Done:</strong> {{ $appointment->work_done }}</p>
+                    <p><strong>Total:</strong> ₱{{ number_format($appointment->total_price, 2) }}</p>
+                    <p><strong>Status:</strong> {{ ucfirst($appointment->status) }}</p>
+                </div>
             @endforeach
-        </tbody>
-    </table>
+        </div>
     @endif
-
 </div>
+
+
 </div>
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 

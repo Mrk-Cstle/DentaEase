@@ -126,7 +126,7 @@
                    
                 </ul>
             </aside>
-            <main class=" bg-[#F5F5F5] bg-opacity-75 basis-4/5 ">
+            <main class=" bg-[#F5F5F5] bg-opacity-75 basis-4/5 overflow-y-auto">
                 <div class="content h-full flex-1 flex flex-col p-10 gap-5 ">
                     @yield('main-content')
                 </div>
