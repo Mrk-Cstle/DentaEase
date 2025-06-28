@@ -11,7 +11,7 @@ use App\Http\Controllers\ProfileController;
 Route::middleware(['auth', Client::class])->group(function(){
     Route::get('/cdashboard', [Clientside::class,'CDashboard'])->name('CDashboard')->middleware('auth');
      Route::get('/booking', [Clientside::class,'CBooking'])->name('CBooking')->middleware('auth');
-    
+     Route::get('/bookingongoing', [Clientside::class,'CBookingo'])->name('CBookingo')->middleware('auth');
 
     Route::get('/cprofile', [Clientside::class,'CProfile'])->name('CProfile')->middleware('auth');
     Route::post('/cregister-face',[Facerecognition::class,'registerFace'])->name("cregister-face")->middleware('auth');
