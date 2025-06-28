@@ -47,12 +47,23 @@
     <h2 class="text-xl font-bold mb-2">Select a Service</h2>
     <input type="hidden" name="service_id" id="service_id" required>
 
-  <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+  <div class="grid grid-cols-1 md:grid-cols-2 gap-4 ">
     @foreach ($services as $service)
         <div class="card-selectable border rounded p-4 shadow hover:shadow-lg" data-id="{{ $service->id }}">
+
+            @if ($service->image == null)
+                
             <div class="flex justify-center mb-2">
-                <img class="w-[200px] h-auto" src="{{ asset('storage/service_images/' . $service->image) }}" alt="Verification ID" />
+                <img class="w-[200px] h-[100px] " src="{{ asset('images/logo.png') }}" alt="Verification ID" />
             </div>
+                
+            @else
+            <div class="flex justify-center mb-2">
+                <img class="w-[200px]  h-[100px]" src="{{ asset('storage/service_images/' . $service->image) }}" alt="Verification ID" />
+            </div>
+   
+            @endif
+           
             <h3 class="text-lg font-bold">{{ $service->name }}</h3>
             <p>{{ $service->description }}</p>
             <p>Approx. Time: {{ $service->approx_time }}mins</p>
@@ -62,7 +73,7 @@
 </div>
 
 
-    <textarea class="w-full p-2 border rounded" rows="5" id="desc" name="desc" required placeholder="Describe your concern..."></textarea>
+    <textarea class="w-full p-2 border rounded" rows="5" id="desc" name="desc"  placeholder="Describe your concern..."></textarea>
 
     <div class="flex justify-between">
         <button type="button" class="bg-gray-500 text-white px-4 py-2 rounded" onclick="goToStep(1)">Back</button>
@@ -74,7 +85,7 @@
     <!-- Step 3: Dentist Selection -->
     <div id="step3" class="space-y-4 hidden">
         <h2 class="text-xl font-bold mb-2">Select a Dentist</h2>
-        <input type="hidden" name="dentist_id" id="dentist_id" required>
+        <input type="hidden" name="dentist_id" id="dentist_id" >
         <div id="dentistCards" class="grid grid-cols-1 md:grid-cols-2 gap-4"></div>
     
         <div class="flex justify-between">
@@ -87,8 +98,8 @@
     <!-- Step 4: Date & Time -->
 <div id="step4" class="space-y-4 hidden">
     <h2 class="text-xl font-bold mb-2">Choose Date & Time</h2>
-    <input type="date" id="appointment_date" name="appointment_date" class="w-full p-2 border rounded" required disabled>
-    <select id="appointment_time" name="appointment_time" class="w-full p-2 border rounded" required disabled>
+    <input type="date" id="appointment_date" name="appointment_date" class="w-full p-2 border rounded"  disabled>
+    <select id="appointment_time" name="appointment_time" class="w-full p-2 border rounded"  disabled>
         <option value="">-- Select Date First --</option>
     </select>
 
@@ -153,15 +164,15 @@ $('#store_id').on('change', function () {
                 disable: [date => !openDays.includes(date.getDay())]
             });
 
-            $('#storedetail').html(`
-                <div class="bg-white p-4 rounded shadow">
-                    <h2 class="text-xl font-bold mb-2">${data.name}</h2>
-                    <p><strong>Address:</strong> ${data.address}</p>
-                    <p><strong>Opening Time:</strong> ${data.opening_time}</p>
-                    <p><strong>Closing Time:</strong> ${data.closing_time}</p>
-                    <p><strong>Open Days:</strong> ${readableDays}</p>
-                </div>
-            `);
+            // $('#storedetail').html(`
+            //     <div class="bg-white p-4 rounded shadow">
+            //         <h2 class="text-xl font-bold mb-2">${data.name}</h2>
+            //         <p><strong>Address:</strong> ${data.address}</p>
+            //         <p><strong>Opening Time:</strong> ${data.opening_time}</p>
+            //         <p><strong>Closing Time:</strong> ${data.closing_time}</p>
+            //         <p><strong>Open Days:</strong> ${readableDays}</p>
+            //     </div>
+            // `);
 
             $('#appointment_date').prop('disabled', false);
 
@@ -170,10 +181,23 @@ $('#store_id').on('change', function () {
                 let cards = '';
                 if (response.dentists.length > 0) {
                     response.dentists.forEach(dentist => {
-                        cards += `<div class="card-selectable border rounded p-4 shadow hover:shadow-lg" data-id="${dentist.id}">
-                                    <h3 class="text-lg font-bold">${dentist.name}</h3>
-                                  </div>`;
-                    });
+                        let imgSrc = '';
+
+                        if (dentist.profile_image == null) {
+                            imgSrc = '{{ asset('images/logo.png') }}';
+                        } else {
+                            imgSrc = `/storage/service_images/${dentist.profile_image}`;
+                        }
+
+                        cards += `
+                            <div class="card-selectable border rounded p-4 shadow hover:shadow-lg" data-id="${dentist.id}">
+                                <div class="flex justify-center mb-2">
+                                    <img class="w-[200px] h-[100px]" src="${imgSrc}" alt="Verification ID" />
+                                </div>
+                                <h3 class="text-lg font-bold">${dentist.lastname}, ${dentist.name}</h3>
+                                <p>${dentist.contact_number}</p>
+                            </div>`;
+                        });
                 } else {
                     cards = '<p>No dentists available.</p>';
                 }
@@ -187,15 +211,15 @@ $('#service_id').on('change', function () {
     const serviceId = $(this).val();
     $.get(`/service/${serviceId}`, function (servdata) {
         if (servdata.status === 'success') {
-            $('#servicedetail').html(`
-                <div class="bg-white p-4 rounded shadow">
-                    <h2 class="text-xl font-bold mb-2">${servdata.name}</h2>
-                    <p><strong>Description:</strong> ${servdata.desc}</p>
-                    <p><strong>Type:</strong> ${servdata.type}</p>
-                    <p><strong>Approx. Time:</strong> ${servdata.time}</p>
-                    <p><strong>Approx. Price:</strong> ${servdata.price}</p>
-                </div>
-            `);
+            // $('#servicedetail').html(`
+            //     <div class="bg-white p-4 rounded shadow">
+            //         <h2 class="text-xl font-bold mb-2">${servdata.name}</h2>
+            //         <p><strong>Description:</strong> ${servdata.desc}</p>
+            //         <p><strong>Type:</strong> ${servdata.type}</p>
+            //         <p><strong>Approx. Time:</strong> ${servdata.time}</p>
+            //         <p><strong>Approx. Price:</strong> ${servdata.price}</p>
+            //     </div>
+            // `);
         }
     });
 });
@@ -252,14 +276,10 @@ $('#bookingForm').on('submit', function(e) {
             goToStep(1);
         },
         error: function(xhr) {
-            const errors = xhr.responseJSON.errors;
-            let message = 'Error booking appointment.';
+            const response = xhr.responseJSON;
 
-            if (errors) {
-                message = Object.values(errors).map(e => e.join(', ')).join(' ');
-            }
-
-            alert(message);
+// Option 1: Display the top-level message directly
+Swal.fire('Validation Error', response.message, 'error');
         }
     });
 });

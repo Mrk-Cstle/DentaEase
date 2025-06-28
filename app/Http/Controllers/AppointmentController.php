@@ -51,7 +51,7 @@ public function getDentists($branchId)
 
     $dentists = $store->staff()
         ->wherePivot('position', 'dentist')
-        ->get(['users.id', 'users.name']); // columns from users table
+        ->get(['users.id', 'users.name','users.lastname', 'users.contact_number','users.profile_image']); // columns from users table
 
     return response()->json([
         'status' => 'success',

@@ -109,6 +109,14 @@
 
                     </span>
                 </li>
+
+                <li class="p-4 border-b-1">
+                    <span >
+                        <a href="/bookingongoing" class="text-[#02ccfe] text">
+                        <i class="fa-solid fa-house"></i> Booking Ongoing</a>
+
+                    </span>
+                </li>
                 
                 <li class="p-4 border-b-1 md:hidden">
                     <span >
@@ -119,8 +127,8 @@
                 </li>
             </ul>
         </aside>
-        <main class=" bg-[#F5F5F5] bg-opacity-75 basis-4/5 ">
-            <div class="content flex flex-col p-10 mt-10 gap-5">
+        <main class=" bg-[#F5F5F5] bg-opacity-75 basis-4/5 overflow-y-auto">
+            <div class="content flex flex-col p-10 mt-10 gap-5 ">
                 @yield('main-content')
             </div>
             
