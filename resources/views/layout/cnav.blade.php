@@ -95,10 +95,17 @@
         <aside class=" bg-[#F5F5F5] bg-opacity-75  md:basis-1/5 md:h-full md:max-h-full border-r-1 border-indigo-200 ">
             <ul class="navlist mt-5 flex flex-row md:flex-col">
                 
-                <li class="p-4 border-b-1">
+                {{-- <li class="p-4 border-b-1">
                     <span >
                         <a href="" class="text-[#02ccfe] text">
                         <i class="fa-solid fa-house"></i> Dashboard</a>
+
+                    </span>
+                </li> --}}
+                <li class="p-4 border-b-1">
+                    <span >
+                        <a href="/bookingongoing" class="text-[#02ccfe] text">
+                        <i class="fa-solid fa-house"></i> Booking Ongoing</a>
 
                     </span>
                 </li>
@@ -110,13 +117,7 @@
                     </span>
                 </li>
 
-                <li class="p-4 border-b-1">
-                    <span >
-                        <a href="/bookingongoing" class="text-[#02ccfe] text">
-                        <i class="fa-solid fa-house"></i> Booking Ongoing</a>
-
-                    </span>
-                </li>
+           
                 
                 <li class="p-4 border-b-1 md:hidden">
                     <span >

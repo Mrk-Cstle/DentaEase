@@ -105,13 +105,19 @@ class AdminController extends Controller
         return view('admin.partials.newuser-approval', compact('user','users')); // Pass user to the view
     }
     public function Adduser(Request $request){
-        $name = $request->input('name');
-        $user = $request->input('user');
-        $position = $request->input('position');
+        // $name = $request->input('name');
+        // $last_name = $request->input('last_name');
+        // $middle_name = $request->input('middle_name');
+        // $suffix = $request->input('suffix');
+         $user = $request->input('user');
+        // $position = $request->input('position');
         $password = $user . 'Dentaease';
         try {
             $user = new User();
             $user->name = $request->input('name');
+            $user->lastname = $request->input('last_name');
+            $user->middlename = $request->input('middle_name');
+            $user->suffix = $request->input('suffix');
             $user->user = $request->input('user');
             $user->position = $request->input('position');
             $user->account_type = 'admin';
