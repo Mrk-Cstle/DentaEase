@@ -80,7 +80,7 @@
 
                     <li class="p-4 border-b-1">
                         <span >
-                            <a href="" class="text-[#02ccfe] text">
+                            <a href="/dashboard" class="text-[#02ccfe] text">
                             <i class="fa-solid fa-house"></i> Dashboard</a>
     
                         </span>
