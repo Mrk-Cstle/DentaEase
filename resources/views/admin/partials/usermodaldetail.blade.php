@@ -11,7 +11,7 @@
 <div class="flex flex-col h-full ">
 <div class="flex flex-row h-full  gap-5">
     <div class=" rounded-md flex flex-col basis-[30%] bg-white">
-        <div class="basis-[30%] bg-cover bg-no-repeat bg-center bg-[url({{ asset('images/defaultp.jpg') }})]  ">
+       <div class="basis-[30%] bg-cover bg-no-repeat bg-center bg-[url({{ asset('storage/profile_pictures/' . $user->profile_image) }})]  ">
           
         </div>
         <div class="basis-[70%]  flex flex-col p-5 overflow-y-auto gap-5 ">
