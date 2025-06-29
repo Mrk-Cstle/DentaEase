@@ -12,6 +12,7 @@ use App\Http\Middleware\Admin;
 use App\Http\Controllers\Facerecognition;
 use App\Http\Controllers\FileController;
 use App\Http\Controllers\ServicesController;
+use Illuminate\Support\Facades\Auth;
 
 Route::post('/remove-face-token', [AdminController::class, 'removeFaceToken'])->middleware('auth');
 Route::patch('/updateProfile', [ProfileController::class, 'updateProfile'])->middleware('auth')->name('updateProfile');
@@ -22,6 +23,29 @@ Route::get('/dashboard', [AdminController::class,'Dashboard'])->name('dashboard'
 
 Route::get('/profile', [AdminController::class,'Profile'])->name('Profile')->middleware('auth');
 
+
+Route::post('/set-active-branch', function (\Illuminate\Http\Request $request) {
+    session(['active_branch_id' => $request->id]);
+    return response()->json(['status' => 'success']);
+});
+
+
+Route::get('/get-branches', function () {
+   $branches = \App\Models\Store::all()->toArray(); // Convert collection to array
+
+if (Auth::check() && Auth::user()->position === 'admin') {
+    $branches[] = [
+        'id' => 'admin',
+        'name' => 'Admin',
+        'address' => 'N/A',
+        'open_days' => [],
+        'opening_time' => null,
+        'closing_time' => null,
+    ];
+}
+
+return response()->json($branches);
+});
 
 ///profile tab
 

@@ -3,7 +3,7 @@
 @section('title','Appointment Booking')
 @section('main-content')
 
-@if(auth()->user()->position === 'Receptionist')
+@if(auth()->user()->position === 'Receptionist' || auth()->user()->position === 'admin')
 <form method="GET" action="{{ route('admin.booking') }}" class="flex items-end space-x-4 mb-4">
     <div class="flex flex-col">
         <label for="dentist_id" class="mb-1">Filter by Dentist:</label>

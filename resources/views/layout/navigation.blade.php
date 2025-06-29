@@ -35,6 +35,7 @@
                         <p class="text-lg font-semibold text-white font-black">{{ $branch->name }}</p>
                         <p class="text-sm font-semibold text-white font-black">{{ $branch->address }}</p>
                     @else
+                    
                         <p class="text-red-500">Admin View</p>
                     @endif
                 </div>
@@ -69,6 +70,14 @@
             <aside class=" bg-[#F5F5F5] bg-opacity-75  basis-1/5 h-full max-h-full border-r-1 border-indigo-200 ">
                 <ul class="mt-5 ">
                     
+
+                    @if (auth()->user()->position == 'admin')
+                        <select id="branchSelector" class="border p-1 rounded">
+                        <option value="">-- Select Branch --</option>
+                    </select>
+                    @endif
+                    
+
                     <li class="p-4 border-b-1">
                         <span >
                             <a href="" class="text-[#02ccfe] text">
@@ -153,6 +162,36 @@
             }
         });
     </script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script>
+$(document).ready(function() {
+    // Fetch branches on page load
+    $.get('/get-branches', function(data) {
+        let selector = $('#branchSelector');
+        selector.empty().append('<option value="">-- Select Branch --</option>');
+        
+        data.forEach(branch => {
+            let selected = branch.id == '{{ session('active_branch_id') }}' ? 'selected' : '';
+            selector.append(`<option value="${branch.id}" ${selected}>${branch.name}</option>`);
+        });
+    });
 
+    // On change: update session and reload
+    $('#branchSelector').on('change', function() {
+        const branchId = $(this).val();
+
+        if (branchId) {
+            $.post('/set-active-branch', {
+                id: branchId,
+                _token: '{{ csrf_token() }}'
+            }, function(response) {
+                if (response.status === 'success') {
+                    location.reload(); // Refresh whole page
+                }
+            });
+        }
+    });
+});
+</script>
 </body>
 </html>
