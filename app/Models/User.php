@@ -17,6 +17,14 @@ class User extends Authenticatable
      *
      * @var list<string>
      */
+
+     protected static function booted()
+    {
+        static::created(function ($user) {
+            // Automatically generate QR when user is created
+            app(\App\Http\Controllers\QrController::class)->generateUserQr($user);
+        });
+    }
   protected $fillable = [
     'name',
     'middlename',
@@ -34,6 +42,8 @@ class User extends Authenticatable
     'status',
     'verification_id',
     'profile_image',
+    'qr_code',
+    'qr_token',
 ];
 
     /**

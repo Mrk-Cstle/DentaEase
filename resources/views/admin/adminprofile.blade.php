@@ -44,7 +44,10 @@
     <div class="flex flex-col  basis-[70%] gap-5">
         <div class=" rounded-md grow-1 bg-white flex flex-row gap-3 p-5">
             <div class="basis-[50%] border">
-                QR
+                 <div class="flex flex-row justify-center m-3">
+               
+                <img src="{{ asset('storage/qr_codes/' . Auth::user()->qr_code) }}" alt="User QR Code" />
+                 </div>
             </div>
             <div class="basis-[50%] border flex flex-col">
                 <div class="flex flex-row justify-between m-3">
