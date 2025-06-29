@@ -108,7 +108,7 @@ public function getDentistSlots($branchId, $dentistId, Request $request)
             $currentSlot = $slotEnd;
         } else {
             // Skip to end of overlapping booking
-            $currentSlot = Carbon::parse($overlapping->booking_end_time);
+            $currentSlot = Carbon::parse($overlapping->booking_end_time)->addMinutes(20);
         }
     }
 
