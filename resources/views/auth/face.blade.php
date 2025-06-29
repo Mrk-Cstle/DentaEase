@@ -24,7 +24,7 @@
                 Login using 
                 <a class="text-blue-500 underline hover:text-blue-700 transition" href="{{ route('loginui') }}">Login</a> 
                 or 
-                <a class="text-blue-500 underline hover:text-blue-700 transition" href="#">QR</a>
+               <a class="text-blue-500 underline hover:text-blue-700 transition" href="{{ route('Qr') }}">QR</a>
             </p>
 
             <p class="text-sm">

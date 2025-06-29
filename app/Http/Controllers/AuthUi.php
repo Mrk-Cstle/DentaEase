@@ -25,6 +25,9 @@ class AuthUi extends Controller
     public function SignUpUi(Request $request){
         return view('auth.signup');
     }
+     public function Qr(Request $request){
+        return view('auth.qrlogin');
+    }
     public function LoginUi(Request $request){
         return view('auth.login');
     }
@@ -249,4 +252,7 @@ public function verifyOtp(Request $request)
 
     return response()->json(['message' => 'Account created successfully!, Please wait for admin approval email.']);
 }
+
+
+//qr 
 }
