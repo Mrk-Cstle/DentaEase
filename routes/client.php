@@ -8,6 +8,11 @@ use App\Http\Controllers\AppointmentController;
 use App\Http\Controllers\ProfileController;
 
 
+Route::post('/notifications/mark-as-read', function () {
+    auth()->user()->unreadNotifications->markAsRead();
+    return response()->json(['status' => 'success']);
+})->name('notifications.markAsRead');
+
 Route::middleware(['auth', Client::class])->group(function(){
     Route::get('/cdashboard', [Clientside::class,'CDashboard'])->name('CDashboard')->middleware('auth');
      Route::get('/booking', [Clientside::class,'CBooking'])->name('CBooking')->middleware('auth');
