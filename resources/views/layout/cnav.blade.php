@@ -65,8 +65,47 @@
            
            
         </div>
+  
         <div class="flex flex-row h-auto p-3 gap-5 ">
+            
+<!-- Notification Bell Icon -->
+<div class="relative inline-block text-left m-2">
+    <button id="notificationToggle" class="relative focus:outline-none">
+        <i class="fa-solid fa-bell text-xl text-gray-600"></i>
+        @if(Auth::user()->unreadNotifications->count())
+            <span class="absolute top-0 right-0 inline-block w-2 h-2 bg-red-500 rounded-full animate-ping"></span>
+            <span class="absolute top-0 right-0 inline-block w-2 h-2 bg-red-500 rounded-full"></span>
+        @endif
+    </button>
+
+    <!-- Dropdown -->
+    <div id="notificationDropdown"
+         class="hidden absolute right-0 mt-2 w-80 bg-white border border-gray-200 rounded-lg shadow-lg z-50 transition duration-200 ease-in-out">
+        <div class="p-4 border-b">
+            <h3 class="text-sm font-bold text-gray-700">Notifications</h3>
+        </div>
+        <ul class="max-h-80 overflow-y-auto divide-y divide-gray-100">
+            @forelse($notifications ?? Auth::user()->notifications->take(10) as $notification)
+                <li class="px-4 py-3 hover:bg-gray-100 transition cursor-pointer">
+                    <p class="text-sm text-gray-800 font-medium">
+                        {{ $notification->data['message'] ?? 'You have a new notification.' }}
+                    </p>
+                    <span class="text-xs text-gray-500">{{ $notification->created_at->diffForHumans() }}</span>
+                </li>
+            @empty
+                <li class="px-4 py-3 text-center text-sm text-gray-500">No notifications</li>
+            @endforelse
+        </ul>
+        {{-- <div class="p-2 border-t text-center">
+            <a href="{{ route('notifications.index') }}"
+               class="text-xs text-blue-600 hover:underline">View all</a>
+        </div> --}}
+    </div>
+</div>
+
+
            <div class="relative md:inline-block text-left">
+            
             <div class="flex items-center gap-2 cursor-pointer" id="dropdownToggle">
                 <div class="w-10 h-10 rounded-full overflow-hidden border-2 border-gray-300 shadow-sm bg-white flex items-center justify-center">
                     @if(Auth::user()->profile_image)
@@ -167,6 +206,39 @@
             }
         });
     </script>
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        const toggle = document.getElementById('notificationToggle');
+        const dropdown = document.getElementById('notificationDropdown');
+        let hasMarked = false;
+
+        toggle.addEventListener('click', function (e) {
+            dropdown.classList.toggle('hidden');
+
+            if (!hasMarked && !dropdown.classList.contains('hidden')) {
+                // Mark notifications as read
+                fetch("{{ route('notifications.markAsRead') }}", {
+                    method: "POST",
+                    headers: {
+                        "X-CSRF-TOKEN": '{{ csrf_token() }}',
+                        "Content-Type": "application/json",
+                    },
+                }).then(res => res.json()).then(data => {
+                    hasMarked = true;
+                    // Optionally: hide red dot after mark
+                    document.querySelectorAll('.fa-bell + span').forEach(el => el.remove());
+                });
+            }
+        });
+
+        document.addEventListener('click', function (e) {
+            if (!toggle.contains(e.target) && !dropdown.contains(e.target)) {
+                dropdown.classList.add('hidden');
+            }
+        });
+    });
+</script>
+
 
 </body>
 </html>

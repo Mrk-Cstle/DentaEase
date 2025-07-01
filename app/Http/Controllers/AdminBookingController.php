@@ -10,6 +10,7 @@ use App\Models\User;
 use App\Mail\AppointmentApprovedMail;
 use App\Models\StoreStaff;
 use Illuminate\Support\Facades\Mail;
+use App\Notifications\AppointmentNotification;
 
 class AdminBookingController extends Controller
 {
@@ -70,6 +71,12 @@ public function approveBooking(Request $request, $id)
         'status' => 'approved',
     ]);
      Mail::to($appointment->user->email)->send(new AppointmentApprovedMail($appointment));
+     
+     $appointment->user->notify(new AppointmentNotification([
+    'title' => 'Appointment Approved',
+    'message' => 'Your appointment has been approved and updated at '. $appointment->store->name,
+    // 'url' => '/messages'
+]));
       return response()->json(['message' => 'Appointment approved.']);
 }
 
@@ -140,6 +147,11 @@ public function cancelBooking($id)
 
     $appointment->status = 'cancelled';
     $appointment->save();
+    $appointment->user->notify(new AppointmentNotification([
+    'title' => 'Appointment Approved',
+    'message' => 'Your appointment at '. $appointment->store->name . ' has been cancelled.',
+    // 'url' => '/messages'
+]));
 
     return response()->json(['message' => 'Appointment cancelled.']);
 }

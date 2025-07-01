@@ -5,6 +5,7 @@ use App\Models\Appointment;
 use Illuminate\Http\Request;
 use App\Models\Store;
 use App\Models\Service;
+use Illuminate\Support\Facades\Auth;
 class Clientside extends Controller
 {
     //
@@ -41,12 +42,14 @@ class Clientside extends Controller
 
     $stores = Store::all();
     $services = Service::all();
+     $notifications = Auth::user()->notifications()->latest()->take(10)->get();
 
     return view('client.cbookingongoing', compact(
         'incompleteAppointments',
         'completedAppointments',
         'stores',
-        'services'
+        'services',
+        'notifications'
     ));
 }
 
