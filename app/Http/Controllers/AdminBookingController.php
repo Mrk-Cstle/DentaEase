@@ -150,7 +150,7 @@ public function showHistory(Request $request)
 {
     $query = Appointment::with('user')
         ->where('store_id', session('active_branch_id'))
-        ->whereIn('status', ['completed', 'cancelled']); // adjust as needed
+        ->whereIn('status', ['completed', 'cancelled' , 'no_show']); // adjust as needed
 
     if (auth()->user()->position === 'dentist') {
         $query->where('dentist_id', auth()->id());

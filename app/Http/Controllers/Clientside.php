@@ -21,20 +21,33 @@ class Clientside extends Controller
       
         return view('client.cbooking', compact('stores'));
     }
-    public function CBookingo(){
-        $incompleteAppointments = Appointment::with(['user', 'dentist', 'store'])
-        ->where('user_id', auth()->id())
-        ->where('status', '!=', 'completed') 
-        ->where('status', '!=', 'cancelled')
-        ->where('status', '!=', 'no_show')// show only non-completed ones
+    public function CBookingo()
+{
+    $userId = auth()->id();
+
+    // Get pending/ongoing appointments (exclude completed, cancelled, no_show)
+    $incompleteAppointments = Appointment::with(['user', 'dentist', 'store'])
+        ->where('user_id', $userId)
+        ->whereNotIn('status', ['completed', 'cancelled', 'no_show'])
         ->orderBy('appointment_date', 'desc')
         ->get();
 
-    $stores = Store::all(); // Assuming you're passing this too
+    // Get only completed appointments for the history tab
+    $completedAppointments = Appointment::with(['user', 'dentist', 'store'])
+        ->where('user_id', $userId)
+        ->where('status', 'completed','no_show')
+        ->orderBy('appointment_date', 'desc')
+        ->get();
+
+    $stores = Store::all();
     $services = Service::all();
-    return view('client.cbookingongoing', compact('incompleteAppointments', 'stores', 'services'));
-      
-      
-        
-    }
+
+    return view('client.cbookingongoing', compact(
+        'incompleteAppointments',
+        'completedAppointments',
+        'stores',
+        'services'
+    ));
+}
+
  }
