@@ -44,25 +44,44 @@
            
             <div class="flex flex-row h-auto p-3 gap-5 ">
                 
-                <i class="text-4xl fa-solid fa-circle-user"></i>
-                <div class="">
-                    
-                    <h2 class="text-black text-sm " > {{ Auth::user()->name}}</h2>
-                    <div class="flex flex-row justify-between">
-                        <h2 class="text-black text-xs" >{{ Auth::user()->account_type }}</h2>
-                        <button id="dropdownToggle" class="text-black text-xs focus:outline-none">
-                            <i class="fa-solid fa-caret-down"></i>
-                        </button>
+                <div class="relative md:inline-block text-left">
+                <div class="flex items-center gap-2 cursor-pointer" id="dropdownToggle">
+                    <div class="w-10 h-10 rounded-full overflow-hidden border-2 border-gray-300 shadow-sm bg-white flex items-center justify-center">
+                        @if(Auth::user()->profile_image)
+                            <img 
+                                src="{{ asset('storage/profile_pictures/' . Auth::user()->profile_image) }}" 
+                                alt="Profile" 
+                                class="w-full h-full object-cover"
+                            >
+                        @else
+                            <i class="fa-solid fa-user text-gray-500 text-xl"></i>
+                        @endif
                     </div>
-                    
-    
-                    <ul id="dropdownMenu" class="absolute mt-2 right-0 bg-white border rounded shadow-lg text-sm hidden z-50">
-                        <li><a href="/profile" class="block px-4 py-2 hover:bg-gray-100">Profile</a></li>
-                        <li><a href="#" class="block px-4 py-2 hover:bg-gray-100">Settings</a></li>
-                        <li><a href="/logouts" class="block px-4 py-2 hover:bg-gray-100 text-red-500">Sign out</a></li>
-                    </ul>
-                    
+                    <div class="text-sm text-gray-800 text-left">
+                        <div class="font-semibold">{{ Auth::user()->name }}</div>
+                        <div class="text-xs text-blue-600">{{ Auth::user()->position }}</div>
+                    </div>
+                    <i class="fa-solid fa-caret-down text-sm text-gray-600"></i>
                 </div>
+
+                <ul id="dropdownMenu" class="absolute right-0 mt-3 w-44 bg-white rounded-xl shadow-lg border border-gray-200 hidden z-50">
+                    <li>
+                        <a href="/profile" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 rounded-t-xl">
+                            <i class="fa-regular fa-user mr-2"></i> Profile
+                        </a>
+                    </li>
+                    {{-- <li>
+                        <a href="#" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
+                            <i class="fa-solid fa-gear mr-2"></i> Settings
+                        </a>
+                    </li> --}}
+                    <li>
+                        <a href="/logouts" class="block px-4 py-2 text-sm text-red-500 hover:bg-red-50 rounded-b-xl">
+                            <i class="fa-solid fa-right-from-bracket mr-2"></i> Sign out
+                        </a>
+                    </li>
+                </ul>
+            </div>
                
             </div>
         </header>
