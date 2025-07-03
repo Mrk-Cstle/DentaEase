@@ -8,7 +8,8 @@ use  App\Models\newuser;
 use  App\Models\User;
 use Illuminate\Support\Facades\Mail;
 use App\Mail\mailresponse;
-
+use App\Models\Appointment;
+use Illuminate\Support\Carbon;
 
 use Illuminate\Support\Facades\Storage;
 class AdminController extends Controller
@@ -37,7 +38,15 @@ class AdminController extends Controller
         }
     }
     public function Dashboard(Request $request){
-        return view('admin.dashboard');
+
+         $branchId = session('active_branch_id');
+
+    $appointmentsToday = Appointment::with('user') // Include user relationship
+        ->where('store_id', $branchId)
+        ->whereDate('appointment_date', Carbon::today())
+        ->orderBy('appointment_time')
+        ->get();
+        return view('admin.dashboard', compact('appointmentsToday'));
     }
     
     public function Logout(){
