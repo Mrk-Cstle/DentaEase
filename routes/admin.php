@@ -12,6 +12,7 @@ use App\Http\Middleware\Admin;
 use App\Http\Controllers\Facerecognition;
 use App\Http\Controllers\FileController;
 use App\Http\Controllers\ServicesController;
+use App\Http\Controllers\DashboardController;
 use Illuminate\Support\Facades\Auth;
 
 Route::post('/remove-face-token', [AdminController::class, 'removeFaceToken'])->middleware('auth');
@@ -115,6 +116,9 @@ Route::post('/add-services', [ServicesController::class,'Addservices'])->name('a
 Route::post('/service/update', [ServicesController::class,'update'])->name('service-update');
 Route::delete('services/{id}', [ServicesController::class, 'destroy'])->name('services.destroy');
 
+//dashboard
+
+Route::get('/dashboard/appointment-stats', [DashboardController::class, 'getAppointmentStats']);
 
 });
 
