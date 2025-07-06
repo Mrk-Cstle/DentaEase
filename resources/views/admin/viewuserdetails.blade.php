@@ -17,7 +17,7 @@
         @if ($user->profile_image == null)
         <div class="basis-[30%] bg-cover bg-no-repeat bg-center bg-[url({{ asset('images/defaultp.jpg') }})]  ">
         @else
-        <div class="basis-[30%] bg-cover bg-no-repeat bg-center bg-[url({{ asset('storage/profile_pictures/' . $user->profile_image) }})]  ">
+        <div class="basis-[30%] bg-cover bg-no-repeat bg-center bg-[url({{ asset('DentaEase/public/storage/profile_pictures/' . $user->profile_image) }})]  ">
         @endif
         </div>
         <div class="basis-[70%]  flex flex-col p-5 overflow-y-auto gap-5 ">
@@ -45,7 +45,7 @@
             <div class="basis-[70%]  flex flex-col p-5 overflow-y-auto">`
                 <div class="flex flex-row justify-center m-3">
                
-                <img src="{{ asset('storage/qr_codes/' . $user->qr_code) }}" alt="User QR Code" />
+                <img src="{{ asset('DentaEase/public/storage/qr_codes/' . $user->qr_code) }}" alt="User QR Code" />
                  </div>
                 <form id="updateProfile" class="flex flex-col gap-3" >
                 

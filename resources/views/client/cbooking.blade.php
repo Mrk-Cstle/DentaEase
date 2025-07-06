@@ -59,7 +59,7 @@
                 
             @else
             <div class="flex justify-center mb-2">
-                <img class="w-[200px]  h-[100px]" src="{{ asset('storage/service_images/' . $service->image) }}" alt="Verification ID" />
+                <img class="w-[200px]  h-[100px]" src="{{ asset('DentaEase/public/storage/service_images/' . $service->image) }}" alt="Verification ID" />
             </div>
    
             @endif
@@ -186,7 +186,7 @@ $('#store_id').on('change', function () {
                         if (dentist.profile_image == null) {
                             imgSrc = '{{ asset('images/logo.png') }}';
                         } else {
-                            imgSrc = `{{ asset('storage/profile_pictures/' . Auth::user()->profile_image) }}`;
+                            imgSrc = `{{ asset('DentaEase/public/storage/profile_pictures/' . Auth::user()->profile_image) }}`;
                         }
 
                         cards += `

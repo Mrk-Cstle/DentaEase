@@ -17,7 +17,7 @@
         @if (Auth::user()->profile_image == null)
         <div class="basis-[30%] bg-cover bg-no-repeat bg-center bg-[url({{ asset('images/defaultp.jpg') }})]  ">
         @else
-        <div class="basis-[30%] bg-cover bg-no-repeat bg-center bg-[url({{ asset('storage/profile_pictures/' . Auth::user()->profile_image) }})]  ">
+        <div class="basis-[30%] bg-cover bg-no-repeat bg-center bg-[url({{ asset('DentaEase/public/storage/profile_pictures/' . Auth::user()->profile_image) }})]  ">
         @endif
       
             
@@ -46,7 +46,7 @@
             <div class="basis-[50%] border">
               <div class="flex flex-row justify-center m-3">
                
-                <img src="{{ asset('storage/qr_codes/' . Auth::user()->qr_code) }}" alt="User QR Code" />
+                <img src="{{ asset('DentaEase/public/storage/qr_codes/' . Auth::user()->qr_code) }}" alt="User QR Code" />
                  </div>
             </div>
             <div class="basis-[50%] border flex flex-col">

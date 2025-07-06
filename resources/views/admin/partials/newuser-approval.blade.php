@@ -35,7 +35,9 @@
         @if($user->verification_id)
             <div>
                 <strong>Verification ID:</strong><br>
-             <img src="{{ asset('storage/temp_verifications/' . $user->verification_id) }}" alt="Verification ID" />
+           <img src="{{ url('DentaEase/public/storage/temp_verifications/' . $user->verification_id) }}" alt="Verification ID">
+
+
 
 
             </div>
