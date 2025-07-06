@@ -13,6 +13,7 @@ use App\Http\Controllers\Facerecognition;
 use App\Http\Controllers\FileController;
 use App\Http\Controllers\ServicesController;
 use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\VisitLogController;
 use Illuminate\Support\Facades\Auth;
 
 Route::post('/remove-face-token', [AdminController::class, 'removeFaceToken'])->middleware('auth');
@@ -58,6 +59,7 @@ Route::get('/useraccount', [AdminController::class,'Useraccount'])->name('Userac
 Route::get('/patientaccount', [AdminController::class,'Patientaccount'])->name('Patientaccount')->middleware('auth');
 Route::get('/branch', [AdminController::class,'Branch'])->name('Branch')->middleware('auth');
 Route::get('/services', [AdminController::class,'Services'])->name('Services')->middleware('auth');
+Route::get('/logs', [VisitLogController::class,'logs'])->name('logs')->middleware('auth');
 
 //new user 
 
@@ -119,6 +121,11 @@ Route::delete('services/{id}', [ServicesController::class, 'destroy'])->name('se
 //dashboard
 
 Route::get('/dashboard/appointment-stats', [DashboardController::class, 'getAppointmentStats']);
+
+
+//appointment logs 
+Route::post('/scan-qr', [VisitLogController::class, 'handleQrScan'])->name('scan.qr');
+
 
 });
 

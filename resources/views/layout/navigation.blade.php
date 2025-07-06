@@ -141,6 +141,13 @@
     
                         </span>
                     </li>
+                    <li class="p-4 border-b-1 ">
+                        <span >
+                            <a href="/logs" class="text-[#02ccfe] text">
+                            <i class="fa-solid fa-house"></i> Logs</a>
+    
+                        </span>
+                    </li>
 
                    @if (session('active_branch_id') != "admin")
                          <li class="p-4 border-b-1 ">

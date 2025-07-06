@@ -13,7 +13,7 @@ class DashboardController extends Controller
     public function getAppointmentStats(Request $request)
 {
     $filter = $request->input('filter', 'daily');
-    $branchId = session('active_branch_id'); // 👍 This is actually an ID
+    $branchId = session('active_branch_id'); 
 
     $query = Appointment::where('store_id', $branchId);
 
