@@ -33,9 +33,9 @@
     </main>
 
     <!-- Optional Footer -->
-    <footer class="text-center text-sm text-blue-700 pb-4">
+    {{-- <footer class="text-center text-sm text-blue-700 pb-4">
         © {{ date('Y') }} Santiago-Amancio Dental Clinic. All rights reserved.
-    </footer>
+    </footer> --}}
 
 </body>
 </html>
