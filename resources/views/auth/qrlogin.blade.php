@@ -1,58 +1,78 @@
 @extends('layout.auth')
 
-@section('title', 'Login')
+@section('title', 'Login via QR')
 
 @section('auth-content')
-            <div class="bg-[#F5F5F5] bg-opacity-75 w-1/3 px-10 py-10 rounded-md flex flex-col h-150  ">
-               
-                    <div class="flex  justify-center" >
-                        <h2>Login using Qr</h2>
-                    </div>
-                   <div id="qr-reader" class="mt-4"></div>
 
-                  <script src="https://unpkg.com/html5-qrcode" type="text/javascript"></script>
-                  <div class="flex flex-col items-center text-center gap-2 mt-3">
-            <p class="text-sm">
-                Login using 
-                <a class="text-blue-500 underline hover:text-blue-700 transition" href="{{ route('loginui') }}">Login</a> 
-                or 
-               <a class="text-blue-500 underline hover:text-blue-700 transition" href="{{ route('faceui') }}">Face Recognition</a> 
-            </p>
+    <div class="text-center mb-4">
+        <h2 class="text-2xl font-bold text-sky-600">Login using QR Code</h2>
+    </div>
 
-            <p class="text-sm">
-                Don't have an account?  
-                <a class="text-blue-500 underline hover:text-blue-700 transition" href="{{ route('signupui') }}">Sign up</a> 
-            </p>
-        </div>
-                   
+    <!-- QR Scanner Container -->
+    <div id="qr-reader" class="rounded-md border border-gray-300 p-4"></div>
 
-          
-            </div>
-            <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-            <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-            <script>
-               function onScanSuccess(decodedText, decodedResult) {
-                // Send the token to the backend
-                fetch("/qr-login", {
-                    method: "POST",
-                    headers: {
-                        "Content-Type": "application/json",
-                        "X-CSRF-TOKEN": document.querySelector('meta[name="csrf-token"]').getAttribute("content")
-                    },
-                    body: JSON.stringify({ token: decodedText })
-                })
-                .then(res => res.json())
-                .then(data => {
-                    if (data.message === 'Logged in successfully.') {
-                          window.location.href = data.redirect;
-                    } else {
-                        alert('Login failed: ' + data.message);
-                    }
-                });
-            }
+    <!-- Alternative login links -->
+    <div class="text-center mt-6 space-y-2 text-sm text-gray-700">
+        <p>
+            Login using 
+            <a href="{{ route('loginui') }}" class="text-blue-500 hover:text-blue-700 underline transition">Login</a>
+            or
+            <a href="{{ route('faceui') }}" class="text-blue-500 hover:text-blue-700 underline transition">Face Recognition</a>
+        </p>
+        <p>
+            Don't have an account? 
+            <a href="{{ route('signupui') }}" class="text-blue-500 hover:text-blue-700 underline transition">Sign up</a>
+        </p>
+    </div>
 
-            new Html5QrcodeScanner("qr-reader", { fps: 10, qrbox: 250 })
-                .render(onScanSuccess);
-            
-            </script>
-            @endsection
+
+<!-- Scripts -->
+<script src="https://unpkg.com/html5-qrcode" type="text/javascript"></script>
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+<script>
+function onScanSuccess(decodedText, decodedResult) {
+    // Send token to backend
+    fetch("/qr-login", {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json",
+            "X-CSRF-TOKEN": document.querySelector('meta[name="csrf-token"]').getAttribute("content")
+        },
+        body: JSON.stringify({ token: decodedText })
+    })
+    .then(res => res.json())
+    .then(data => {
+        if (data.message === 'Logged in successfully.') {
+            Swal.fire({
+                icon: 'success',
+                title: 'Success!',
+                text: 'QR login successful.',
+                timer: 1500,
+                showConfirmButton: false
+            }).then(() => {
+                window.location.href = data.redirect;
+            });
+        } else {
+            Swal.fire({
+                icon: 'error',
+                title: 'Login Failed',
+                text: data.message,
+            });
+        }
+    })
+    .catch(err => {
+        console.error('QR login error:', err);
+        Swal.fire({
+            icon: 'error',
+            title: 'Error',
+            text: 'Something went wrong. Please try again.',
+        });
+    });
+}
+
+new Html5QrcodeScanner("qr-reader", { fps: 10, qrbox: 250 })
+    .render(onScanSuccess);
+</script>
+@endsection
