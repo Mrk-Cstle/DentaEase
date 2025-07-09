@@ -74,7 +74,7 @@
           <div id="dropdownToggle" class="cursor-pointer flex items-center space-x-2 text-white">
             <div class="w-10 h-10 rounded-full bg-white overflow-hidden border">
               @if(Auth::user()->profile_image)
-                <img src="{{ asset('storage/profile_pictures/' . Auth::user()->profile_image) }}" class="object-cover w-full h-full">
+                <img src="{{ asset('DentaEase/public/storage/profile_pictures/' . Auth::user()->profile_image) }}" class="object-cover w-full h-full">
               @else
                 <i class="fa-solid fa-user text-gray-600 text-xl flex justify-center items-center h-full"></i>
               @endif
