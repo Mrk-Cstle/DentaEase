@@ -2,291 +2,222 @@
 
 @section('title','New User Verification')
 @section('main-content')
-<h1>Staff Management</h1>
-<div class="flex flex-row justify-between">
-  <div class="flex flex-row ">
-  
-    <button id="addUserBtn">Add User</button>
-     
-        
-    
-  </div>
+<div class="mb-6">
+  <h1 class="text-2xl font-bold text-accent mb-4">Staff Management</h1>
 
- 
+  <div class="flex flex-col sm:flex-row justify-between gap-4 mb-4">
+    <button id="addUserBtn" class="bg-primary hover:bg-blue-700 text-white px-4 py-2 rounded shadow w-full sm:w-auto">
+      <i class="fa-solid fa-user-plus mr-2"></i>Add User
+    </button>
 
-  <div class="flex flex-row gap-5">
-  <select id="positionFilter" class="border p-2 rounded">
-  <option value="">All Positions</option>
-  <option value="Receptionist">Receptionist</option>
-  <option value="Dentist">Dentist</option>
-  <option value="Admin">Admin</option>
-
-  </select>
-      <input type="text" id="searchInput" placeholder="Search..." />
-          <button>Search</button>
-  
-      
-  </div>
-</div>
-{{-- Modal Add User --}}
-<div id="addUserModal" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.5);">
-  <div class="flex flex-col" style="background:#fff; padding:20px; margin:100px auto; width:50%; position:relative;">
-    <h3>Add New User</h3>
-    <form class="flex flex-col p-2 gap-2" id="addUserForm">
-      
-      <label>Last Name:</label>
-      <input type="text" name="last_name" placeholder="Last Name" required>
-
-      <label>First Name:</label>
-      <input type="text" name="name" placeholder="First Name" required>
-
-      <label>Middle Name:</label>
-      <input type="text" name="middle_name" placeholder="Middle Name">
-
-      <label>Suffix:</label>
-      <input type="text" name="suffix" placeholder="Suffix (e.g. Jr, Sr)">
-
-      <label>Username:</label>
-      <input type="text" name="user" placeholder="Username" required>
-
-      <label>Position:</label>
-      <select name="position" id="position" required>
-        <option value="">-- Select Position --</option>
-        <option value="admin">Admin</option>
-        <option value="Dentist">Dentist</option>
+    <div class="flex flex-col sm:flex-row gap-2">
+      <select id="positionFilter" class="border rounded p-2 w-full sm:w-auto">
+        <option value="">All Positions</option>
         <option value="Receptionist">Receptionist</option>
+        <option value="Dentist">Dentist</option>
+        <option value="Admin">Admin</option>
       </select>
+      <input type="text" id="searchInput" placeholder="Search..." class="border rounded p-2 w-full sm:w-60" />
+      <button onclick="stafflist(1)" class="bg-primary hover:bg-blue-700 text-white px-4 py-2 rounded">
+        Search
+      </button>
+    </div>
+  </div>
 
-      <div class="flex flex-row mt-5 gap-3">
-        <button type="submit">Save</button>
-        <button type="button" id="closeModalBtn">Cancel</button>
+  <!-- User Table -->
+  <div class="overflow-x-auto rounded shadow border">
+    <table class="w-full table-auto text-sm text-center">
+      <thead class="bg-secondary text-accent">
+        <tr>
+          <th class="py-3 px-4 border">Name</th>
+          <th class="py-3 px-4 border">Position</th>
+          <th class="py-3 px-4 border">Contact Number</th>
+          <th class="py-3 px-4 border">Action</th>
+        </tr>
+      </thead>
+      <tbody id="newtbody" class="bg-white">
+        <!-- Populated via JS -->
+      </tbody>
+    </table>
+  </div>
+
+  <!-- Pagination -->
+  <div id="pagination" class="mt-4 flex gap-2 justify-center"></div>
+</div>
+
+<!-- Modal: Add User -->
+<div id="addUserModal" class="fixed inset-0 bg-black bg-opacity-50 hidden z-50 flex items-center justify-center">
+  <div class="bg-white w-full max-w-xl rounded-lg p-6 shadow-lg relative">
+    <h3 class="text-lg font-bold mb-4">Add New User</h3>
+    <form class="flex flex-col gap-3" id="addUserForm">
+      <div class="grid sm:grid-cols-2 gap-3">
+        <div>
+          <label class="font-semibold">Last Name</label>
+          <input type="text" name="last_name" required class="w-full border p-2 rounded" />
+        </div>
+        <div>
+          <label class="font-semibold">First Name</label>
+          <input type="text" name="name" required class="w-full border p-2 rounded" />
+        </div>
+        <div>
+          <label class="font-semibold">Middle Name</label>
+          <input type="text" name="middle_name" class="w-full border p-2 rounded" />
+        </div>
+        <div>
+          <label class="font-semibold">Suffix</label>
+          <input type="text" name="suffix" class="w-full border p-2 rounded" />
+        </div>
+        <div>
+          <label class="font-semibold">Username</label>
+          <input type="text" name="user" required class="w-full border p-2 rounded" />
+        </div>
+        <div>
+          <label class="font-semibold">Position</label>
+          <select name="position" id="position" required class="w-full border p-2 rounded">
+            <option value="">-- Select Position --</option>
+            <option value="admin">Admin</option>
+            <option value="Dentist">Dentist</option>
+            <option value="Receptionist">Receptionist</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="flex justify-end gap-3 mt-4">
+        <button type="submit" class="bg-primary hover:bg-blue-700 text-white px-4 py-2 rounded">Save</button>
+        <button type="button" id="closeModalBtn" class="bg-gray-300 hover:bg-gray-400 px-4 py-2 rounded">Cancel</button>
       </div>
     </form>
-
-
-
+  </div>
 </div>
-</div>
-<div>
 
-    <table class="border-collapse border border-gray-400 table-auto w-full text-center">
-    
-        <thead class="bg-gray-200">
-            <tr>
-                <th>Name</th>
-                <th>Position</th>
-                <th>Contact Number</th>
-                <th>Action</th>
-            </tr>
-        </thead>
-        <tbody id="newtbody">
-       
-            
-          
-        </tbody>
-     
-    </table>
-    <div id="pagination" class="mt-4 flex gap-2"></div>
-   
-    
-
-    <!-- Modal -->
-<div id="viewModal" class="fixed inset-0 flex items-center justify-center backdrop-blur-sm bg-black/5 hidden z-50">
-    <div class="bg-white p-6 rounded-lg shadow-lg w-full max-w-md relative">
-      <button onclick="closeModal()" class="absolute top-2 right-2 text-gray-500 hover:text-black">&times;</button>
-      
-      <h2 class="text-xl font-semibold mb-4">User Info</h2>
-      
-      <div id="modalContent">
-        <!-- User data will be injected here -->
-      </div>
-      
-      <div class="mt-4 text-right">
-        <button onclick="closeModal()" class="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded">Close</button>
-      </div>
+<!-- Modal: View User -->
+<div id="viewModal" class="fixed inset-0 flex items-center justify-center backdrop-blur-sm bg-black/30 hidden z-50">
+  <div class="bg-white p-6 rounded-lg shadow-lg w-full max-w-md relative">
+    <button onclick="closeModal()" class="absolute top-2 right-2 text-gray-500 hover:text-black text-xl">&times;</button>
+    <h2 class="text-xl font-semibold mb-4">User Info</h2>
+    <div id="modalContent" class="text-sm text-gray-800 space-y-2">
+      <!-- Filled dynamically -->
+    </div>
+    <div class="mt-4 text-right">
+      <button onclick="closeModal()" class="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded">Close</button>
     </div>
   </div>
 </div>
 
+<!-- Scripts -->
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <script>
-  // view user modal 
+  // modal control
   function closeModal() {
     $('#viewModal').addClass('hidden');
-}
+  }
 
-// function viewUser(id) {
-//     $.ajax({
-//         type: "post",
-//         url: "{{route('Viewuser')}}",
-//         data: {
-//             id: id,
-//             type: 'User',
-//             _token: "{{csrf_token()}}"
-//         },
-        
-//         success: function (response) {
-
-//             const users = response.data;
-//             console.log(response.data.id);
-//             $('#modalContent').html(`
-//                 <p><strong>Name:</strong> ${users.name}</p>
-//                 <p><strong>Birth Date:</strong> ${users.birth_date}</p>
-//                 <p><strong>Contact:</strong> ${users.contact_number}</p>
-//                 <p><strong>Email</strong>${users.email}</p>
-                
-
-//             `);
-//             $('#viewModal').removeClass('hidden');
-//         },
-//         error: function (xhr) {
-//             console.error(xhr.responseJSON);
-//         }
-//     });
-// }
-
-//end of user modal
-
-
-//user table list
   let currentPage = parseInt(localStorage.getItem('staffcurrentpage')) || 1;
-  let currentSearch='';
+  let currentSearch = '';
 
   function stafflist(page = 1) {
     currentPage = page;
-    
     localStorage.setItem('staffcurrentpage', page);
     currentSearch = $('#searchInput').val();
     currentPosition = $('#positionFilter').val();
-     localStorage.setItem('staffPositionFilter', currentPosition);
-     
-    var formdata = {
-      "search": currentSearch,
-      "position": currentPosition,
-      "page": page
+    localStorage.setItem('staffPositionFilter', currentPosition);
 
-    }
-   $.ajax({
-      type: "get",
-      url: "{{Route('Stafflist')}}",
-      data: formdata,
-    
+    $.ajax({
+      type: "GET",
+      url: "{{ route('Stafflist') }}",
+      data: {
+        search: currentSearch,
+        position: currentPosition,
+        page: page
+      },
       success: function (response) {
         if (response.status === 'success') {
-                let rows = '';
-                response.data.forEach(function (user) {
-                    rows += `
-                    <tr>
-                        <td>${user.name}</td>
-                        <td>${user.position}</td>
-                        <td>${user.contact_number}</td>
-                     <td><a href="/user/${user.id}">View</a></td>
-                    </tr>
-                    `;
-                });
+          let rows = '';
+          response.data.forEach(user => {
+            rows += `
+              <tr>
+                <td class="border py-2 px-4">${user.name}</td>
+                <td class="border py-2 px-4">${user.position}</td>
+                <td class="border py-2 px-4">${user.contact_number}</td>
+                <td class="border py-2 px-4">
+                  <a href="/user/${user.id}" class="text-blue-600 hover:underline">View</a>
+                </td>
+              </tr>`;
+          });
+          $('#newtbody').html(rows);
 
-                $('#newtbody').html(rows);
-
-                let paginationHTML = '';
-
-                if (response.pagination.prev_page_url) {
-                    paginationHTML += `<button onclick="newuser(${parseInt(currentPage) - 1})">Previous</button>`;
-                }
-
-                if (response.pagination.next_page_url) {
-                    paginationHTML += `<button onclick="newuser(${parseInt(currentPage) + 1})">Next</button>`;
-                }
-
-                $('#pagination').html(paginationHTML);
-            } else {
-                console.error('Failed to fetch data.');
-            }
+          let paginationHTML = '';
+          if (response.pagination.prev_page_url) {
+            paginationHTML += `<button onclick="stafflist(${parseInt(currentPage) - 1})" class="px-3 py-1 bg-gray-200 rounded">Previous</button>`;
+          }
+          if (response.pagination.next_page_url) {
+            paginationHTML += `<button onclick="stafflist(${parseInt(currentPage) + 1})" class="px-3 py-1 bg-gray-200 rounded">Next</button>`;
+          }
+          $('#pagination').html(paginationHTML);
+        }
       }
     });
-    
   }
+
   $(document).ready(function () {
     const savedPosition = localStorage.getItem('staffPositionFilter');
     if (savedPosition !== null) {
-        $('#positionFilter').val(savedPosition);
+      $('#positionFilter').val(savedPosition);
     }
+
     $('#searchInput').on('input', function () {
-        localStorage.setItem('currentPage', 1);
-            stafflist(1); // Reset to first page when searching
-        });
+      localStorage.setItem('currentPage', 1);
+      stafflist(1);
+    });
+
     $('#positionFilter').on('change', function () {
-         localStorage.setItem('staffPositionFilter', $(this).val());
-        localStorage.setItem('currentPage', 1);
-        stafflist(1); // Reset to first page when filter changes
-    });
-    stafflist(currentPage); // Call it on load
-    window.stafflist = stafflist;
-});
-//end of user list
-</script>
-
-<script>
-  $(document).ready(function() {
-    // Show modal
-    $('#addUserBtn').click(function() {
-      $('#addUserModal').show();
+      localStorage.setItem('staffPositionFilter', $(this).val());
+      localStorage.setItem('currentPage', 1);
+      stafflist(1);
     });
 
-    // Hide modal
-    $('#closeModalBtn').click(function() {
-      $('#addUserModal').hide();
-    });
-
-    // Optional: Hide modal on outside click
-    $(window).click(function(e) {
+    $('#addUserBtn').click(() => $('#addUserModal').removeClass('hidden'));
+    $('#closeModalBtn').click(() => $('#addUserModal').addClass('hidden'));
+    $(window).click(function (e) {
       if ($(e.target).is('#addUserModal')) {
-        $('#addUserModal').hide();
+        $('#addUserModal').addClass('hidden');
       }
     });
 
     $('#addUserForm').submit(function (e) {
-    e.preventDefault();
+      e.preventDefault();
+      const formData = {
+        last_name: $('input[name="last_name"]').val(),
+        name: $('input[name="name"]').val(),
+        middle_name: $('input[name="middle_name"]').val(),
+        suffix: $('input[name="suffix"]').val(),
+        user: $('input[name="user"]').val(),
+        position: $('#position').val(),
+        _token: '{{ csrf_token() }}'
+      };
 
-    const formData = {
-  last_name: $('input[name="last_name"]').val(),
-  name: $('input[name="name"]').val(), // first name
-  middle_name: $('input[name="middle_name"]').val(),
-  suffix: $('input[name="suffix"]').val(),
-  user: $('input[name="user"]').val(),
-  position: $('#position').val(),
-  _token: '{{ csrf_token() }}' // Laravel CSRF token
-};
-
-
-    $.ajax({
-      type: 'POST',
-      url: '{{ route("add-user") }}', // Replace with your actual route name
-      data: formData,
-      success: function (response) {
-        if (response.status ==='success') {
-          Swal.fire('Success!', response.message, 'success');
-        $('#addUserModal').fadeOut();
-        $('#addUserForm')[0].reset();
-        stafflist(currentPage);
-        }else{
-          Swal.fire({
-          icon: 'error',
-          title: 'Error',
-          text: response.message,
-});
+      $.ajax({
+        type: 'POST',
+        url: '{{ route("add-user") }}',
+        data: formData,
+        success: function (response) {
+          if (response.status === 'success') {
+            Swal.fire('Success!', response.message, 'success');
+            $('#addUserModal').addClass('hidden');
+            $('#addUserForm')[0].reset();
+            stafflist(currentPage);
+          } else {
+            Swal.fire('Error', response.message, 'error');
+          }
+        },
+        error: function (xhr) {
+          Swal.fire('Error', xhr.responseJSON.message || 'Something went wrong.', 'error');
         }
-       
-      },
-      error: function (xhr) {
-        if (xhr.status === 409) {
-            Swal.fire('Error', xhr.responseJSON.message, 'error'); // Username already exists
-        } else {
-            Swal.fire('Error', xhr.responseJSON.message || 'Something went wrong.', 'error');
-        }
-      }
+      });
     });
-  });
+
+    stafflist(currentPage);
   });
 </script>
 @endsection
