@@ -18,8 +18,24 @@
 
         <div>
             <label class="text-gray-700 text-sm font-medium">Password</label>
-            <input type="password" name="password" class="mt-1 w-full border border-sky-300 rounded-md p-2 focus:outline-none focus:ring-2 focus:ring-sky-400 bg-white">
-        </div>
+            <div class="relative">
+              <input 
+                type="password" 
+                name="password" 
+                id="passwordInput"
+                class="mt-1 w-full border border-sky-300 rounded-md p-2 pr-10 focus:outline-none focus:ring-2 focus:ring-sky-400 bg-white"
+              >
+          
+              <!-- Toggle button -->
+              <button 
+                type="button" 
+                onclick="togglePassword()" 
+                class="absolute inset-y-0 right-0 px-3 flex items-center text-gray-600"
+              >
+                Show
+              </button>
+            </div>
+          </div>
 
         <div class="flex justify-end">
             <button type="submit" class="bg-sky-500 hover:bg-sky-600 text-white font-medium rounded-md px-4 py-2 transition duration-150">
@@ -45,6 +61,19 @@
 <!-- Scripts -->
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script>
+    function togglePassword() {
+      const input = document.getElementById('passwordInput');
+      const btn = event.currentTarget;
+      if (input.type === 'password') {
+        input.type = 'text';
+        btn.textContent = 'Hide';
+      } else {
+        input.type = 'password';
+        btn.textContent = 'Show';
+      }
+    }
+    </script>
 <script>
 $(document).ready(function () {
     $('#loginForm').submit(function (event) {
