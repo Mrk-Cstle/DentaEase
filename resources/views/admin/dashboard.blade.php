@@ -5,13 +5,14 @@
 
  <!-- Content -->
         <div class="p-6 overflow-y-auto">
+            @if (auth()->user()->position != 'Receptionist')
             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-6">
                 <div class="bg-white rounded-md border border-gray-100 p-6 shadow-md shadow-black/5">
                     <div class="flex justify-between mb-6">
                         <div>
                             <div class="flex items-center mb-1">
                                 <div class="text-2xl font-semibold">{{ \App\Models\User::where('account_type', 'admin')->count() }}
-</div>
+                </div>
                             </div>
                             <div class="text-sm font-medium text-gray-400">Staffs</div>
                         </div>
@@ -83,7 +84,8 @@
                     </div>
                     <a href="/patientaccount" class="text-[#f84525] font-medium text-sm hover:text-red-800">View</a>
                 </div>
-            </div>
+            </div>   
+             @endif
             <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
                 <div class="p-6 relative flex flex-col min-w-0 mb-4 lg:mb-0 break-words bg-gray-50 dark:bg-gray-800 w-full shadow-lg rounded">
                     <div class="rounded-t mb-0 px-0 border-0">

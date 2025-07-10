@@ -97,13 +97,15 @@
                         <i class="fa-solid fa-user-injured"></i> <span>Patient Accounts</span>
                     </a>
 
+                   
+                    @if (auth()->user()->position != 'Receptionist')
                     <a href="/services" class="flex items-center gap-2 px-3 py-2 rounded hover:bg-navItem hover:text-white">
                         <i class="fa-solid fa-tooth"></i> <span>Services</span>
                     </a>
-
                     <a href="/branch" class="flex items-center gap-2 px-3 py-2 rounded hover:bg-navItem hover:text-white">
                         <i class="fa-solid fa-code-branch"></i> <span>Branch</span>
                     </a>
+                    @endif
 
                     @if (session('active_branch_id') != "admin")
                     <a href="/appointments" class="flex items-center gap-2 px-3 py-2 rounded hover:bg-navItem hover:text-white">
