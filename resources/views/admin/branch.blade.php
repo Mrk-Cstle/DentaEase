@@ -500,10 +500,10 @@ function viewUser(id) {
                 response.data.forEach(function (branch) {
                     rows += `
                     <tr>
-                        <td>${branch.name}</td>
-                        <td>${branch.address}</td>
+                        <td class="border px-2 py-1">${branch.name}</td>
+                        <td class="border px-2 py-1">${branch.address}</td>
                       
-                     <td><button class="text-blue-600 underline" onclick="openBranchModal(${branch.id})">View</button></td>
+                     <td class="border px-2 py-1"><button class="text-blue-600 underline" onclick="openBranchModal(${branch.id})">View</button></td>
                     </tr>
                     `;
                 });
@@ -513,11 +513,11 @@ function viewUser(id) {
                 let paginationHTML = '';
 
                 if (response.pagination.prev_page_url) {
-                    paginationHTML += `<button onclick="newuser(${parseInt(currentPage) - 1})">Previous</button>`;
+                    paginationHTML += `<button class="border px-2 py-1" onclick="newuser(${parseInt(currentPage) - 1})">Previous</button>`;
                 }
 
                 if (response.pagination.next_page_url) {
-                    paginationHTML += `<button onclick="newuser(${parseInt(currentPage) + 1})">Next</button>`;
+                    paginationHTML += `<button class="border px-2 py-1" onclick="newuser(${parseInt(currentPage) + 1})">Next</button>`;
                 }
 
                 $('#pagination').html(paginationHTML);
