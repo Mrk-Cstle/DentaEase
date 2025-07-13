@@ -43,11 +43,14 @@
     </div>
     <div class="flex flex-col  basis-[70%] gap-5">
         <div class=" rounded-md grow-1 bg-white flex flex-row gap-3 p-5">
-            <div class="basis-[50%] border">
-              <div class="flex flex-row justify-center m-3">
-               
-                <img src="{{ asset('storage/qr_codes/' . Auth::user()->qr_code) }}" alt="User QR Code" />
-                 </div>
+         <div class="basis-[50%] border">
+              <div class="flex flex-col justify-center m-3 items-center">
+                <img src="{{ asset('storage/qr_codes/' . Auth::user()->qr_code) }}" alt="User QR Code" class="mx-auto w-40 h-40 object-contain border p-2 rounded" />
+                <a href="{{ asset('storage/qr_codes/' . Auth::user()->qr_code) }}" download
+                   class="mt-4 inline-block bg-[#f84525] text-white px-4 py-2 rounded hover:bg-red-700 transition duration-200">
+                    Download QR Code
+                </a>
+              </div>
             </div>
             <div class="basis-[50%] border flex flex-col">
                 <div class="flex flex-row justify-between m-3">

@@ -2,30 +2,25 @@
 
 @section('title','New User Verification')
 @section('main-content')
-<h1>Branch Management</h1>
-<div class="flex flex-row justify-between">
-  <div class="flex flex-row ">
-    @if (session('active_branch_id') == "admin")
-    <button class="bg-blue-500 text-white  p-2 " id="addUserBtn">Add Branch</button>
-     @else
-     <button  class="bg-blue-500 text-white opacity-50  p-2 " id="addUserBtn" disabled>Add Branch</button>
-     @endif
-        
-    
-  </div>
-  <div class="flex flex-row ">
+<h1 class="text-2xl font-semibold mb-4">Branch Management</h1>
 
-    @if (session('active_branch_id') == "admin")
-    <input  type="text" id="searchInput" placeholder="Search..." />
-   
-     @else
-     <input class="opacity-50"  type="text" id="searchInput" placeholder="Search..."  disabled/>
- 
-     @endif
-     
-         
-  
-      
+<div class="flex justify-between mb-4">
+  <div>
+    <button 
+      id="addUserBtn" 
+      class="p-2 rounded text-white {{ session('active_branch_id') === 'admin' ? 'bg-blue-500 hover:bg-blue-600' : 'bg-blue-500 opacity-50 cursor-not-allowed' }}" 
+      {{ session('active_branch_id') !== 'admin' ? 'disabled' : '' }}>
+      Add Branch
+    </button>
+  </div>
+
+  <div>
+    <input 
+      type="text" 
+      id="searchInput" 
+      placeholder="Search..." 
+      class="p-2 border rounded {{ session('active_branch_id') !== 'admin' ? 'opacity-50 cursor-not-allowed' : '' }}" 
+      {{ session('active_branch_id') !== 'admin' ? 'disabled' : '' }}>
   </div>
 </div>
 {{-- Modal Add User --}}
@@ -184,14 +179,13 @@
  
 <div>
 
-    <table class="border-collapse border border-gray-400 table-auto w-full text-center">
-    
-        <thead class="bg-gray-200">
+    <table class="w-full border text-center">
+    <thead class="bg-blue-100">
             <tr>
-                <th>Branch</th>
-                <th>Address</th>
+                <th class="border px-4 py-2">Branch</th>
+                <th class="border px-4 py-2">Address</th>
              
-                <th>Action</th>
+                <th class="border px-4 py-2">Action</th>
             </tr>
         </thead>
         <tbody id="newtbody">
