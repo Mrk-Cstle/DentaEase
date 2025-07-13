@@ -3,110 +3,108 @@
 @section('title','Profile')
 @section('main-content')
 <style>
-    input{
+    input {
         border: 1px;
-        background-color:#F5F5F5;
-        padding: 2px;
+        background-color: #F5F5F5;
+        padding: 8px;
+        border-radius: 6px;
+        width: 100%;
     }
 </style>
 
-  <h1>View User Details</h1>
-<div class="flex flex-col h-full ">
-<div class="flex flex-row h-full  gap-5">
-    <div class=" rounded-md flex flex-col basis-[30%] bg-white">
-        @if ($user->profile_image == null)
-        <div class="basis-[30%] bg-cover bg-no-repeat bg-center bg-[url({{ asset('images/defaultp.jpg') }})]  ">
-        @else
-        <div class="basis-[30%] bg-cover bg-no-repeat bg-center bg-[url({{ asset('DentaEase/public/storage/profile_pictures/' . $user->profile_image) }})]  ">
-        @endif
-        </div>
-        <div class="basis-[70%]  flex flex-col p-5 overflow-y-auto gap-5 ">
-            <form class="flex flex-col gap-3" action="">
-                <label for="lastname">Last Name:</label>
-                <input type="text" name="lastname" id="lastname" value="{{ $user->lastname}}">
-                <label for="name">Name:</label>
-                <input type="text" name="name" id="name" value="{{ $user->name}}">
-                <label for="middlename">Middle Name:</label>
-                <input type="text" name="middlename" id="middlename" value="{{ $user->middlename}}">
-                <label for="suffix">Suffix:</label>
-                <input type="text" name="suffix" id="suffix" value="{{ $user->suffix}}">
-                <label for="birth_date">Birth Day</label>
-                <input type="date" name="birthdate" id="birthdate" value="{{ $user->birth_date }}">
+<h1 class="text-2xl font-semibold mb-4">View User Details</h1>
+<div class="flex flex-col h-full">
+    <div class="flex flex-row h-full gap-5">
+        <!-- Profile Card -->
+        <div class="rounded-md flex flex-col basis-[30%] bg-white shadow p-4">
+            <div class="h-40 w-full bg-cover bg-center rounded"
+                style="background-image: url('{{ $user->profile_image ? asset('DentaEase/public/storage/profile_pictures/' . $user->profile_image) : asset('images/defaultp.jpg') }}')">
+            </div>
+            <div class="flex flex-col pt-5 overflow-y-auto gap-5">
+                <form class="flex flex-col gap-3">
+                    <label for="lastname">Last Name:</label>
+                    <input type="text" name="lastname" id="lastname" value="{{ $user->lastname }}">
 
-               
+                    <label for="name">Name:</label>
+                    <input type="text" name="name" id="name" value="{{ $user->name }}">
 
-            </form>
-            <button id="deletebtn" data-id="{{ $user->id}}" class="border rounded-md p-3 bg-[#FF0000] text-white" type="submit">Delete</button>
+                    <label for="middlename">Middle Name:</label>
+                    <input type="text" name="middlename" id="middlename" value="{{ $user->middlename }}">
+
+                    <label for="suffix">Suffix:</label>
+                    <input type="text" name="suffix" id="suffix" value="{{ $user->suffix }}">
+
+                    <label for="birthdate">Birth Day</label>
+                    <input type="date" name="birthdate" id="birthdate" value="{{ $user->birth_date }}">
+                </form>
+                <button id="deletebtn" data-id="{{ $user->id }}" class="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded shadow">Delete</button>
+            </div>
         </div>
-    </div>
-    <div class="flex flex-col  basis-[70%] gap-5">
-        
-        <div class=" rounded-md grow-1 bg-white">
-            <div class="basis-[70%]  flex flex-col p-5 overflow-y-auto">`
-                <div class="flex flex-row justify-center m-3">
-               
-                <img src="{{ asset('DentaEase/public/storage/qr_codes/' . $user->qr_code) }}" alt="User QR Code" />
-                 </div>
-                <form id="updateProfile" class="flex flex-col gap-3" >
-                
+
+        <!-- Right Panel -->
+        <div class="flex flex-col basis-[70%] gap-5">
+            <div class="rounded-md bg-white shadow p-5">
+                <div class="flex justify-center mb-5">
+                    <img src="{{ asset('DentaEase/public/storage/qr_codes/' . $user->qr_code) }}" alt="User QR Code" class="h-40">
+                </div>
+                <form id="updateProfile" class="flex flex-col gap-3">
+                    <input type="hidden" name="id" id="id" value="{{ $user->id }}">
+
                     <label for="email">Email</label>
-                    <input type="text" name="id" id="id" value="{{$user->id}}" hidden>
-                    <input type="text" name="email" id="email" value="{{$user->email}}">
+                    <input type="text" name="email" id="email" value="{{ $user->email }}">
+
                     <label for="contact">Contact Number</label>
-                    <input type="number" name="contact" id="contact" value="{{$user->contact_number}}">
+                    <input type="number" name="contact" id="contact" value="{{ $user->contact_number }}">
+
                     <label for="user">User</label>
-                    <input type="text" name="user" id="user" value="{{$user->user}}">
+                    <input type="text" name="user" id="user" value="{{ $user->user }}">
+
                     <label for="password">Password</label>
-                    <input type="password" name="password" id="password" >
-                    
-    
-                    <button class="border rounded-md p-3" type="submit">Update</button>
-    
+                    <input type="password" name="password" id="password">
+
+                    <button class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded shadow w-max" type="submit">Update</button>
                 </form>
             </div>
         </div>
     </div>
-    </div>
 
     @if ($user->account_type == "patient")
         <div class="mt-10 bg-white p-6 rounded shadow w-full">
-    <h2 class="text-lg font-bold mb-4">Completed Appointments</h2>
-    @if($completedAppointments->isEmpty())
-        <p class="text-gray-500">You have no completed appointments.</p>
-    @else
-    <table class="table-auto w-full border-collapse border">
-        <thead>
-            <tr class="bg-gray-200 text-left">
-                <th class="px-3 py-2">Date</th>
-                <th class="px-3 py-2">Time</th>
-                <th class="px-3 py-2">End Time</th>
-                <th class="px-3 py-2">Dentist</th>
-                <th class="px-3 py-2">Description</th>
-                <th class="px-3 py-2">Work Done</th>
-                <th class="px-3 py-2">Total Price</th>
-                <th class="px-3 py-2">Status</th>
-            </tr>
-        </thead>
-        <tbody>
-            @foreach($completedAppointments as $appointment)
-                <tr class="border-t">
-                    <td class="px-3 py-2">{{ \Carbon\Carbon::parse($appointment->appointment_date)->format('F j, Y') }} </td>
-                    <td class="px-3 py-2">  {{ \Carbon\Carbon::parse($appointment->appointment_time)->format('h:i A') }}</td>
-                    <td class="px-3 py-2">  {{ \Carbon\Carbon::parse($appointment->booking_end_time)->format('h:i A') }}</td>
-                    <td class="px-3 py-2">{{ $appointment->dentist->name ?? 'N/A' }}</td>
-                    <td class="px-3 py-2">{{ $appointment->desc }}</td>
-                    <td class="px-3 py-2">{{ $appointment->work_done }}</td>
-                    <td class="px-3 py-2">₱{{ number_format($appointment->total_price, 2) }}</td>
-                    <td class="px-3 py-2">{{ $appointment->status }}</td>
-                </tr>
-            @endforeach
-        </tbody>
-    </table>
+            <h2 class="text-xl font-bold mb-4">Completed Appointments</h2>
+            @if($completedAppointments->isEmpty())
+                <p class="text-gray-500">You have no completed appointments.</p>
+            @else
+                <table class="table-auto w-full border-collapse border">
+                    <thead>
+                        <tr class="bg-gray-100 text-left">
+                            <th class="px-3 py-2">Date</th>
+                            <th class="px-3 py-2">Time</th>
+                            <th class="px-3 py-2">End Time</th>
+                            <th class="px-3 py-2">Dentist</th>
+                            <th class="px-3 py-2">Description</th>
+                            <th class="px-3 py-2">Work Done</th>
+                            <th class="px-3 py-2">Total Price</th>
+                            <th class="px-3 py-2">Status</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach($completedAppointments as $appointment)
+                            <tr class="border-t">
+                                <td class="px-3 py-2">{{ \Carbon\Carbon::parse($appointment->appointment_date)->format('F j, Y') }}</td>
+                                <td class="px-3 py-2">{{ \Carbon\Carbon::parse($appointment->appointment_time)->format('h:i A') }}</td>
+                                <td class="px-3 py-2">{{ \Carbon\Carbon::parse($appointment->booking_end_time)->format('h:i A') }}</td>
+                                <td class="px-3 py-2">{{ $appointment->dentist->name ?? 'N/A' }}</td>
+                                <td class="px-3 py-2">{{ $appointment->desc }}</td>
+                                <td class="px-3 py-2">{{ $appointment->work_done }}</td>
+                                <td class="px-3 py-2">₱{{ number_format($appointment->total_price, 2) }}</td>
+                                <td class="px-3 py-2">{{ $appointment->status }}</td>
+                            </tr>
+                        @endforeach
+                    </tbody>
+                </table>
+            @endif
+        </div>
     @endif
-     </div>
-    @endif
-     
-
 </div>
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>

@@ -1,13 +1,16 @@
 @extends('layout.navigation')
 
 @section('title','Appointment Booking')
+
 @section('main-content')
 
+<div class="p-4">
+
 @if(auth()->user()->position === 'Receptionist' || auth()->user()->position === 'admin')
-<form method="GET" action="{{ route('admin.booking') }}" class="flex items-end space-x-4 mb-4">
-    <div class="flex flex-col">
-        <label for="dentist_id" class="mb-1">Filter by Dentist:</label>
-        <select name="dentist_id" id="dentist_id" class="border rounded p-2">
+<form method="GET" action="{{ route('admin.booking') }}" class="flex flex-wrap md:flex-row gap-4 mb-6 bg-white p-4 rounded shadow">
+    <div class="flex flex-col w-full md:w-1/3">
+        <label for="dentist_id" class="font-semibold mb-1">Filter by Dentist:</label>
+        <select name="dentist_id" id="dentist_id" class="border border-gray-300 rounded p-2">
             <option value="">-- All Dentists --</option>
             @foreach ($dentists as $dentist)
                 <option value="{{ $dentist->id }}" {{ request('dentist_id') == $dentist->id ? 'selected' : '' }}>
@@ -17,53 +20,64 @@
         </select>
     </div>
 
-    <div class="flex flex-col">
-        <label for="date" class="mb-1">Filter by Date:</label>
-        <input type="date" name="date" id="date" value="{{ request('date') }}" class="border rounded p-2">
+    <div class="flex flex-col w-full md:w-1/3">
+        <label for="date" class="font-semibold mb-1">Filter by Date:</label>
+        <input type="date" name="date" id="date" value="{{ request('date') }}" class="border border-gray-300 rounded p-2">
     </div>
 
-    <div>
-        <button type="submit" class="bg-blue-500 text-white px-4 py-2 rounded">Filter</button>
+    <div class="flex items-end w-full md:w-1/3">
+        <button type="submit" class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded w-full md:w-auto">Filter</button>
     </div>
 </form>
 @endif
+
 @if(auth()->user()->position == 'Dentist')
-   <form method="GET" action="{{ route('admin.booking') }}" class="mb-4">
-    <label for="date">Filter by Date:</label>
-    <input type="date" id="date" name="date" value="{{ request('date') }}">
-    <button type="submit" class="bg-blue-500 text-white px-2 py-1 rounded">Filter</button>
+<form method="GET" action="{{ route('admin.booking') }}" class="flex gap-4 mb-6 bg-white p-4 rounded shadow">
+    <div class="flex flex-col w-full md:w-1/3">
+        <label for="date" class="font-semibold mb-1">Filter by Date:</label>
+        <input type="date" id="date" name="date" value="{{ request('date') }}" class="border border-gray-300 rounded p-2">
+    </div>
+    <div class="flex items-end">
+        <button type="submit" class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded">Filter</button>
+    </div>
 </form>
 @endif
 
-<div class="mb-4 flex justify-between items-center">
-    <h2 class="text-xl font-semibold">Appointment Booking</h2>
-
+<div class="flex justify-between items-center mb-4">
+    <h2 class="text-2xl font-bold">Appointment Booking</h2>
     <a href="{{ route('admin.booking.history') }}" 
-       class="bg-gray-700 text-white px-4 py-2 rounded hover:bg-gray-800">
+       class="bg-gray-700 hover:bg-gray-800 text-white px-4 py-2 rounded">
         View History Logs
     </a>
 </div>
-<table class="table-auto w-full border-collapse border">
-    <thead>
-        <tr class="bg-gray-200">
-            <th>User</th>
-            <th>Service</th>
-            <th>Date</th>
-            <th>Start</th>
-            <th>End</th>
-            <th>Description</th>
-            <th>Status</th>
-            <th>Action</th>
-        </tr>
-    </thead>
-   <tbody id="appointments-table-body">
-    @include('admin.partials.appointments-table', ['appointments' => $appointments])
-    
-</tbody>
-</table>
+
+<div class="overflow-x-auto bg-white p-4 rounded shadow">
+    <table class="table-auto w-full border-collapse border border-gray-200">
+        <thead class="bg-gray-100 text-left">
+            <tr>
+                <th class="px-4 py-2 border">User</th>
+                <th class="px-4 py-2 border">Service</th>
+                <th class="px-4 py-2 border">Date</th>
+                <th class="px-4 py-2 border">Start</th>
+                <th class="px-4 py-2 border">End</th>
+                <th class="px-4 py-2 border">Description</th>
+                <th class="px-4 py-2 border">Status</th>
+                <th class="px-4 py-2 border">Action</th>
+            </tr>
+        </thead>
+        <tbody id="appointments-table-body">
+            @include('admin.partials.appointments-table', ['appointments' => $appointments])
+        </tbody>
+    </table>
+</div>
+
 @include('admin.partials.usermodal')
+
+</div> <!-- End padding wrapper -->
+
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
 <script>
 function showUserModal(userId) {
     $('#userModalContent').html('<p class="text-center text-gray-500">Loading...</p>');
@@ -80,45 +94,45 @@ function closeUserModal() {
     document.getElementById('userModal').classList.add('hidden');
 }
 </script>
+
 <script>
-    $(document).on('click', '.approve-btn', function () {
-        const button = $(this);
-        const row = button.closest('tr');
-        const appointmentId = button.data('id');
-        const time = row.find('.appointment-time').val();
-        const endTime = row.find('.booking-end-time').val();
+$(document).on('click', '.approve-btn', function () {
+    const button = $(this);
+    const row = button.closest('tr');
+    const appointmentId = button.data('id');
+    const time = row.find('.appointment-time').val();
+    const endTime = row.find('.booking-end-time').val();
 
-        $.ajax({
-            url: `/appointments/${appointmentId}/approve`,
-            type: 'PUT',
-            data: {
-                _token: '{{ csrf_token() }}',
-                appointment_time: time,
-                booking_end_time: endTime,
-            },
-            success: function (res) {
-                Swal.fire({
-                    icon: 'success',
-                    title: 'Approved!',
-                    text: 'Appointment has been approved.'
-                });
+    $.ajax({
+        url: `/appointments/${appointmentId}/approve`,
+        type: 'PUT',
+        data: {
+            _token: '{{ csrf_token() }}',
+            appointment_time: time,
+            booking_end_time: endTime,
+        },
+        success: function (res) {
+            Swal.fire({
+                icon: 'success',
+                title: 'Approved!',
+                text: 'Appointment has been approved.'
+            });
 
-                // ✅ Reload the appointments table body
-                $.get('{{ route('appointments.fetch') }}', function (html) {
-                    $('#appointments-table-body').html(html);
-                });
-            },
-            error: function (xhr) {
-                Swal.fire({
-                    icon: 'error',
-                    title: 'Error!',
-                    text: xhr.responseJSON?.message || 'Something went wrong.'
-                });
-            }
-        });
+            $.get('{{ route('appointments.fetch') }}', function (html) {
+                $('#appointments-table-body').html(html);
+            });
+        },
+        error: function (xhr) {
+            Swal.fire({
+                icon: 'error',
+                title: 'Error!',
+                text: xhr.responseJSON?.message || 'Something went wrong.'
+            });
+        }
     });
+});
 
-    $(document).on('click', '.cancel-btn', function () {
+$(document).on('click', '.cancel-btn', function () {
     const button = $(this);
     const appointmentId = button.data('id');
 
@@ -145,7 +159,6 @@ function closeUserModal() {
                         text: 'Appointment has been cancelled.'
                     });
 
-                    // ✅ Reload the table body
                     $.get('{{ route('appointments.fetch') }}', function (html) {
                         $('#appointments-table-body').html(html);
                     });

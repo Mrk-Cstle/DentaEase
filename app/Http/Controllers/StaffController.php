@@ -131,7 +131,7 @@ class StaffController extends Controller
             }
         
             if (!empty($request->password) && !Hash::check($request->password, $user->password)) {
-                $rules['password'] = ['required', 'string', 'min:8'];
+                $rules['password'] = ['required'];
                 $data['password'] = Hash::make($request->password);
                 $isUpdated = true;
             }
