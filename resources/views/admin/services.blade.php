@@ -183,7 +183,7 @@
       $('#service_description').val($(this).data('description'));
       const img = $(this).data('image');
       if (img) {
-        $('#service_image_preview').attr('src', '{{ asset('storage/service_images') }}/' + img);
+        $('#service_image_preview').attr('src', '{{ asset('DentaEase/public/storage/service_images') }}/' + img);
         $('#imagePreviewWrapper').show();
       } else {
         $('#imagePreviewWrapper').hide();
