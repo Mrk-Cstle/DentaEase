@@ -81,4 +81,9 @@ public function appointment()
 {
     return $this->hasMany(Appointment::class);
 }
+
+public function medicalForm()
+{
+    return $this->hasOne(MedicalForm::class);
+}
 }

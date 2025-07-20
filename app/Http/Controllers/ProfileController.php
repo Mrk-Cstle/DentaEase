@@ -8,6 +8,7 @@ use Illuminate\Validation\Rule;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Log;
 use App\Models\Appointment;
+use App\Models\MedicalForm;
 use Illuminate\Support\Facades\Storage;
 class ProfileController extends Controller
 {
@@ -92,7 +93,7 @@ class ProfileController extends Controller
         ->whereIn('status', ['completed', 'no_show'])
         ->orderBy('appointment_date', 'desc')
         ->get();
-
-    return view('client.cprofile', compact('completedAppointments'));
+ $medicalForm = MedicalForm::where('user_id', auth()->id())->first();
+    return view('client.cprofile', compact('completedAppointments','medicalForm'));
 }
 }

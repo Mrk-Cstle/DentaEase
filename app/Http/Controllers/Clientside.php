@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 use App\Models\Appointment;
+use App\Models\MedicalForm;
 use Illuminate\Http\Request;
 use App\Models\Store;
 use App\Models\Service;
@@ -14,7 +15,12 @@ class Clientside extends Controller
     }
 
     public function CProfile(){
-        return view('client.cprofile');
+
+        $medicalForm = MedicalForm::where('user_id', auth()->id())->first();
+        return view('client.cprofile',compact('medicalForm'));
+    }
+    public function CForms(){
+        return view('client.cforms');
     }
     public function CBooking(){
         $stores = Store::all(); // ✅ This provides the variable to the view
