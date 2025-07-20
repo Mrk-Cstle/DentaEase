@@ -7,6 +7,8 @@ use App\Models\User;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Validation\Rule;
 use App\Models\Appointment;
+use App\Models\MedicalForm;
+
 class StaffController extends Controller
 {
     //
@@ -158,8 +160,8 @@ public function showProfile($id)
         ->whereIn('status', ['completed', 'no_show'])
         ->orderBy('appointment_date', 'desc')
         ->get();
-
-    return view('admin.viewuserdetails', compact('user', 'completedAppointments'));
+    $medicalForm = MedicalForm::where('user_id', $user->id)->first();
+    return view('admin.viewuserdetails', compact('user', 'completedAppointments', 'medicalForm'));
 }
      
 }

@@ -13,6 +13,26 @@
 </style>
 
 <h1 class="text-2xl font-semibold mb-4">View User Details</h1>
+
+      <!-- Tab Navigation -->
+<div class="mb-6 border-b border-gray-300">
+    <ul class="flex space-x-6 text-sm font-medium text-center text-gray-600" id="tabs">
+        <li>
+            <button class="tab-button border-b-2 border-transparent py-2 px-4 hover:text-blue-600 hover:border-blue-600 active"
+                data-tab="profile-tab">Profile</button>
+        </li>
+
+        @if ($user->account_type == 'patient')
+              <li>
+            <button class="tab-button border-b-2 border-transparent py-2 px-4 hover:text-blue-600 hover:border-blue-600"
+                data-tab="medical-tab">Medical Form</button>
+        </li>
+        @endif
+      
+    </ul>
+</div>
+
+<div id="profile-tab" class="tab-content">
 <div class="flex flex-col h-full">
     <div class="flex flex-row h-full gap-5">
         <!-- Profile Card -->
@@ -106,8 +126,164 @@
         </div>
     @endif
 </div>
+</div>
+<div id="medical-tab" class="tab-content">
+  @if($medicalForm)
+  <div class="max-w-5xl mx-auto bg-white p-6 rounded-lg shadow space-y-10">
+
+    {{-- Medical History --}}
+    <div>
+      <h2 class="text-xl font-bold mb-4 flex items-center gap-2"><span>📜</span>MEDICAL HISTORY</h2>
+      <div class="overflow-x-auto">
+        <table class="min-w-full border text-sm">
+          <thead class="bg-[#5D5CFF] text-white">
+            <tr>
+              <th class="px-4 py-2 text-left">Condition</th>
+              <th class="px-4 py-2">Status</th>
+              <th class="px-4 py-2 text-left">Details</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr class="border-t">
+              <td class="px-4 py-2">Allergies</td>
+                 <td class="text-center">   {{ $medicalForm->allergies == 1 ? 'Yes' : 'No' }}</td>
+
+              <td class="px-4 py-2">{{ $medicalForm->allergies_details ?? '' }}</td>
+            </tr>
+            <tr class="border-t">
+              <td class="px-4 py-2">Heart Condition</td>
+                 <td class="text-center">   {{ $medicalForm->heart_condition == 1 ? 'Yes' : 'No' }}</td>
+
+        
+              <td class="px-4 py-2">{{ $medicalForm->heart_condition_details ?? '' }}</td>
+            </tr>
+            <tr class="border-t">
+              <td class="px-4 py-2">Asthma</td>
+
+              <td class="text-center"> {{ $medicalForm->asthma == 1 ? 'Yes' : 'No' }}</td>
+              <td class="px-4 py-2">{{ $medicalForm->asthma_details ?? '' }}</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    {{-- Past Surgeries --}}
+    <div>
+      <h2 class="text-xl font-bold mb-4 flex items-center gap-2"><span>📄</span>PAST SURGERIES</h2>
+    
+  <div class="overflow-x-auto">
+    <table class="min-w-full border text-sm">
+      <thead class="bg-[#5D5CFF] text-white">
+        <tr>
+          <th class="px-4 py-2">Surgery Type</th>
+          <th class="px-4 py-2">Date</th>
+          <th class="px-4 py-2">Hospital/Clinic</th>
+          <th class="px-4 py-2">Remarks</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr class="border-t">
+          <td class="px-2 py-2">{{ $medicalForm->surgery_type }}</td>
+          <td class="px-2 py-2">{{ $medicalForm->surgery_date }}</td>
+          <td class="px-2 py-2">{{ $medicalForm->surgery_location }}</td>
+          <td class="px-2 py-2">{{ $medicalForm->surgery_remarks }}</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+    </div>
+
+    {{-- Current Medications --}}
+    <div>
+      <h2 class="text-xl font-bold mb-4 flex items-center gap-2"><span>💊</span>CURRENT MEDICATIONS</h2>
+    @if($medicalForm->medication_name)
+  <table class="min-w-full border text-sm">
+    <thead class="bg-[#5D5CFF] text-white">
+      <tr>
+        <th class="px-4 py-2">Medication Name</th>
+        <th class="px-4 py-2">Dosage</th>
+        <th class="px-4 py-2">Reason</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr class="border-t">
+        <td class="px-2 py-2">{{ $medicalForm->medication_name }}</td>
+        <td class="px-2 py-2">{{ $medicalForm->medication_dosage }}</td>
+        <td class="px-2 py-2">{{ $medicalForm->medication_reason }}</td>
+      </tr>
+    </tbody>
+  </table>
+@else
+  <p class="text-gray-500 italic">No current medications reported.</p>
+@endif
+    </div>
+
+    {{-- Dental History --}}
+    <div>
+      <h2 class="text-xl font-bold mb-4 flex items-center gap-2"><span>🍩</span>DENTAL HISTORY</h2>
+      <div class="space-y-4">
+        <div>
+          <label class="font-semibold">Reason for today’s visit:</label>
+          <input type="text" class="w-full p-2 border rounded bg-gray-100" value="{{ $medicalForm->visit_reason ?? '' }}" readonly>
+        </div>
+        <div>
+          <label class="font-semibold">Last dental visit:</label>
+          <input type="text" class="w-full p-2 border rounded bg-gray-100" value="{{ $medicalForm->last_dental_visit ?? '' }}" readonly>
+        </div>
+        <div>
+          <label class="font-semibold">Previous dental problems?</label>
+          <input type="text" class="w-full p-2 border rounded bg-gray-100" value="{{ $medicalForm->had_dental_issues== 1 ? 'Yes' : 'No'  }}" readonly>
+        </div>
+        <div>
+          <label class="font-semibold">Dental anxiety:</label>
+          <input type="text" class="w-full p-2 border rounded bg-gray-100" value="{{ $medicalForm->dental_anxiety == 1 ? 'Yes' : 'No' }}" readonly>
+        </div>
+      </div>
+    </div>
+
+    {{-- Emergency Contact --}}
+    <div>
+      <h2 class="text-xl font-bold mb-4 flex items-center gap-2"><span>👥</span>EMERGENCY CONTACT</h2>
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+        <div>
+          <label class="block font-semibold">Name</label>
+          <input type="text" class="w-full p-2 border rounded bg-gray-100" value="{{ $medicalForm->emergency_name ?? '' }}" readonly>
+        </div>
+        <div>
+          <label class="block font-semibold">Relationship</label>
+          <input type="text" class="w-full p-2 border rounded bg-gray-100" value="{{ $medicalForm->emergency_relationship ?? '' }}" readonly>
+        </div>
+        <div>
+          <label class="block font-semibold">Contact Number</label>
+          <input type="text" class="w-full p-2 border rounded bg-gray-100" value="{{ $medicalForm->emergency_contact ?? '' }}" readonly>
+        </div>
+      </div>
+    </div>
+
+  </div>
+  @else
+  <div class="max-w-5xl mx-auto bg-white p-6 rounded-lg shadow text-center">
+    <p class="text-gray-500 italic">You have not submitted your medical history form yet.</p>
+  </div>
+  @endif
+</div>
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script>
+    document.querySelectorAll(".tab-button").forEach(button => {
+        button.addEventListener("click", () => {
+            const tab = button.dataset.tab;
+
+            document.querySelectorAll(".tab-button").forEach(btn => btn.classList.remove("active", "border-blue-600", "text-blue-600"));
+            button.classList.add("active", "border-blue-600", "text-blue-600");
+
+            document.querySelectorAll(".tab-content").forEach(tc => tc.classList.add("hidden"));
+            document.getElementById(tab).classList.remove("hidden");
+        });
+    });
+</script>
 <script>
     const openBtn = document.getElementById('capturemodal');
     const modal = document.getElementById('modal');

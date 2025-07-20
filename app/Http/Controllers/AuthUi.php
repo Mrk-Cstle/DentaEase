@@ -88,6 +88,14 @@ class AuthUi extends Controller
                 session(['active_branch_id' => 'admin']);
                 $redirectUrl = route('dashboard');
 
+            }elseif ($user->account_type == 'patient') {
+               $formstatus = $user->formstatus;
+
+               if ($formstatus == 0) {
+                     $redirectUrl = route('CForms');
+               }else{
+                $redirectUrl = route('CBookingo');
+               }
             } else { 
                 $redirectUrl = match ($user->account_type) {
                 'admin' => route('GetBranchLogin'),

@@ -6,6 +6,8 @@ use App\Http\Middleware\Client;
 use App\Http\Controllers\Facerecognition;
 use App\Http\Controllers\AppointmentController;
 use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\MedicalFormController;
+
 
 
 Route::post('/notifications/mark-as-read', function () {
@@ -17,8 +19,9 @@ Route::middleware(['auth', Client::class])->group(function(){
     Route::get('/cdashboard', [Clientside::class,'CDashboard'])->name('CDashboard')->middleware('auth');
      Route::get('/booking', [Clientside::class,'CBooking'])->name('CBooking')->middleware('auth');
      Route::get('/bookingongoing', [Clientside::class,'CBookingo'])->name('CBookingo')->middleware('auth');
+      Route::get('/cforms', [Clientside::class,'CForms'])->name('CForms')->middleware('auth');
 
-    Route::get('/cprofile', [Clientside::class,'CProfile'])->name('CProfile')->middleware('auth');
+    //Route::get('/cprofile', [Clientside::class,'CProfile'])->name('CProfile')->middleware('auth');
     Route::post('/cregister-face',[Facerecognition::class,'registerFace'])->name("cregister-face")->middleware('auth');
     Route::post('/cremove-face-token', [AdminController::class, 'removeFaceToken'])->middleware('auth');
     Route::get('/cprofile', [ProfileController::class, 'showProfile'])->name('CProfile');
@@ -37,6 +40,11 @@ Route::middleware(['auth', Client::class])->group(function(){
     Route::get('/service/{service}', [AppointmentController::class, 'getServiceDetail']);
 
     
+//medical form
+
+Route::middleware(['auth'])->group(function () {
+    Route::post('/medical-form', [MedicalFormController::class, 'store'])->name('medical-form.store');
+});
 
 
 
