@@ -9,7 +9,7 @@
 
     <!-- MEDICAL HISTORY -->
     <div>
-      <h2 class="text-xl font-bold mb-4 flex items-center gap-2"><span>📜</span>MEDICAL HISTORY</h2>
+      <h2 class="text-xl font-bold mb-4 flex items-center gap-2"><span>📜</span>Medical Form</h2>
       <div class="overflow-x-auto">
         <table class="min-w-full border text-sm">
           <thead class="bg-[#5D5CFF] text-white">
@@ -49,7 +49,7 @@
       <h2 class="text-xl font-bold mb-4 flex items-center gap-2"><span>📄</span>PAST SURGERIES</h2>
       <div class="flex gap-4 mb-4">
         <label><input type="radio" name="had_surgeries" value="0" class="mr-2" required>No previous surgeries</label>
-        <label><input type="radio" name="had_surgeries" value="1" class="mr-2">Yes, please list:</label>
+        <label><input type="radio" name="had_surgeries" value="1" class="mr-2" required>Yes, please list:</label>
       </div>
       <div class="overflow-x-auto">
         <table class="min-w-full border text-sm">
@@ -133,15 +133,15 @@
       <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
         <div>
           <label class="block font-semibold">Name</label>
-          <input type="text" name="emergency_name" class="w-full p-2 border rounded">
+          <input type="text" name="emergency_name" class="w-full p-2 border rounded" required>
         </div>
         <div>
           <label class="block font-semibold">Relationship</label>
-          <input type="text" name="emergency_relationship" class="w-full p-2 border rounded">
+          <input type="text" name="emergency_relationship" class="w-full p-2 border rounded" required>
         </div>
         <div>
           <label class="block font-semibold">Contact Number</label>
-          <input type="text" name="emergency_contact" class="w-full p-2 border rounded">
+          <input type="text" name="emergency_contact" class="w-full p-2 border rounded" required>
         </div>
       </div>
     </div>
