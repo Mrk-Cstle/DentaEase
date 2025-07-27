@@ -148,6 +148,7 @@
 
     <!-- SUBMIT BUTTON -->
     <div class="text-right">
+      <a href="/logouts" class="bg-[#5D5CFF] hover:bg-indigo-700 text-white px-6 py-2 rounded mt-6"><i class="fa-solid fa-right-from-bracket mr-2"></i>Cancel</a>
       <button type="submit" class="bg-[#5D5CFF] hover:bg-indigo-700 text-white px-6 py-2 rounded mt-6">Submit</button>
     </div>
 
