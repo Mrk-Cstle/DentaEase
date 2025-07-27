@@ -31,7 +31,7 @@
         @if (Auth::user()->profile_image == null)
         <div class="basis-[30%] bg-cover bg-no-repeat bg-center bg-[url({{ asset('images/defaultp.jpg') }})]  ">
         @else
-        <div class="basis-[30%] bg-cover bg-no-repeat bg-center bg-[url({{ asset('DentaEase/public/storage/profile_pictures/' . Auth::user()->profile_image) }})]  ">
+        <div class="basis-[30%] bg-cover bg-no-repeat bg-center bg-[url({{ asset('storage/profile_pictures/' . Auth::user()->profile_image) }})]  ">
         @endif
       
             
@@ -59,8 +59,8 @@
         <div class=" rounded-md grow-1 bg-white flex flex-row gap-3 p-5">
          <div class="basis-[50%] border">
               <div class="flex flex-col justify-center m-3 items-center">
-                <img src="{{ asset('DentaEase/public/storage/qr_codes/' . Auth::user()->qr_code) }}" alt="User QR Code" class="mx-auto w-40 h-40 object-contain border p-2 rounded" />
-                <a href="{{ asset('DentaEase/public/storage/qr_codes/' . Auth::user()->qr_code) }}" download
+                <img src="{{ asset('storage/qr_codes/' . Auth::user()->qr_code) }}" alt="User QR Code" class="mx-auto w-40 h-40 object-contain border p-2 rounded" />
+                <a href="{{ asset('storage/qr_codes/' . Auth::user()->qr_code) }}" download
                    class="mt-4 inline-block bg-[#f84525] text-white px-4 py-2 rounded hover:bg-red-700 transition duration-200">
                     Download QR Code
                 </a>
@@ -179,7 +179,7 @@
 
 </div>
 </div>
-<div id="medical-tab" class="tab-content hidden">
+<div id="medical-tab" class="tab-content">
   @if($medicalForm)
   <div class="max-w-5xl mx-auto bg-white p-6 rounded-lg shadow space-y-10">
 
@@ -326,24 +326,16 @@
 
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script>
-document.querySelectorAll(".tab-button").forEach(button => {
-    button.addEventListener("click", () => {
-        const tab = button.dataset.tab;
+    document.querySelectorAll(".tab-button").forEach(button => {
+        button.addEventListener("click", () => {
+            const tab = button.dataset.tab;
 
-        // Remove active class from all buttons
-        document.querySelectorAll(".tab-button").forEach(btn =>
-            btn.classList.remove("active", "border-blue-600", "text-blue-600")
-        );
-        button.classList.add("active", "border-blue-600", "text-blue-600");
+            document.querySelectorAll(".tab-button").forEach(btn => btn.classList.remove("active", "border-blue-600", "text-blue-600"));
+            button.classList.add("active", "border-blue-600", "text-blue-600");
 
-        // Hide all tab content
-        document.querySelectorAll(".tab-content").forEach(tc =>
-            tc.classList.add("hidden")
-        );
-
-        // Show clicked tab
-        document.getElementById(tab).classList.remove("hidden");
-    });
+            document.querySelectorAll(".tab-content").forEach(tc => tc.classList.add("hidden"));
+            document.getElementById(tab).classList.remove("hidden");
+        });
     });
 </script>
 <script>
