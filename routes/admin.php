@@ -13,6 +13,7 @@ use App\Http\Controllers\Facerecognition;
 use App\Http\Controllers\FileController;
 use App\Http\Controllers\ServicesController;
 use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\InventoryController;
 use App\Http\Controllers\VisitLogController;
 use Illuminate\Support\Facades\Auth;
 
@@ -60,6 +61,7 @@ Route::get('/patientaccount', [AdminController::class,'Patientaccount'])->name('
 Route::get('/branch', [AdminController::class,'Branch'])->name('Branch')->middleware('auth');
 Route::get('/services', [AdminController::class,'Services'])->name('Services')->middleware('auth');
 Route::get('/logs', [VisitLogController::class,'logs'])->name('logs')->middleware('auth');
+Route::get('/inventory', [InventoryController::class,'inventory'])->name('inventory')->middleware('auth');
 
 //new user 
 
@@ -126,7 +128,12 @@ Route::get('/dashboard/appointment-stats', [DashboardController::class, 'getAppo
 //appointment logs 
 Route::post('/scan-qr', [VisitLogController::class, 'handleQrScan'])->name('scan.qr');
 
+//inventory
+Route::get('/inventorylist', [InventoryController::class,'InventoryList'])->name('InventoryList')->middleware('auth');
+Route::post('/medicines', [InventoryController::class, 'store'])->name('medicines.store');
 
+Route::get('/medicines/{medicine}', [InventoryController::class, 'show'])->name('medicines.show');
+Route::post('/medicines/{medicine}/batch', [InventoryController::class, 'addBatch'])->name('medicines.addBatch');
 });
 
 Route::get('/get-branch', [AuthUi::class,'GetBranchLogin'])->name('GetBranchLogin');
