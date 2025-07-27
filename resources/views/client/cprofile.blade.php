@@ -179,7 +179,7 @@
 
 </div>
 </div>
-<div id="medical-tab" class="tab-content">
+<div id="medical-tab" class="tab-content hidden">
   @if($medicalForm)
   <div class="max-w-5xl mx-auto bg-white p-6 rounded-lg shadow space-y-10">
 
@@ -326,16 +326,24 @@
 
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script>
-    document.querySelectorAll(".tab-button").forEach(button => {
-        button.addEventListener("click", () => {
-            const tab = button.dataset.tab;
+document.querySelectorAll(".tab-button").forEach(button => {
+    button.addEventListener("click", () => {
+        const tab = button.dataset.tab;
 
-            document.querySelectorAll(".tab-button").forEach(btn => btn.classList.remove("active", "border-blue-600", "text-blue-600"));
-            button.classList.add("active", "border-blue-600", "text-blue-600");
+        // Remove active class from all buttons
+        document.querySelectorAll(".tab-button").forEach(btn =>
+            btn.classList.remove("active", "border-blue-600", "text-blue-600")
+        );
+        button.classList.add("active", "border-blue-600", "text-blue-600");
 
-            document.querySelectorAll(".tab-content").forEach(tc => tc.classList.add("hidden"));
-            document.getElementById(tab).classList.remove("hidden");
-        });
+        // Hide all tab content
+        document.querySelectorAll(".tab-content").forEach(tc =>
+            tc.classList.add("hidden")
+        );
+
+        // Show clicked tab
+        document.getElementById(tab).classList.remove("hidden");
+    });
     });
 </script>
 <script>

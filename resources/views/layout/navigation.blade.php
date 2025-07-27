@@ -97,7 +97,9 @@
                         <i class="fa-solid fa-user-injured"></i> <span>Patient Accounts</span>
                     </a>
 
-                   
+                    <a href="/inventory" class="flex items-center gap-2 px-3 py-2 rounded hover:bg-navItem hover:text-white">
+                        <i class="fa-solid fa-user-injured"></i> <span>Inventory Management</span>
+                    </a>
                     @if (auth()->user()->position != 'Receptionist')
                     <a href="/services" class="flex items-center gap-2 px-3 py-2 rounded hover:bg-navItem hover:text-white">
                         <i class="fa-solid fa-tooth"></i> <span>Services</span>
