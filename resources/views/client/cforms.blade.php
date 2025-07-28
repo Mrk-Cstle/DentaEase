@@ -1,15 +1,25 @@
-@extends('layout.auth')
+@php
+  $layout = auth()->user()->formstatus == false ? 'layout.auth' : 'layout.cnav';
+  $section = auth()->user()->formstatus == false ? 'auth-content' : 'main-content';
+@endphp
+
+@extends($layout)
 
 @section('title', 'Booking')
-@section('auth-content')
-<div class="max-w-5xl mx-auto bg-white p-6 rounded-lg shadow space-y-10">
 
+@section($section)
   <form action="{{ route('medical-form.store') }}" method="POST">
     @csrf
 
     <!-- MEDICAL HISTORY -->
     <div>
-      <h2 class="text-xl font-bold mb-4 flex items-center gap-2"><span>📜</span>Medical Form</h2>
+      @if (auth()->user()->formstatus == false )
+          <h2 class="text-xl font-bold mb-4 flex items-center gap-2"><span>📜</span>Medical Form</h2>
+      @else
+      <h2 class="text-xl font-bold mb-4 flex items-center gap-2"><span>📜</span> Medical History Update</h2>
+        
+      @endif
+   
       <div class="overflow-x-auto">
         <table class="min-w-full border text-sm">
           <thead class="bg-[#5D5CFF] text-white">
@@ -148,7 +158,10 @@
 
     <!-- SUBMIT BUTTON -->
     <div class="text-right">
-      <a href="/logouts" class="bg-[#5D5CFF] hover:bg-indigo-700 text-white px-6 py-2 rounded mt-6"><i class="fa-solid fa-right-from-bracket mr-2"></i>Cancel</a>
+      @if (auth()->user()->formstatus == false)
+            <a href="/logouts" class="bg-[#5D5CFF] hover:bg-indigo-700 text-white px-6 py-2 rounded mt-6"><i class="fa-solid fa-right-from-bracket mr-2"></i>Cancel</a>
+      @endif
+    
       <button type="submit" class="bg-[#5D5CFF] hover:bg-indigo-700 text-white px-6 py-2 rounded mt-6">Submit</button>
     </div>
 
