@@ -104,7 +104,7 @@
           <i class="fa-solid fa-calendar-plus"></i> <span class="hidden sm:inline">Booking</span>
         </a>
          <a href="/cforms" class="flex items-center gap-2 px-3 py-2 rounded hover:bg-navItem hover:text-white">
-          <i class="fa-solid fa-calendar-plus"></i> <span class="hidden sm:inline">Form</span>
+          <i class="fa-solid fa-calendar-plus"></i> <span class="hidden sm:inline">Medical History Update</span>
         </a>
         {{-- <a href="/cprofile" class="sm:hidden flex items-center gap-2 px-3 py-2 rounded hover:bg-navItem hover:text-white">
           <i class="fa-solid fa-user"></i> <span>Profile</span>

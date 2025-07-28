@@ -180,12 +180,23 @@
 </div>
 </div>
 <div id="medical-tab" class="tab-content hidden">
-  @if($medicalForm)
-  <div class="max-w-5xl mx-auto bg-white p-6 rounded-lg shadow space-y-10">
+ @if($medicalForms && count($medicalForms) > 0)
+<div id="medicalCarousel" class="max-w-5xl mx-auto relative">
+
+    @foreach($medicalForms as $index => $medicalForm)
+    <div class="medical-form-slide {{ $index !== 0 ? 'hidden' : '' }} bg-white p-6 rounded-lg shadow space-y-10" data-index="{{ $index }}">
+
 
     {{-- Medical History --}}
     <div>
-      <h2 class="text-xl font-bold mb-4 flex items-center gap-2"><span>📜</span>MEDICAL HISTORY</h2>
+    <h2 class="text-xl font-bold mb-4 flex items-center justify-between gap-2">
+  <span class="flex items-center gap-2">
+    📜 <span>MEDICAL HISTORY</span>
+  </span>
+  <span class="text-sm font-normal text-gray-500">
+    Submitted on: {{ \Carbon\Carbon::parse($medicalForm->created_at)->format('F d, Y h:i A') }}
+  </span>
+</h2>
       <div class="overflow-x-auto">
         <table class="min-w-full border text-sm">
           <thead class="bg-[#5D5CFF] text-white">
@@ -315,6 +326,15 @@
     </div>
 
   </div>
+   @endforeach
+
+    <!-- Carousel Controls -->
+    <div class="flex justify-between items-center mt-4">
+        <button id="prevBtn" class="bg-gray-300 hover:bg-gray-400 text-black font-bold py-2 px-4 rounded">Previous</button>
+        <span id="slideIndicator" class="text-sm text-gray-600">1 of {{ count($medicalForms) }}</span>
+        <button id="nextBtn" class="bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded">Next</button>
+    </div>
+</div> 
   @else
   <div class="max-w-5xl mx-auto bg-white p-6 rounded-lg shadow text-center">
     <p class="text-gray-500 italic">You have not submitted your medical history form yet.</p>
@@ -524,5 +544,32 @@ document.querySelectorAll(".tab-button").forEach(button => {
     })
 
     </script>
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+    const slides = document.querySelectorAll('.medical-form-slide');
+    const nextBtn = document.getElementById('nextBtn');
+    const prevBtn = document.getElementById('prevBtn');
+    const indicator = document.getElementById('slideIndicator');
+    let currentSlide = 0;
 
+    function showSlide(index) {
+        slides.forEach((slide, i) => {
+            slide.classList.toggle('hidden', i !== index);
+        });
+        indicator.textContent = `${index + 1} of ${slides.length}`;
+    }
+
+    nextBtn.addEventListener('click', () => {
+        currentSlide = (currentSlide + 1) % slides.length;
+        showSlide(currentSlide);
+    });
+
+    prevBtn.addEventListener('click', () => {
+        currentSlide = (currentSlide - 1 + slides.length) % slides.length;
+        showSlide(currentSlide);
+    });
+
+    showSlide(currentSlide);
+});
+</script>
 @endsection

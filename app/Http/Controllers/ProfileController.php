@@ -93,7 +93,8 @@ class ProfileController extends Controller
         ->whereIn('status', ['completed', 'no_show'])
         ->orderBy('appointment_date', 'desc')
         ->get();
- $medicalForm = MedicalForm::where('user_id', auth()->id())->first();
-    return view('client.cprofile', compact('completedAppointments','medicalForm'));
+$medicalForms = MedicalForm::where('user_id', Auth::id())->get();
+
+    return view('client.cprofile', compact('completedAppointments','medicalForms'));
 }
 }
