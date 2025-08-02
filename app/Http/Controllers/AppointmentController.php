@@ -223,7 +223,7 @@ public function appointment(Request $request)
     ->exists();
 
 if ($userHasBooking) {
-    return response()->json(['status'=>'success','message' =>'You already have a booking on this day.']);
+    return response()->json(['status'=>'error','message' =>'You already have a booking on this day.']);
     #return back()->withErrors(['appointment_date' => 'You already have a booking on this day.']);
 }
     // ✅ Create the appointment
