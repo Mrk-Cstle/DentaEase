@@ -216,6 +216,14 @@ public function appointment(Request $request)
     if ($booking_end->format('H:i') > $store->closing_time->format('H:i')) {
     return back()->withErrors(['appointment_time' => 'Booking ends after store closing time.']);
     }
+
+    $userHasBooking = Appointment::where('user_id', auth()->id())
+    ->where('appointment_date', $request->appointment_date)
+    ->exists();
+
+if ($userHasBooking) {
+    return back()->withErrors(['appointment_date' => 'You already have a booking on this day.']);
+}
     // ✅ Create the appointment
     Appointment::create([
         'store_id' => $store->id,
