@@ -217,12 +217,14 @@ public function appointment(Request $request)
     return back()->withErrors(['appointment_time' => 'Booking ends after store closing time.']);
     }
 
+   
     $userHasBooking = Appointment::where('user_id', auth()->id())
     ->where('appointment_date', $request->appointment_date)
     ->exists();
 
 if ($userHasBooking) {
-    return back()->withErrors(['appointment_date' => 'You already have a booking on this day.']);
+    return response()->json(['status'=>'success','message' =>'You already have a booking on this day.']);
+    #return back()->withErrors(['appointment_date' => 'You already have a booking on this day.']);
 }
     // ✅ Create the appointment
     Appointment::create([
@@ -236,8 +238,8 @@ if ($userHasBooking) {
         'desc'=> $request->desc,
         'status' => 'pending',
     ]);
-
-    return back()->with('success','Appointment created successfully');
+    return response()->json(['status'=>'success','message' =>'Appointment created successfully']);
+    #return back()->with('success','Appointment created successfully');
     // return redirect()->route('CBooking')->with('success', 'Appointment booked successfully!');
 }
 
