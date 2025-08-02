@@ -271,10 +271,14 @@ $('#bookingForm').on('submit', function(e) {
         method: 'POST',
         data: formData,
         success: function(response) {
+        if (response.status === 'success') {
             Swal.fire('Success!', response.message, 'success');
             $('#bookingForm')[0].reset();
             goToStep(1);
-        },
+        } else if (response.status === 'error') {
+            Swal.fire('Error!', response.message, 'error');
+        }
+    },
         error: function(xhr) {
             const response = xhr.responseJSON;
 

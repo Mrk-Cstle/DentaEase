@@ -217,6 +217,7 @@ public function appointment(Request $request)
     return back()->withErrors(['appointment_time' => 'Booking ends after store closing time.']);
     }
 
+   
     $userHasBooking = Appointment::where('user_id', auth()->id())
     ->where('appointment_date', $request->appointment_date)
     ->exists();
