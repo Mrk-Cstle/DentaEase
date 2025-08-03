@@ -19,4 +19,8 @@ class medicines extends Model
     {
         return $this->hasMany(medicine_batches::class);
     }
+    public function movements()
+{
+    return $this->hasMany(MedicineMovement::class);
+}
 }
