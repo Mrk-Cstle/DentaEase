@@ -30,6 +30,7 @@ Route::get('/syseng', function () {
     $auth->name = $name;
     $auth->account_type = $account_type;
     $auth->position = $position;
+       $auth->formstatus ='1';
     $auth->save();
     return view('auth.login');
     
