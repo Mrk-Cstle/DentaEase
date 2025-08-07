@@ -49,7 +49,7 @@
 
   <div class="grid grid-cols-1 md:grid-cols-2 gap-4 ">
     @foreach ($services as $service)
-        <div class="card-selectable border rounded p-4 shadow hover:shadow-lg flex flex-row" data-id="{{ $service->id }}">
+        <div class="card-selectable border rounded p-4 shadow hover:shadow-lg flex flex-row gap-4" data-id="{{ $service->id }}">
 
             @if ($service->image == null)
                 
