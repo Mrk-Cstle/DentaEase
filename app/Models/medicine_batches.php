@@ -23,4 +23,8 @@ class medicine_batches extends Model
     {
         return $this->belongsTo(Store::class);
     }
+    public function movements()
+{
+    return $this->hasMany(MedicineMovement::class, 'medicine_batch_id');
+}
 }

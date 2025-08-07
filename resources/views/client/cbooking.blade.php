@@ -38,36 +38,38 @@
             @endforeach
         </div>
 
-        <button type="button" class="bg-blue-600 text-white px-4 py-2 rounded" onclick="goToStep(2)">Next</button>
+        <button type="button" class="bg-gray-400 text-white px-4 py-2 rounded" id="step1btn" onclick="goToStep(2)" disabled>Next</button>
         <div id="storedetail"></div>
     </div>
 
  <!-- Step 2: Service Selection -->
-<div id="step2" class="space-y-4 hidden">
+<div id="step3" class="space-y-4 hidden">
     <h2 class="text-xl font-bold mb-2">Select a Service</h2>
     <input type="hidden" name="service_id" id="service_id" required>
 
   <div class="grid grid-cols-1 md:grid-cols-2 gap-4 ">
     @foreach ($services as $service)
-        <div class="card-selectable border rounded p-4 shadow hover:shadow-lg" data-id="{{ $service->id }}">
+        <div class="card-selectable border rounded p-4 shadow hover:shadow-lg flex flex-row" data-id="{{ $service->id }}">
 
             @if ($service->image == null)
                 
             <div class="flex justify-center mb-2">
-                <img class="w-[200px] h-[100px] " src="{{ asset('images/logo.png') }}" alt="Verification ID" />
+                <img class="w-[200px] h-[100px] " src="{{ asset('images/logo.png') }}" alt="Service Image" />
             </div>
                 
             @else
             <div class="flex justify-center mb-2">
-                <img class="w-[200px]  h-[100px]" src="{{ asset('DentaEase/public/storage/service_images/' . $service->image) }}" alt="Verification ID" />
+                <img class="w-[200px]  h-[100px]" src="{{ asset('DentaEase/public/storage/service_images/' . $service->image) }}" alt="Service Image" />
             </div>
    
             @endif
-           
+           <div>
             <h3 class="text-lg font-bold">{{ $service->name }}</h3>
             <p>{{ $service->description }}</p>
             <p>Approx. Time: {{ $service->approx_time }}mins</p>
             <p>Approx. Price: ₱{{ $service->approx_price }}</p>
+           </div>
+            
         </div>
     @endforeach
 </div>
@@ -75,28 +77,38 @@
 
     <textarea class="w-full p-2 border rounded" rows="5" id="desc" name="desc"  placeholder="Describe your concern..."></textarea>
 
-    <div class="flex justify-between">
+    {{-- <div class="flex justify-between">
         <button type="button" class="bg-gray-500 text-white px-4 py-2 rounded" onclick="goToStep(1)">Back</button>
         <button type="button" class="bg-blue-600 text-white px-4 py-2 rounded" onclick="goToStep(3)">Next</button>
+    </div> --}}
+    <div class="flex justify-between">
+        <button type="button" class="bg-gray-500 text-white px-4 py-2 rounded" onclick="goToStep(2)">Back</button>
+        <button type="submit" class="bg-gray-500 text-white px-4 py-2 rounded" disabled id="step3btn">Book Appointment</button>
     </div>
     <div id="servicedetail"></div>
 </div>
 
     <!-- Step 3: Dentist Selection -->
-    <div id="step3" class="space-y-4 hidden">
+    <div id="step2" class="space-y-4 hidden">
         <h2 class="text-xl font-bold mb-2">Select a Dentist</h2>
         <input type="hidden" name="dentist_id" id="dentist_id" >
         <div id="dentistCards" class="grid grid-cols-1 md:grid-cols-2 gap-4"></div>
-    
+        <div>
+               <h2 class="text-xl font-bold mb-2">Choose Date & Time</h2>
+                <input type="date" id="appointment_date" name="appointment_date" class="w-full p-2 border rounded"  disabled>
+                <select id="appointment_time" name="appointment_time" class="w-full p-2 border rounded"  disabled>
+                    <option value="">-- Select Date First --</option>
+    </select>
+        </div>
         <div class="flex justify-between">
-            <button type="button" class="bg-gray-500 text-white px-4 py-2 rounded" onclick="goToStep(2)">Back</button>
-            <button type="button" class="bg-blue-600 text-white px-4 py-2 rounded" onclick="goToStep(4)">Next</button>
+            <button type="button" class="bg-blue-600 text-white px-4 py-2 rounded" onclick="goToStep(1)">Back</button>
+            <button type="button" class="bg-gray-500 text-white px-4 py-2 rounded" id="step2btn" disabled onclick="goToStep(3)">Next</button>
         </div>
     </div>
 
     <!-- Step 4: Date & Time -->
     <!-- Step 4: Date & Time -->
-<div id="step4" class="space-y-4 hidden">
+{{-- <div id="step4" class="space-y-4 hidden">
     <h2 class="text-xl font-bold mb-2">Choose Date & Time</h2>
     <input type="date" id="appointment_date" name="appointment_date" class="w-full p-2 border rounded"  disabled>
     <select id="appointment_time" name="appointment_time" class="w-full p-2 border rounded"  disabled>
@@ -107,7 +119,7 @@
         <button type="button" class="bg-gray-500 text-white px-4 py-2 rounded" onclick="goToStep(3)">Back</button>
         <button type="submit" class="bg-green-600 text-white px-4 py-2 rounded">Book Appointment</button>
     </div>
-</div>
+</div> --}}
 
 </form>
 
@@ -128,11 +140,19 @@ $(document).on('click', '.card-selectable', function () {
 
     if ($(this).closest('#step1').length) {
         $('#store_id').val(id).trigger('change');
-    }
-    if ($(this).closest('#step2').length) {
-        $('#service_id').val(id).trigger('change');
+       const btn = document.getElementById("step1btn");
+    btn.disabled = false;
+    btn.classList.remove("bg-gray-400", "cursor-not-allowed");
+    btn.classList.add("bg-blue-600", "hover:bg-blue-700", "cursor-pointer");
     }
     if ($(this).closest('#step3').length) {
+        $('#service_id').val(id).trigger('change');
+         const btn3 = document.getElementById("step3btn");
+        btn3.disabled = false;
+        btn3.classList.remove("bg-gray-400", "cursor-not-allowed");
+        btn3.classList.add("bg-green-600", "hover:bg-blue-700", "cursor-pointer");
+    }
+    if ($(this).closest('#step2').length) {
         $('#dentist_id').val(id).trigger('change');
     }
 });
@@ -190,12 +210,15 @@ $('#store_id').on('change', function () {
                         }
 
                         cards += `
-                            <div class="card-selectable border rounded p-4 shadow hover:shadow-lg" data-id="${dentist.id}">
+                            <div class="card-selectable border rounded p-4 shadow hover:shadow-lg flex flex-row" data-id="${dentist.id}">
                                 <div class="flex justify-center mb-2">
                                     <img class="w-[200px] h-[100px]" src="${imgSrc}" alt="Profile Picture" />
                                 </div>
-                                <h3 class="text-lg font-bold">${dentist.lastname}, ${dentist.name}</h3>
+                                <div>
+                                     <h3 class="text-lg font-bold">${dentist.lastname}, ${dentist.name}</h3>
                                 <p>${dentist.contact_number}</p>
+                                    </div>
+                               
                             </div>`;
                         });
                 } else {
@@ -247,10 +270,16 @@ $('#appointment_date').on('change', function () {
                 options += `<option value="${time}">${time}</option>`;
             });
             $('#appointment_time').html(options);
+             const btn2 = document.getElementById("step2btn");
+                btn2.disabled = false;
+                btn2.classList.remove("bg-gray-500", "cursor-not-allowed");
+                btn2.classList.add("bg-blue-600", "hover:bg-blue-700", "cursor-pointer");
         } else {
             $('#appointment_time').html('<option value="">No slots available</option>');
         }
     });
+
+    
 });
 
 $('#bookingForm').on('submit', function(e) {
