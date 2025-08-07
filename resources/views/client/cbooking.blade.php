@@ -29,9 +29,9 @@
         <h2 class="text-xl font-bold mb-2">Select a Branch</h2>
         <input type="hidden" name="store_id" id="store_id" required>
 
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 ">
             @foreach ($stores as $store)
-                <div class="card-selectable border rounded p-4 shadow hover:shadow-lg" data-id="{{ $store->id }}">
+                <div class="card-selectable border rounded p-4 shadow hover:shadow-lg bg-white" data-id="{{ $store->id }}">
                     <h3 class="text-lg font-bold">{{ $store->name }}</h3>
                     <p>{{ $store->address }}</p>
                 </div>
@@ -49,7 +49,7 @@
 
   <div class="grid grid-cols-1 md:grid-cols-2 gap-4 ">
     @foreach ($services as $service)
-        <div class="card-selectable border rounded p-4 shadow hover:shadow-lg flex flex-row" data-id="{{ $service->id }}">
+        <div class="card-selectable border rounded p-4 shadow hover:shadow-lg flex flex-row gap-4 bg-white" data-id="{{ $service->id }}">
 
             @if ($service->image == null)
                 
@@ -210,7 +210,7 @@ $('#store_id').on('change', function () {
                         }
 
                         cards += `
-                            <div class="card-selectable border rounded p-4 shadow hover:shadow-lg flex flex-row" data-id="${dentist.id}">
+                            <div class="card-selectable border rounded p-4 shadow hover:shadow-lg flex flex-row bg-white" data-id="${dentist.id}">
                                 <div class="flex justify-center mb-2">
                                     <img class="w-[200px] h-[100px]" src="${imgSrc}" alt="Profile Picture" />
                                 </div>
