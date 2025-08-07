@@ -112,7 +112,7 @@
       </nav>
 
       <!-- Main Content -->
-      <main class="flex-1 py-6 px-20 overflow-y-auto bg-background">
+      <main class="flex-1 py-6 px-20 overflow-y-auto bg-background bg-gray-100">
         @yield('main-content')
       </main>
     </div>
