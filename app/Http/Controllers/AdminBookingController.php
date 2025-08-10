@@ -24,9 +24,9 @@ class AdminBookingController extends Controller
 
       $clients = User::where('account_type', 'patient')->orderBy('name')->get();
     $query = Appointment::with('user');
-
-    $query->where('store_id', session('active_branch_id'))
-        ->whereIn('status', ['pending', 'approved']);
+$query->where('store_id', session('active_branch_id'))
+      ->whereIn('status', ['pending', 'approved'])
+      ->orderBy('appointment_date', 'asc'); // or 'desc'
 
     // 🧠 If the user is a dentist, only show their own appointments
     if ($user->position === 'Dentist') {
