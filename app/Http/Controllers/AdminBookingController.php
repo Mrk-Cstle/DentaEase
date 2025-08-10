@@ -12,50 +12,67 @@ use App\Models\Service;
 use App\Models\StoreStaff;
 use Illuminate\Support\Facades\Mail;
 use App\Notifications\AppointmentNotification;
+   use Illuminate\Support\Facades\Schema;
+use Illuminate\Support\Facades\Log;
 
 class AdminBookingController extends Controller
 {
     //
-    public function showBookings(Request $request)
+
+
+public function showBookings(Request $request)
 {
-      $user = auth()->user();
-  $stores = Store::all(); // ✅ This provides the variable to the view
-         $services = Service::all();
+    $user = auth()->user();
 
-      $clients = User::where('account_type', 'patient')->orderBy('name')->get();
-    $query = Appointment::with('user');
-$query->where('store_id', session('active_branch_id'))
-      ->whereIn('status', ['pending', 'approved'])
-      ->orderBy('appointment_date', 'asc'); // or 'desc'
+    $stores = Store::all();
+    $services = Service::all();
+    $clients = User::where('account_type', 'patient')->orderBy('name')->get();
 
-    // 🧠 If the user is a dentist, only show their own appointments
+    $query = Appointment::with('user')
+        ->where('store_id', session('active_branch_id'))
+        ->whereIn('status', ['pending', 'approved']);
+
     if ($user->position === 'Dentist') {
         $query->where('dentist_id', $user->id);
     }
 
-    // 🧠 If receptionist, allow filtering by dentist_id
     if ($user->position === 'Receptionist' && $request->filled('dentist_id')) {
         $query->where('dentist_id', $request->input('dentist_id'));
     }
 
-    // 📅 Optional date filter
     if ($request->filled('date')) {
         $query->whereDate('appointment_date', $request->input('date'));
     }
 
+    // === determine column type ===
+    $colType = Schema::getColumnType('appointments', 'appointment_date'); // 'date','datetime','timestamp','string', etc.
+
+    if (in_array($colType, ['date','datetime','timestamp'])) {
+        // Appointment date is a proper date/datetime type — simple ordering works
+        $query->orderBy('appointment_date', 'asc')
+              ->orderBy('appointment_time', 'asc');
+    } else {
+        // appointment_date is stored as a string. We have to convert when ordering.
+        // Guess common formats: 'YYYY-MM-DD' or 'MM/DD/YYYY'. Adjust format below if different.
+        // If your stored format is YYYY-MM-DD, STR_TO_DATE with '%Y-%m-%d' still works but isn't needed.
+        // For time ordering assume 'HH:ii' (24-hour 'H:i'); change '%h:%i %p' for '12:00 AM' format.
+        $query->orderByRaw("STR_TO_DATE(appointment_date, '%Y-%m-%d') asc")
+              ->orderByRaw("STR_TO_DATE(appointment_time, '%H:%i') asc");
+    }
+
+    // optional: log SQL for debugging
+    Log::debug('Appointments SQL', ['sql' => $query->toSql(), 'bindings' => $query->getBindings()]);
+
     $appointments = $query->get();
 
-    // 🧑‍⚕️ For receptionist, get all dentists from current branch
-
-
-  $dentists = [];
+    // dentist list for receptionist
+    $dentists = [];
     if ($user->position === 'Receptionist') {
         $store = Store::find(session('active_branch_id'));
         $dentists = $store->staff()
-                ->wherePivot('position', 'dentist')
-                ->get(['users.id', 'users.name']);
+            ->wherePivot('position', 'dentist')
+            ->get(['users.id', 'users.name']);
     }
-$clients = User::where('account_type', 'patient')->orderBy('name')->get();
 
     return view('admin.booking', compact('appointments', 'dentists','services', 'stores','clients'));
 }
