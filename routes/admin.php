@@ -54,7 +54,7 @@ return response()->json($branches);
 
 
 //navigation link
-
+Route::get('/try', [AdminController::class,'try'])->name('try')->middleware('auth');
 Route::get('/userverify', [AdminController::class,'Userverify'])->name('Userverify')->middleware('auth');
 Route::get('/useraccount', [AdminController::class,'Useraccount'])->name('Useraccount')->middleware('auth');
 Route::get('/patientaccount', [AdminController::class,'Patientaccount'])->name('Patientaccount')->middleware('auth');

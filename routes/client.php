@@ -27,20 +27,7 @@ Route::middleware(['auth', Client::class])->group(function(){
     Route::get('/cprofile', [ProfileController::class, 'showProfile'])->name('CProfile');
    
 
-    //appointment
-
-   Route::get('/store/{store}/schedule', [AppointmentController::class, 'getSchedule']);
-
-// Returns available time slots for a date
-    Route::get('/branch/{store}/available-slots', [AppointmentController::class, 'getAvailableSlots']);
-    Route::post('/appointments', [AppointmentController::class, 'appointment'])->name('appointments.store');
-    Route::get('/branch/{branchId}/dentists', [AppointmentController::class, 'getDentists']);
-    Route::get('/branch/{branchId}/dentist/{dentistId}/slots', [AppointmentController::class, 'getDentistSlots']);
-    Route::get('/booking', [AppointmentController::class, 'showProfile'])->name('appointments.incomplete');
-    Route::get('/service/{service}', [AppointmentController::class, 'getServiceDetail']);
-
-    
-    Route::get('/dentist/{dentist}/next-approved-appointment', [AppointmentController::class, 'nextApprovedAppointment']);
+   
 //medical form
 
 Route::middleware(['auth'])->group(function () {
@@ -52,3 +39,26 @@ Route::middleware(['auth'])->group(function () {
 });
 
 Route::post('/profile/upload', [ProfileController::class, 'uploadprofileimage'])->name('profile.upload');
+
+
+
+
+ //appointment
+
+   Route::get('/store/{store}/schedule', [AppointmentController::class, 'getSchedule']);
+
+// Returns available time slots for a date
+    Route::get('/branch/{store}/available-slots', [AppointmentController::class, 'getAvailableSlots']);
+    Route::post('/appointments', [AppointmentController::class, 'appointment'])->name('appointments.store');
+    Route::get('/branch/{branchId}/dentists', [AppointmentController::class, 'getDentists']);
+    Route::get('/branch/{branchId}/dentist/{dentistId}/slots', [AppointmentController::class, 'getDentistSlots']);
+    Route::get('/booking', [AppointmentController::class, 'showProfile'])->name('appointments.incomplete');
+    Route::get('/service/{service}', [AppointmentController::class, 'getServiceDetail']);
+
+//admin appointment
+    Route::post('/appointmentsadmin', [AppointmentController::class, 'appointmentadmin'])->name('appointments.storeadmin');
+    
+
+
+
+    Route::get('/dentist/{dentist}/next-approved-appointment', [AppointmentController::class, 'nextApprovedAppointment']);
