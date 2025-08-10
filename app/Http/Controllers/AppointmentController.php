@@ -279,7 +279,8 @@ public function nextApprovedAppointment($dentistId, Request $request)
 
     $next = Appointment::where('dentist_id', $dentistId)
         ->where('appointment_date', $date)
-        // ->where('status', 'approved')
+       ->whereIn('status', ['approved', 'pending'])
+
         ->whereTime('appointment_time', '>', $time) // ✅ compare times correctly
         ->orderBy('appointment_time', 'asc')
         ->first();
