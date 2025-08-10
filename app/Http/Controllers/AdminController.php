@@ -9,6 +9,8 @@ use  App\Models\User;
 use Illuminate\Support\Facades\Mail;
 use App\Mail\mailresponse;
 use App\Models\Appointment;
+use App\Models\Service;
+use App\Models\Store;
 use Illuminate\Support\Carbon;
 
 use Illuminate\Support\Facades\Storage;
@@ -52,6 +54,17 @@ class AdminController extends Controller
     public function Logout(){
         Auth::logout();
         return redirect('/loginui');
+    }
+     public function try(){
+          $stores = Store::all(); // ✅ This provides the variable to the view
+         $services = Service::all();
+
+      $clients = User::where('account_type', 'patient')->orderBy('name')->get();
+
+
+      
+        return view('admin.bookingtry', compact('stores','services','clients'));
+
     }
     public function Useraccount(){
         return view('admin.useraccount');

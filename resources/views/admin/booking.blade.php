@@ -4,6 +4,8 @@
 
 @section('main-content')
 
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+<script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
 <div class="p-4">
 
 @if(auth()->user()->position === 'Receptionist' || auth()->user()->position === 'admin')
@@ -45,11 +47,21 @@
 
 <div class="flex justify-between items-center mb-4">
     <h2 class="text-2xl font-bold">Appointment Booking</h2>
+    <div class="flex flex-row gap-4">
     <a href="{{ route('admin.booking.history') }}" 
        class="bg-gray-700 hover:bg-gray-800 text-white px-4 py-2 rounded">
         View History Logs
     </a>
+    <button onclick="$('#bookingModal').removeClass('hidden')"
+    class="bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700">
+    + Add Appointment
+</button>
+    </div>
+   
 </div>
+
+
+<!-- Booking Modal -->
 
 <div class="overflow-x-auto bg-white p-4 rounded shadow">
     <table class="table-auto w-full border-collapse border border-gray-200">
@@ -72,6 +84,29 @@
 </div>
 
 @include('admin.partials.usermodal')
+
+
+<div id="bookingModal" 
+     class="hidden fixed inset-0 bg-gray-800 bg-opacity-50 flex items-center justify-center z-50 overflow-y-auto">
+    <div class="bg-white rounded-lg shadow-lg w-full max-w-4xl p-6 relative mx-4 my-8">
+        
+        <!-- Close Button -->
+        <button type="button" 
+                class="absolute top-3 right-3 text-gray-500 hover:text-gray-800"
+                onclick="$('#bookingModal').addClass('hidden')">
+            ✕
+        </button>
+
+        <h2 class="text-2xl font-bold mb-4 text-center">Book an Appointment</h2>
+
+        <div class="flex flex-col md:flex-row md:gap-10">
+            <div class="w-full">
+                @include('admin.partials.booking_modal')
+            </div>
+        </div>
+    </div>
+</div>
+
 
 </div> <!-- End padding wrapper -->
 

@@ -118,6 +118,10 @@
                         <i class="fa-solid fa-file-lines"></i> <span>Logs</span>
                     </a>
                     @endif
+
+                      {{-- <a href="/try" class="flex items-center gap-2 px-3 py-2 rounded hover:bg-navItem hover:text-white">
+                        <i class="fa-solid fa-calendar-check"></i> <span>try</span>
+                    </a> --}}
                 </nav>
             </aside>
 

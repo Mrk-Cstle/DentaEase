@@ -8,6 +8,7 @@ use App\Models\Appointment;
 use App\Models\Store;
 use App\Models\User;
 use App\Mail\AppointmentApprovedMail;
+use App\Models\Service;
 use App\Models\StoreStaff;
 use Illuminate\Support\Facades\Mail;
 use App\Notifications\AppointmentNotification;
@@ -18,7 +19,10 @@ class AdminBookingController extends Controller
     public function showBookings(Request $request)
 {
       $user = auth()->user();
+  $stores = Store::all(); // ✅ This provides the variable to the view
+         $services = Service::all();
 
+      $clients = User::where('account_type', 'patient')->orderBy('name')->get();
     $query = Appointment::with('user');
 
     $query->where('store_id', session('active_branch_id'))
@@ -51,8 +55,9 @@ class AdminBookingController extends Controller
                 ->wherePivot('position', 'dentist')
                 ->get(['users.id', 'users.name']);
     }
+$clients = User::where('account_type', 'patient')->orderBy('name')->get();
 
-    return view('admin.booking', compact('appointments', 'dentists'));
+    return view('admin.booking', compact('appointments', 'dentists','services', 'stores','clients'));
 }
 
 

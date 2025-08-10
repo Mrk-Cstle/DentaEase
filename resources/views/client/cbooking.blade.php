@@ -49,7 +49,10 @@
 
   <div class="grid grid-cols-1 md:grid-cols-2 gap-4 ">
     @foreach ($services as $service)
-        <div class="card-selectable border rounded p-4 shadow hover:shadow-lg flex flex-row gap-4 bg-white" data-id="{{ $service->id }}">
+        <div class="card-selectable border rounded p-4 shadow hover:shadow-lg bg-white"
+     data-id="{{ $service->id }}"
+     data-approx="{{ $service->approx_time }}">
+
 
             @if ($service->image == null)
                 
@@ -132,6 +135,45 @@ function goToStep(step) {
     }
     $('#step' + step).removeClass('hidden');
 }
+
+$('#appointment_time').on('change', function () {
+    const selectedTime = $(this).val();
+    const dentistId = $('#dentist_id').val();
+    const selectedDate = $('#appointment_date').val();
+
+    if (!selectedTime || !dentistId || !selectedDate) return;
+
+    $.get(`/dentist/${dentistId}/next-approved-appointment`, { date: selectedDate, time: selectedTime }, function (data) {
+        let nextTime = data.next_time;
+
+        // Helper: Convert HH:mm to total minutes
+        function timeToMinutes(t) {
+            if (!t) return null;
+            let [h, m] = t.split(':').map(Number);
+            return h * 60 + m;
+        }
+
+        let selectedMinutes = timeToMinutes(selectedTime);
+        let nextMinutes = timeToMinutes(nextTime);
+
+        let gapMinutes = nextMinutes ? nextMinutes - selectedMinutes : null;
+
+        // Loop through services
+        $('.card-selectable[data-id]').each(function () {
+            let approxTime = parseInt($(this).data('approx'), 10);
+
+            if (gapMinutes !== null && approxTime > gapMinutes) {
+                $(this)
+                    .addClass('opacity-50 pointer-events-none')
+                    .removeClass('selected'); // make sure it can't be picked
+            } else {
+                $(this)
+                    .removeClass('opacity-50 pointer-events-none');
+            }
+        });
+    });
+});
+
 
 $(document).on('click', '.card-selectable', function () {
     $(this).siblings().removeClass('card-selected');

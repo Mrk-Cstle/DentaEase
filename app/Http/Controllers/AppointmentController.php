@@ -243,6 +243,80 @@ if ($userHasBooking) {
     // return redirect()->route('CBooking')->with('success', 'Appointment booked successfully!');
 }
 
+public function appointmentadmin(Request $request)
+{
+    $request->validate([
+        'user_id' => 'required|exists:users,id',
+        'store_id' => 'required|exists:stores,id',
+        'service_id' => 'required|exists:services,id',
+        'dentist_id' => 'required|exists:users,id',
+        'appointment_date' => 'required|date|after_or_equal:today',
+        'appointment_time' => 'required|date_format:H:i',
+        'desc' =>'required',
+        
+    ]);
+    
+    $store = Store::findOrFail($request->store_id);
+$user = User::findOrFail($request->user_id);
+    $service = Service::findOrFail($request->service_id);
+
+    // ✅ Check if store is open that day
+    $day = strtolower(Carbon::parse($request->appointment_date)->format('D'));
+    if (!in_array($day, $store->open_days ?? [])) {
+        return back()->withErrors(['appointment_date' => 'Store is closed on this day.']);
+    }
+
+   $booking_end = Carbon::parse($request->appointment_time)->addMinutes($service->approx_time);
+
+    // ✅ Check if time is within hours
+    if (
+        $request->appointment_time < $store->opening_time->format('H:i') ||
+        $request->appointment_time > $store->closing_time->format('H:i')
+    ) {
+        return back()->withErrors(['appointment_time' => 'Time is outside of store hours.']);
+    }
+
+    // ✅ Check if time slot is already taken
+ $alreadyBooked = Appointment::where('store_id', $store->id)
+    ->where('dentist_id', $request->dentist_id) // ✅ check per dentist
+    ->where('appointment_date', $request->appointment_date)
+    ->where('appointment_time', $request->appointment_time)
+    ->exists();
+
+    if ($alreadyBooked) {
+        return back()->withErrors(['appointment_time' => 'This time slot is already booked.']);
+    }
+
+    if ($booking_end->format('H:i') > $store->closing_time->format('H:i')) {
+    return back()->withErrors(['appointment_time' => 'Booking ends after store closing time.']);
+    }
+
+   
+    $userHasBooking = Appointment::where('user_id', $user->id)
+    ->where('appointment_date', $request->appointment_date)
+    ->exists();
+
+if ($userHasBooking) {
+    return response()->json(['status'=>'error','message' =>'Patient already have a booking on this day.']);
+    #return back()->withErrors(['appointment_date' => 'You already have a booking on this day.']);
+}
+    // ✅ Create the appointment
+    Appointment::create([
+        'store_id' => $store->id,
+        'user_id' => $user->id, // assumes you're logged in
+        'dentist_id' => $request->dentist_id,
+        'service_name' => $service->name,
+        'appointment_date' => $request->appointment_date,
+        'appointment_time' => $request->appointment_time,
+        'booking_end_time' => $booking_end->format('H:i'),
+        'desc'=> $request->desc,
+        'status' => 'pending',
+    ]);
+    return response()->json(['status'=>'success','message' =>'Appointment created successfully']);
+    #return back()->with('success','Appointment created successfully');
+    // return redirect()->route('CBooking')->with('success', 'Appointment booked successfully!');
+}
+
 
 // public function index()
 // {
@@ -271,4 +345,22 @@ public function showProfile()
     return view('client.cbooking', compact('incompleteAppointments', 'stores', 'services'));
 }
 
+
+public function nextApprovedAppointment($dentistId, Request $request)
+{
+    $date = $request->query('date');
+    $time = $request->query('time');
+
+    $next = Appointment::where('dentist_id', $dentistId)
+        ->where('appointment_date', $date)
+       ->whereIn('status', ['approved', 'pending'])
+
+        ->whereTime('appointment_time', '>', $time) // ✅ compare times correctly
+        ->orderBy('appointment_time', 'asc')
+        ->first();
+
+    return response()->json([
+        'next_time' => $next ? Carbon::parse($next->appointment_time)->format('H:i') : null
+    ]);
+}
 }
