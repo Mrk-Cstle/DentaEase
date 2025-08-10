@@ -40,6 +40,7 @@ Route::middleware(['auth', Client::class])->group(function(){
     Route::get('/service/{service}', [AppointmentController::class, 'getServiceDetail']);
 
     
+    Route::get('/dentist/{dentist}/next-approved-appointment', [AppointmentController::class, 'nextApprovedAppointment']);
 //medical form
 
 Route::middleware(['auth'])->group(function () {

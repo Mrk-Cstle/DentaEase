@@ -271,4 +271,21 @@ public function showProfile()
     return view('client.cbooking', compact('incompleteAppointments', 'stores', 'services'));
 }
 
+
+public function nextApprovedAppointment($dentistId, Request $request)
+{
+    $date = $request->query('date');
+    $time = $request->query('time');
+
+    $next = Appointment::where('dentist_id', $dentistId)
+        ->where('appointment_date', $date)
+        // ->where('status', 'approved')
+        ->whereTime('appointment_time', '>', $time) // ✅ compare times correctly
+        ->orderBy('appointment_time', 'asc')
+        ->first();
+
+    return response()->json([
+        'next_time' => $next ? Carbon::parse($next->appointment_time)->format('H:i') : null
+    ]);
+}
 }
