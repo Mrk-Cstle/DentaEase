@@ -63,7 +63,7 @@ class AdminController extends Controller
 
 
       
-        return view('admin.bookingtry', compact('stores','services','clients'));
+        return view('admin.partials.booking_modal', compact('stores','services','clients'));
 
     }
     public function Useraccount(){
