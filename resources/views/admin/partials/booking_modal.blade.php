@@ -1,7 +1,7 @@
 
 <div class="flex flex-col md:flex-row md:gap-10">
     <!-- 70% Booking Form -->
-    <div class="md:w-[100%]">
+    <div class="md:w-[70%]">
         <form id="bookingForm" class="space-y-4">
             @csrf
 
@@ -42,11 +42,15 @@
             <!-- Dentist Selection -->
             <div>
                 <label for="dentist_id" class="block font-semibold">Select Dentist</label>
-                <select id="dentist_id" name="dentist_id" class="w-full p-2 border rounded" required >
+                <div id="dentistWrapper">
+                <select id="dentist_id" name="dentist_id" class="w-full p-2 border rounded"  disabled>
+                  
                     <option value="">-- Choose Dentist --</option>
+                    
                 </select>
             </div>
-
+            </div>
+            <input type="hidden" id="selected_dentist" name="selected_dentist" value="">
             <!-- Date -->
             <div>
                 <label for="appointment_date" class="block font-semibold">Select Date</label>
@@ -79,6 +83,10 @@
 
 
 
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+
+<!-- Flatpickr JS -->
+<script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
 
 
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
@@ -95,80 +103,113 @@ $('#store_id').on('change', function () {
     const storeId = $(this).val();
     if (!storeId) return;
 
-    // Fetch store schedule
-    $.get(`/store/${storeId}/schedule`, function (data) {
-        if (data.status === 'success') {
-            const dayNameToNumber = {
-                sun: 0, mon: 1, tue: 2, wed: 3, thu: 4, fri: 5, sat: 6
-            };
-            const dayNameToLabel = {
-                sun: 'Sunday', mon: 'Monday', tue: 'Tuesday', wed: 'Wednesday',
-                thu: 'Thursday', fri: 'Friday', sat: 'Saturday'
-            };
+   $.get(`/store/${storeId}/schedule`, function (data) {
+    if (data.status === 'success') {
+        const dayNameToNumber = {
+            sun: 0,
+            mon: 1,
+            tue: 2,
+            wed: 3,
+            thu: 4,
+            fri: 5,
+            sat: 6
+        };
 
-            openDays = (data.open_days || []).map(day => dayNameToNumber[day.toLowerCase()]);
-            const readableDays = (data.open_days || []).map(day => dayNameToLabel[day.toLowerCase()]).join(', ');
+        const dayNameToLabel = {
+            sun: 'Sunday',
+            mon: 'Monday',
+            tue: 'Tuesday',
+            wed: 'Wednesday',
+            thu: 'Thursday',
+            fri: 'Friday',
+            sat: 'Saturday'
+        };
 
-            if (flatpickrInstance) {
-                flatpickrInstance.destroy();
-            }
+        // Get flatpickr days (numbers) and readable labels
+        openDays = (data.open_days || []).map(day => dayNameToNumber[day.toLowerCase()]);
+        const readableDays = (data.open_days || []).map(day => dayNameToLabel[day.toLowerCase()]).join(', ');
 
-            flatpickrInstance = flatpickr("#appointment_date", {
-                dateFormat: "Y-m-d",
-                minDate: new Date().fp_incr(2),
-                disable: [date => !openDays.includes(date.getDay())]
-            });
-
-            $('#storedetail').html(`
-                <div class="bg-white p-4 rounded shadow">
-                    <h2 class="text-xl font-bold mb-2">${data.name}</h2>
-                    <p><strong>Address:</strong> ${data.address}</p>
-                    <p><strong>Opening Time:</strong> ${data.opening_time}</p>
-                    <p><strong>Closing Time:</strong> ${data.closing_time}</p>
-                    <p><strong>Open Days:</strong> ${readableDays}</p>
-                </div>
-            `);
-
-            $('#appointment_date').prop('disabled', false);
+        // Re-initialize flatpickr
+        if (flatpickrInstance) {
+            flatpickrInstance.destroy();
         }
-    });
 
-    // Fetch dentists for the selected store
-    $.get(`/branch/${storeId}/dentists`, function (response) {
-        if (response.dentists && response.dentists.length > 0) {
-            let dentistOptions = '<option value="">-- Choose Dentist --</option>';
-            response.dentists.forEach(dentist => {
-                dentistOptions += `<option value="${dentist.id}">${dentist.name}</option>`;
-            });
-            console.log("Dentist select found?", $('#dentist_id').length);
+        flatpickrInstance = flatpickr("#appointment_date", {
+            dateFormat: "Y-m-d",
+            minDate: new Date().fp_incr(2), // disables today & tomorrow
+            disable: [
+                function (date) {
+                    return !openDays.includes(date.getDay());
+                }
+            ]
+        });
 
-            $('#dentist_id').html(dentistOptions).prop('disabled', false);
-        } else {
-            $('#dentist_id').html('<option value="">No dentists available</option>').prop('disabled', true);
-        }
-    });
+        $('#storedetail').html(`
+            <div class="bg-white p-4 rounded shadow">
+                <h2 class="text-xl font-bold mb-2">${data.name}</h2>
+                <p><strong>Address:</strong> ${data.address}</p>
+                <p><strong>Opening Time:</strong> ${data.opening_time}</p>
+                <p><strong>Closing Time:</strong> ${data.closing_time}</p>
+                <p><strong>Open Days:</strong> ${readableDays}</p>
+            </div>
+        `);
+
+        $('#appointment_date').prop('disabled', false);
+    }
 });
 
-// Service change event — stays only for service details
+
 $('#service_id').on('change', function () {
     const serviceId = $(this).val();
-    if (!serviceId) return;
-
     $.get(`/service/${serviceId}`, function (servdata) {
+
         if (servdata.status == 'success') {
+
+
+
             $('#servicedetail').html(`
-                <div class="bg-white p-4 rounded shadow">
-                    <h2 class="text-xl font-bold mb-2">${servdata.name}</h2>
-                    <p><strong>Description:</strong> ${servdata.desc}</p>
-                    <p><strong>Type:</strong> ${servdata.type}</p>
-                    <p><strong>Approx. Time:</strong> ${servdata.time}</p>
-                    <p><strong>Approx. Price:</strong> ${servdata.price}</p>
-                </div>
-            `);
+            <div class="bg-white p-4 rounded shadow">
+                <h2 class="text-xl font-bold mb-2">${servdata.name}</h2>
+                <p><strong>Description:</strong> ${servdata.desc}</p>
+                <p><strong>Type:</strong> ${servdata.type}</p>
+                <p><strong>Approx. Time:</strong> ${servdata.time}</p>
+                <p><strong>Approx. Price:</strong> ${servdata.price}</p>
+            </div>
+        `);
         }
-    });
+   
+        });
 });
 
+$.get(`/branch/${storeId}/dentists`, function (response) {
+    console.log('dentists response:', response);
+        const $w = $('#dentistWrapper');
+        if (!$w.length) {
+            console.error('dentistWrapper not found in DOM');
+            return;
+        }
+
+        let selectHtml = `<select id="dentist_id" name="dentist_id" class="w-full p-2 border rounded" required>`;
+        if (response.dentists && response.dentists.length > 0) {
+            selectHtml += `<option value="">-- Choose Dentist --</option>`;
+            response.dentists.forEach(d => {
+                // use escape here if names may contain backticks, but this is basic
+                selectHtml += `<option value="${d.id}">${d.name}</option>`;
+            });
+            selectHtml += `</select>`;
+            $w.html(selectHtml);
+            // enable appointment date/time if needed
+            $('#dentist_id').prop('disabled', false);
+        } else {
+            selectHtml += `<option value="">No dentists available</option></select>`;
+            $w.html(selectHtml);
+            $('#dentist_id').prop('disabled', true);
+        }
+
+        // debug check: confirm newly injected select exists and has options
+        console.log('dentist select after replace:', $('#dentist_id').length, $('#dentist_id option').length);
+});
+});
 
 flatpickr("#appointment_date", {
     disable: [
@@ -178,15 +219,17 @@ flatpickr("#appointment_date", {
     ]
 });
 
-$('#dentist_id').on('change', function () {
- 
+$(document).on('change', '#dentist_id', function () {
+    const dentistId =  $(this).val();
+    $('#selected_dentist').val(dentistId); 
+    console.log(dentistId + "asd")
     document.getElementById('appointment_date').value = "";
 });
 
-$('#appointment_date').on('change', function () {
+$(document).on('change', '#appointment_date', function () {
     const selectedDate = $(this).val();
     const storeId = $('#store_id').val();
-    const dentistId = $('#dentist_id').val();
+    const dentistId = $('#selected_dentist').val();
 
     if (!storeId || !dentistId) {
         $('#appointment_time').html('<option>Please select a branch and dentist</option>');
@@ -246,7 +289,7 @@ $('#bookingForm').on('submit', function(e) {
         user_id: $('#user_id').val(),
         store_id: $('#store_id').val(),
         service_id: $('#service_id').val(),
-         dentist_id: $('#dentist_id').val(),
+         dentist_id: $('#selected_dentist').val(),
         appointment_date: $('#appointment_date').val(),
         appointment_time: $('#appointment_time').val(),
         desc: $('#desc').val()
