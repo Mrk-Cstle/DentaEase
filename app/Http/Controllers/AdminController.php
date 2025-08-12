@@ -62,8 +62,8 @@ class AdminController extends Controller
       $clients = User::where('account_type', 'patient')->orderBy('name')->get();
 
 
-      
-        return view('admin.bookingtry', compact('stores','services','clients'));
+      //return view('admin.bookingtry', compact('stores','services','clients'));
+        return view('admin.partials.booking_modal', compact('stores','services','clients'));
 
     }
     public function Useraccount(){

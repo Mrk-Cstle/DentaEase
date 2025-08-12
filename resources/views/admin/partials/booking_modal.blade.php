@@ -1,7 +1,7 @@
 
 <div class="flex flex-col md:flex-row md:gap-10">
     <!-- 70% Booking Form -->
-    <div class="md:w-[100%]">
+    <div class="md:w-[70%]">
         <form id="bookingForm" class="space-y-4">
             @csrf
 
@@ -42,11 +42,15 @@
             <!-- Dentist Selection -->
             <div>
                 <label for="dentist_id" class="block font-semibold">Select Dentist</label>
-                <select id="dentist_id" name="dentist_id" class="w-full p-2 border rounded" required disabled>
+                <div id="dentistWrapper">
+                <select id="dentist_id" name="dentist_id" class="w-full p-2 border rounded"  disabled>
+                  
                     <option value="">-- Choose Dentist --</option>
+                    
                 </select>
             </div>
-
+            </div>
+            <input type="hidden" id="selected_dentist" name="selected_dentist" value="">
             <!-- Date -->
             <div>
                 <label for="appointment_date" class="block font-semibold">Select Date</label>
@@ -79,6 +83,10 @@
 
 
 
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+
+<!-- Flatpickr JS -->
+<script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
 
 
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
@@ -174,15 +182,32 @@ $('#service_id').on('change', function () {
 });
 
 $.get(`/branch/${storeId}/dentists`, function (response) {
-    if (response.dentists && response.dentists.length > 0) {
-        let dentistOptions = '<option value="">-- Choose Dentist --</option>';
-        response.dentists.forEach(dentist => {
-            dentistOptions += `<option value="${dentist.id}">${dentist.name}</option>`;
-        });
-        $('#dentist_id').html(dentistOptions).prop('disabled', false);
-    } else {
-        $('#dentist_id').html('<option value="">No dentists available</option>').prop('disabled', true);
-    }
+    console.log('dentists response:', response);
+        const $w = $('#dentistWrapper');
+        if (!$w.length) {
+            console.error('dentistWrapper not found in DOM');
+            return;
+        }
+
+        let selectHtml = `<select id="dentist_id" name="dentist_id" class="w-full p-2 border rounded" required>`;
+        if (response.dentists && response.dentists.length > 0) {
+            selectHtml += `<option value="">-- Choose Dentist --</option>`;
+            response.dentists.forEach(d => {
+                // use escape here if names may contain backticks, but this is basic
+                selectHtml += `<option value="${d.id}">${d.name}</option>`;
+            });
+            selectHtml += `</select>`;
+            $w.html(selectHtml);
+            // enable appointment date/time if needed
+            $('#dentist_id').prop('disabled', false);
+        } else {
+            selectHtml += `<option value="">No dentists available</option></select>`;
+            $w.html(selectHtml);
+            $('#dentist_id').prop('disabled', true);
+        }
+
+        // debug check: confirm newly injected select exists and has options
+        console.log('dentist select after replace:', $('#dentist_id').length, $('#dentist_id option').length);
 });
 });
 
@@ -194,15 +219,17 @@ flatpickr("#appointment_date", {
     ]
 });
 
-$('#dentist_id').on('change', function () {
- 
+$(document).on('change', '#dentist_id', function () {
+    const dentistId =  $(this).val();
+    $('#selected_dentist').val(dentistId); 
+    console.log(dentistId + "asd")
     document.getElementById('appointment_date').value = "";
 });
 
-$('#appointment_date').on('change', function () {
+$(document).on('change', '#appointment_date', function () {
     const selectedDate = $(this).val();
     const storeId = $('#store_id').val();
-    const dentistId = $('#dentist_id').val();
+    const dentistId = $('#selected_dentist').val();
 
     if (!storeId || !dentistId) {
         $('#appointment_time').html('<option>Please select a branch and dentist</option>');
@@ -262,7 +289,7 @@ $('#bookingForm').on('submit', function(e) {
         user_id: $('#user_id').val(),
         store_id: $('#store_id').val(),
         service_id: $('#service_id').val(),
-         dentist_id: $('#dentist_id').val(),
+         dentist_id: $('#selected_dentist').val(),
         appointment_date: $('#appointment_date').val(),
         appointment_time: $('#appointment_time').val(),
         desc: $('#desc').val()
