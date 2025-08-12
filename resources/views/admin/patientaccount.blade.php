@@ -8,11 +8,9 @@
 
   <div class="flex flex-col sm:flex-row justify-between gap-4 mb-4">
     <div class="flex flex-row gap-2">
-      @if (session('active_branch_id') == "admin")
+
         <a href="/userverify" class="bg-blue-500 text-white px-4 py-2 rounded shadow">New Users</a>
-      @else
-        <a href="javascript:void(0)" class="bg-blue-500 text-white px-4 py-2 rounded opacity-50 cursor-not-allowed">New Users</a>
-      @endif
+    
     </div>
 
     <div class="flex flex-col sm:flex-row gap-2">
