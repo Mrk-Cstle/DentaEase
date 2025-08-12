@@ -226,6 +226,15 @@ if ($userHasBooking) {
     return response()->json(['status'=>'error','message' =>'You already have a booking on this day.']);
     #return back()->withErrors(['appointment_date' => 'You already have a booking on this day.']);
 }
+
+$userHasPending = Appointment::where('user_id', auth()->id())
+    ->whereNotIn('status', ['completed', 'no_show'])
+    ->exists();
+
+if ($userHasPending) {
+return response()->json(['status'=>'error','message' =>'You have a Pending Appointment.']);
+#return back()->withErrors(['appointment_date' => 'You already have a booking on this day.']);
+}
     // ✅ Create the appointment
     Appointment::create([
         'store_id' => $store->id,
@@ -299,6 +308,14 @@ $user = User::findOrFail($request->user_id);
 if ($userHasBooking) {
     return response()->json(['status'=>'error','message' =>'Patient already have a booking on this day.']);
     #return back()->withErrors(['appointment_date' => 'You already have a booking on this day.']);
+}
+$userHasPending = Appointment::where('user_id', $user->id)
+    ->whereNotIn('status', ['completed', 'no_show'])
+    ->exists();
+
+if ($userHasPending) {
+return response()->json(['status'=>'error','message' => $user->lastname.", ". $user->name . ' has Pending Appointment.']);
+#return back()->withErrors(['appointment_date' => 'You already have a booking on this day.']);
 }
     // ✅ Create the appointment
     Appointment::create([
