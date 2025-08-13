@@ -151,7 +151,7 @@ class AdminController extends Controller
             if ($e->errorInfo[1] == 1062) {
                 return response()->json(['message' => 'Username already exists.'], 409);
             }
-            return response()->json(['message' => 'An error occurred.'], 500);
+            return response()->json(['message' => $e->getMessage()], 500);
         }
     }
     public function Approveuser(Request $request){
