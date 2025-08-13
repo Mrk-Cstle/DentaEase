@@ -17,7 +17,7 @@ class MedicineMovement extends Model
 
     public function medicine()
     {
-        return $this->belongsTo(medicines::class);
+        return $this->belongsTo(medicines::class, 'medicine_id');
     }
 
     public function batch()
@@ -27,7 +27,7 @@ class MedicineMovement extends Model
 
     public function store()
     {
-        return $this->belongsTo(Store::class);
+        return $this->belongsTo(Store::class, 'store_id');
     }
 }
 

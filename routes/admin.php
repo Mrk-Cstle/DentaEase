@@ -134,6 +134,9 @@ Route::post('/medicines', [InventoryController::class, 'store'])->name('medicine
 
 Route::get('/medicines/{medicine}', [InventoryController::class, 'show'])->name('medicines.show');
 Route::post('/medicines/{medicine}/batch', [InventoryController::class, 'addBatch'])->name('medicines.addBatch');
+Route::get('/medicines/{medicine}', [InventoryController::class, 'showbatch'])->name('medicines.show');
+Route::post('/medicines/{medicine}/batches', [InventoryController::class, 'storebatch'])->name('medicine_batches.store');
+
 });
 
 Route::get('/get-branch', [AuthUi::class,'GetBranchLogin'])->name('GetBranchLogin');

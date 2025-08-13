@@ -17,10 +17,10 @@ class medicines extends Model
     // One medicine has many batches
     public function batches()
     {
-        return $this->hasMany(medicine_batches::class);
+        return $this->hasMany(medicine_batches::class, 'medicine_id');
     }
     public function movements()
-{
-    return $this->hasMany(MedicineMovement::class);
-}
+    {
+        return $this->hasMany(MedicineMovement::class, 'medicine_id');
+    }
 }

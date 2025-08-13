@@ -9,22 +9,24 @@ class medicine_batches extends Model
     //
       protected $fillable = [
         'medicine_id',
-        'branch_id',
+        'store_id',
         'quantity',
         'expiration_date',
+        'status',
     ];
 
-    public function medicines()
+    public function medicine()
     {
-        return $this->belongsTo(medicines::class);
+        return $this->belongsTo(medicines::class, 'medicine_id');
     }
 
     public function store()
     {
-        return $this->belongsTo(Store::class);
+        return $this->belongsTo(Store::class, 'branch_id'); 
     }
+
     public function movements()
-{
-    return $this->hasMany(MedicineMovement::class, 'medicine_batch_id');
-}
+    {
+        return $this->hasMany(MedicineMovement::class, 'medicine_batch_id');
+    }
 }

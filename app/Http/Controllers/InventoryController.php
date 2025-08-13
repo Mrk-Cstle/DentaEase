@@ -86,4 +86,35 @@ public function addBatch(Request $request, medicines $medicine)
 
     return back()->with('success', 'Batch added successfully.');
 }
+
+public function showbatch(medicines $medicine)
+{
+    $batches = $medicine->batches()
+    ->where('store_id', session('active_branch_id')) // filter by branch
+    ->where('status', 'active') // only show active
+    ->orderBy('expiration_date', 'asc')
+    ->get();
+
+    return view('admin.medicines.show', compact('medicine', 'batches'));
+}
+
+public function storebatch(Request $request, medicines $medicine)
+{
+    $branchid ="{{session('active_branch_id')}}"; 
+  
+    $request->validate([
+        'quantity' => 'required|integer|min:1',
+        'expiration_date' => 'required|date',
+    ]);
+
+    $medicine->batches()->create([
+        'store_id' => $request->store_id, // or select store
+        'quantity' => $request->quantity,
+        'expiration_date' => $request->expiration_date,
+        'status'=> "suspended",
+        
+    ]);
+
+    return back()->with('success', 'Batch added successfully.');
+}
 }
