@@ -136,7 +136,10 @@ Route::get('/medicines/{medicine}', [InventoryController::class, 'show'])->name(
 Route::post('/medicines/{medicine}/batch', [InventoryController::class, 'addBatch'])->name('medicines.addBatch');
 Route::get('/medicines/{medicine}', [InventoryController::class, 'showbatch'])->name('medicines.show');
 Route::post('/medicines/{medicine}/batches', [InventoryController::class, 'storebatch'])->name('medicine_batches.store');
-
+Route::post('/batches/{id}/stock-in', [InventoryController::class, 'stockIn'])->name('stock.in');
+Route::post('/batches/{id}/stock-out', [InventoryController::class, 'stockOut'])->name('stock.out');
+Route::post('/batches/{id}/suspend', [InventoryController::class, 'suspend'])->name('batch.suspend');
+Route::post('/batches/{id}/expired', [InventoryController::class, 'expired'])->name('batch.expired');
 });
 
 Route::get('/get-branch', [AuthUi::class,'GetBranchLogin'])->name('GetBranchLogin');

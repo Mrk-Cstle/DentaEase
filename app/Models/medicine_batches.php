@@ -22,7 +22,7 @@ class medicine_batches extends Model
 
     public function store()
     {
-        return $this->belongsTo(Store::class, 'branch_id'); 
+        return $this->belongsTo(Store::class, 'store_id'); 
     }
 
     public function movements()
