@@ -69,8 +69,12 @@
                                     class="block w-full text-left px-4 py-2 hover:bg-gray-100">Stock Out</button>
                                 <button @click="openMenu = false; openSuspend = true"
                                     class="block w-full text-left px-4 py-2 hover:bg-gray-100">Suspend</button>
-                                <button @click="openMenu = false; openExpired = true"
+
+                                    @if ($isExpired)
+                                    <button @click="openMenu = false; openExpired = true"
                                     class="block w-full text-left px-4 py-2 hover:bg-gray-100">Expired</button>
+                                    @endif
+                               
                             </div>
 
                             <!-- Stock In Modal -->
