@@ -65,7 +65,15 @@
         </div>
         <div>
           <label class="font-semibold">Suffix</label>
-          <input type="text" name="suffix" class="w-full border p-2 rounded" />
+          <select name="suffix" class="w-full border p-2 rounded">
+            <option value="">-- Select Suffix --</option>
+            <option value="Jr.">Jr.</option>
+            <option value="Sr.">Sr.</option>
+            <option value="II">II</option>
+            <option value="III">III</option>
+            <option value="IV">IV</option>
+            <option value="V">V</option>
+          </select>
         </div>
         <div>
           <label class="font-semibold">Username</label>
@@ -191,7 +199,7 @@
         last_name: $('input[name="last_name"]').val(),
         name: $('input[name="name"]').val(),
         middle_name: $('input[name="middle_name"]').val(),
-        suffix: $('input[name="suffix"]').val(),
+        suffix: $('select[name="suffix"]').val(),
         user: $('input[name="user"]').val(),
         position: $('#position').val(),
         _token: '{{ csrf_token() }}'

@@ -47,8 +47,16 @@
                 </div>
 
                 <div>
-                    <label class="block text-gray-700 font-medium mb-1">Suffix</label>
-                    <input type="text" name="suffix" class="w-full px-4 py-2 border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-blue-500">
+                    <label class="font-semibold">Suffix</label>
+                    <select name="suffix" class="w-full border p-2 rounded">
+                      <option value="">-- Select Suffix --</option>
+                      <option value="Jr.">Jr.</option>
+                      <option value="Sr.">Sr.</option>
+                      <option value="II">II</option>
+                      <option value="III">III</option>
+                      <option value="IV">IV</option>
+                      <option value="V">V</option>
+                    </select>
                 </div>
 
                 <div>

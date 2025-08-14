@@ -51,8 +51,16 @@
                     <label for="middlename">Middle Name:</label>
                     <input type="text" name="middlename" id="middlename" value="{{ $user->middlename }}">
 
-                    <label for="suffix">Suffix:</label>
-                    <input type="text" name="suffix" id="suffix" value="{{ $user->suffix }}">
+                    <label class="font-semibold">Suffix</label>
+                    <select name="suffix" class="w-full border p-2 rounded">
+                      <option value="">-- Select Suffix --</option>
+                      <option value="Jr." {{ old('suffix', $user->suffix ?? '') == 'Jr.' ? 'selected' : '' }}>Jr.</option>
+                      <option value="Sr." {{ old('suffix', $user->suffix ?? '') == 'Sr.' ? 'selected' : '' }}>Sr.</option>
+                      <option value="II"  {{ old('suffix', $user->suffix ?? '') == 'II'  ? 'selected' : '' }}>II</option>
+                      <option value="III" {{ old('suffix', $user->suffix ?? '') == 'III' ? 'selected' : '' }}>III</option>
+                      <option value="IV"  {{ old('suffix', $user->suffix ?? '') == 'IV'  ? 'selected' : '' }}>IV</option>
+                      <option value="V"   {{ old('suffix', $user->suffix ?? '') == 'V'   ? 'selected' : '' }}>V</option>
+                    </select>
 
                     <label for="birthdate">Birth Day</label>
                     <input type="date" name="birthdate" id="birthdate" value="{{ $user->birth_date }}">
@@ -454,7 +462,7 @@ const userId = $(this).data('id');
                         name : $('input[name="name"]').val(),
                         lastname : $('input[name="lastname"]').val(),
                         middlename : $('input[name="middlename"]').val(),
-                        suffix : $('input[name="suffix"]').val(),
+                        suffix : $('select[name="suffix"]').val(),
                         birthdate : $('input[name="birthdate"]').val(),
                         contact : $('input[name="contact"]').val(),
                         user : $('input[name="user"]').val(),

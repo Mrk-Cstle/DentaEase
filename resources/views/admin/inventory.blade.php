@@ -131,15 +131,20 @@
           let rows = '';
           response.data.forEach(item => {
             rows += `
-              <tr>
-                <td class="border py-2 px-4">${item.name}</td>
-                <td class="border py-2 px-4">${item.unit}</td>
-                <td class="border py-2 px-4">${item.price}</td>
-                <td class="border py-2 px-4">${item.description}</td>
-                <td class="border py-2 px-4">
-                  <a href="/user/${item.id}" class="text-blue-600 hover:underline"></a>
-                </td>
-              </tr>`;
+<tr>
+  <td class="border py-2 px-4">${item.name}</td>
+  <td class="border py-2 px-4">${item.unit}</td>
+  <td class="border py-2 px-4">${item.price}</td>
+  <td class="border py-2 px-4">${item.description}</td>
+  <td class="border py-2 px-4">
+    @if(session('active_branch_id') === 'admin')
+      <a href="/medicines/${item.id}" class="text-blue-600 hover:underline" disabled>View</a>
+    @else
+      <a href="/medicines/${item.id}" class="text-blue-600 hover:underline">View</a>
+    @endif
+  </td>
+</tr>`;
+
           });
           $('#newtbody').html(rows);
 
