@@ -110,7 +110,7 @@ Route::get('/appointments/{id}/view', [AdminBookingController::class, 'view'])->
 Route::post('/appointments/{id}/settle', [AdminBookingController::class, 'settle'])->name('appointments.settle');
 Route::get('/appointments/fetch', [AdminBookingController::class, 'fetch'])->name('appointments.fetch');
 Route::get('/admin/bookings/history', [AdminBookingController::class, 'showHistory'])->name('admin.booking.history');
-Route::put('/appointments/{id}/cancel', [AdminBookingController::class, 'cancelBooking'])->name('appointments.cancel');
+
 Route::get('/user/details/{id}', [AdminBookingController::class, 'modalDetails']);
 
 //Services
@@ -144,3 +144,7 @@ Route::post('/batches/{id}/expired', [InventoryController::class, 'expired'])->n
 
 Route::get('/get-branch', [AuthUi::class,'GetBranchLogin'])->name('GetBranchLogin');
 Route::post('/select-branch', [AuthUi::class,'SelectBranchLogin'])->name('SelectBranchLogin');
+
+
+//booking cancel
+Route::put('/appointments/{id}/cancel', [AdminBookingController::class, 'cancelBooking'])->name('appointments.cancel');

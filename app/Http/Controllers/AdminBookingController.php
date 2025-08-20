@@ -202,7 +202,8 @@ public function showHistory(Request $request)
 public function modalDetails($id)
 {
     $user = User::findOrFail($id);
-    $completedAppointments = $user->Appointment->where('status', 'completed');
+$completedAppointments = $user->Appointment->whereIn('status', ['completed', 'no_show', 'cancelled']);
+
 
     return view('admin.partials.usermodaldetail', compact('user', 'completedAppointments'));
 }

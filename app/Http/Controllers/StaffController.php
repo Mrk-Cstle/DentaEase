@@ -157,7 +157,7 @@ public function showProfile($id)
 
     $completedAppointments = Appointment::with(['user', 'dentist'])
         ->where('user_id', $id)
-        ->whereIn('status', ['completed', 'no_show'])
+        ->whereIn('status', ['completed', 'no_show','cancelled'])
         ->orderBy('appointment_date', 'desc')
         ->get();
     $medicalForms = MedicalForm::where('user_id', $user->id)->get();

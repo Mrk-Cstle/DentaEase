@@ -66,7 +66,8 @@
                 <th class="px-3 py-2">Dentist</th>
                 <th class="px-3 py-2">Description</th>
                 <th class="px-3 py-2">Work Done</th>
-                <th class="px-3 py-2">Total Price</th>
+                      <th class="px-3 py-2">Price</th>
+                <th class="px-3 py-2">Status</th>
             </tr>
         </thead>
         <tbody>
@@ -79,6 +80,7 @@
                     <td class="px-3 py-2">{{ $appointment->desc }}</td>
                     <td class="px-3 py-2">{{ $appointment->work_done }}</td>
                     <td class="px-3 py-2">₱{{ number_format($appointment->total_price, 2) }}</td>
+                    <td class="px-3 py-2">{{ $appointment->status}}</td>
                 </tr>
             @endforeach
         </tbody>

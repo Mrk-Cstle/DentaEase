@@ -42,7 +42,8 @@ class Clientside extends Controller
     // Get only completed appointments for the history tab
     $completedAppointments = Appointment::with(['user', 'dentist', 'store'])
         ->where('user_id', $userId)
-        ->where('status', 'completed','no_show')
+       ->whereIn('status', ['completed', 'no_show', 'cancelled'])
+
         ->orderBy('appointment_date', 'desc')
         ->get();
 

@@ -5,6 +5,12 @@
     @php
         use Carbon\Carbon;
     @endphp
+    <div class="mb-4">
+    <a href="{{ route('inventory') }}" 
+       class="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600">
+        Back to Inventory
+    </a>
+</div>
     <div class="mb-6">
 
         <h1 class="text-2xl font-bold text-accent mb-4">{{ $medicine->name }}</h1>

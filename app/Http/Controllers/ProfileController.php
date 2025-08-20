@@ -90,7 +90,7 @@ class ProfileController extends Controller
 {
     $completedAppointments = Appointment::with(['user', 'dentist'])
         ->where('user_id', auth()->id())
-        ->whereIn('status', ['completed', 'no_show'])
+        ->whereIn('status', ['completed', 'no_show','cancelled'])
         ->orderBy('appointment_date', 'desc')
         ->get();
 $medicalForms = MedicalForm::where('user_id', Auth::id())->get();
