@@ -72,6 +72,7 @@
             <option value="">-- Select Unit --</option>
             <option value="mL">mL</option>
             <option value="G">G</option>
+            <option value="MG">MG</option>
             
           </select>
         </div>
