@@ -89,10 +89,10 @@ class AuthUi extends Controller
                 $redirectUrl = route('dashboard');
 
             }elseif ($user->account_type == 'patient') {
-               $formstatus = $user->formstatus;
+               $formstatus = $user->is_consent;
 
                if ($formstatus == 0) {
-                     $redirectUrl = route('CForms');
+                     $redirectUrl = route('CConsent');
                }else{
                 $redirectUrl = route('CBookingo');
                }

@@ -14,6 +14,13 @@ class Clientside extends Controller
         return view('client.cdashboard');
     }
 
+    public function CConsent(){
+        return view('client.consent');
+    }
+    public function record(){
+        return view('client.patient_record');
+    }
+
     public function CProfile(){
 
         $medicalForm = MedicalForm::where('user_id', auth()->id())->first();
