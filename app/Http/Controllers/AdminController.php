@@ -83,6 +83,9 @@ class AdminController extends Controller
      public function Branch(){
         return view('admin.branch');
     }
+    public function dentalchart(){
+        return view('admin.dentalchart');
+    }
     public function Services(){
         return view('admin.services');
     }

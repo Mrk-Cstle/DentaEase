@@ -62,7 +62,7 @@ Route::get('/branch', [AdminController::class,'Branch'])->name('Branch')->middle
 Route::get('/services', [AdminController::class,'Services'])->name('Services')->middleware('auth');
 Route::get('/logs', [VisitLogController::class,'logs'])->name('logs')->middleware('auth');
 Route::get('/inventory', [InventoryController::class,'inventory'])->name('inventory')->middleware('auth');
-
+Route::get('/dentalchart', [AdminController::class,'dentalchart'])->name('dentalchart')->middleware('auth');
 //new user 
 
 Route::get('/newuserlist', [AdminController::class,'Newuserlist'])->name('Newuserlist')->middleware('auth');
