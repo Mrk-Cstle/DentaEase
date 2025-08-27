@@ -103,6 +103,8 @@ Route::get('/signup/verify-otp', [AuthUi::class, 'verifyOtp'])->name('verify.otp
 Route::get('/logouts', [AdminController::class,'Logout'])->name('Logout')->middleware('auth');
 
 
-
+Route::get('/dental-chart/{patient}', function (User $patient) {
+    return view('admin.dental-chart.index', compact('patient'));
+});
 
 

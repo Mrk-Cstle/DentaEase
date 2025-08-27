@@ -100,7 +100,24 @@ class DentalChart extends Model
         'tmd_trismus',
         'tmd_muscle_spasm',
     ];
-
+    protected $casts = [
+        'gingivitis' => 'boolean',
+        'early_periodontitis' => 'boolean',
+        'moderate_periodontitis' => 'boolean',
+        'advanced_periodontitis' => 'boolean',
+        'occlusion_class_molar' => 'boolean',
+        'overjet' => 'boolean',
+        'overbite' => 'boolean',
+        'midline_deviation' => 'boolean',
+        'crossbite' => 'boolean',
+        'appliance_orthodontic' => 'boolean',
+        'appliance_stayplate' => 'boolean',
+        'appliance_others' => 'boolean',
+        'tmd_clenching' => 'boolean',
+        'tmd_clicking' => 'boolean',
+        'tmd_trismus' => 'boolean',
+        'tmd_muscle_spasm' => 'boolean',
+    ];
     // Relation: One patient has one dental chart
     public function patient()
     {
