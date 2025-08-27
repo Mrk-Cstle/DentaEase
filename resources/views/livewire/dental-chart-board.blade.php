@@ -168,7 +168,53 @@
             @endforeach
         </div>
     </div>
-
+    <div class="mt-6 p-4 border rounded-lg bg-gray-50 flex flex-col">
+        <h3 class="text-sm font-bold mb-3">Legend</h3>
+        <div class="flex flex-row  justify-between">
+              <!-- Condition -->  
+        <div class="mb-4">
+            <h4 class="text-xs font-semibold mb-1">Condition</h4>
+            <ul class="text-xs space-y-1">
+                <li>✓ - Present Teeth</li>
+                <li>D - Decayed (Caries Indicated for Filling)</li>
+                <li>M - Missing due to Caries</li>
+                <li>MO - Missing due to Other Causes</li>
+                <li>Im - Impacted Tooth</li>
+                <li>Sp - Supernumerary Tooth</li>
+                <li>Rf - Root Fragment</li>
+                <li>Un - Unerupted</li>
+            </ul>
+        </div>
+    
+        <!-- Restorations & Prosthetics -->
+        <div class="mb-4">
+            <h4 class="text-xs font-semibold mb-1">Restorations &amp; Prosthetics</h4>
+            <ul class="text-xs space-y-1">
+                <li>Am - Amalgam Filling</li>
+                <li>Co - Composite Filling</li>
+                <li>JC - Jacket Crown</li>
+                <li>Ab - Abutment</li>
+                <li>Att - Attachment</li>
+                <li>P - Pontic</li>
+                <li>In - Inlay</li>
+                <li>Imp - Implant</li>
+                <li>S - Sealants</li>
+                <li>Rm - Removable Denture</li>
+            </ul>
+        </div>
+    
+        <!-- Surgery -->
+        <div>
+            <h4 class="text-xs font-semibold mb-1">Surgery</h4>
+            <ul class="text-xs space-y-1">
+                <li>X - Extraction due to Caries</li>
+                <li>XO - Extraction due to Other Causes</li>
+            </ul>
+        </div>
+        </div>
+      
+    </div>
+    
     <div class="mt-6 space-y-4">
 
         <!-- Periodontal Screening -->
