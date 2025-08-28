@@ -104,8 +104,19 @@ public function approveBooking(Request $request, $id)
 
 public function view($id)
 {
+    //finalized
     $appointment = Appointment::with('user', 'store')->findOrFail($id);
-    return view('admin.appointment_detail', compact('appointment'));
+
+    //get treatment record
+    $record = $appointment->user->appointment;
+
+
+    //livewire dental chart
+    $patient = $appointment->user;
+
+
+
+    return view('admin.appointment_detail', compact('appointment', 'record', 'patient'));
 }
 public function settle(Request $request, $id)
 {
@@ -146,6 +157,7 @@ public function settle(Request $request, $id)
     $appointment->update($data);
 
     return response()->json(['status' => 'success', 'message' => 'Appointment finalized successfully.']);
+
 }
 
 

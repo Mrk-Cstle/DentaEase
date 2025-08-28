@@ -1,8 +1,4 @@
-@extends('layout.navigation')
 
-@section('title', 'Dental Record')
-
-@section('main-content')
 <div class="p-6 bg-gray-100 min-h-screen">
     <h1 class="text-2xl font-bold mb-6 text-center">Treatment Record</h1>
 
@@ -22,7 +18,7 @@
                 @forelse ($record as $r)
                 <tr class="border-b hover:bg-gray-50">
                     <td class="py-2 px-4">
-                        {{ $r->appointment_date ? \Carbon\Carbon::parse($r->appointment_date)->format('M d, Y') : '-' }}
+                        {{ $r->appointment_date ? \Carbon\Carbon::parse($r->appointment_date)->format('M d, Y') : '-' ?? '-'}}
                     </td>
                     
                     <td class="py-2 px-4">{{ $r->desc ?? '-' }}</td>
@@ -40,4 +36,4 @@
         </table>
     </div>
 </div>
-@endsection
+
