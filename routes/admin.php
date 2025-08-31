@@ -127,6 +127,7 @@ Route::get('/dashboard/appointment-stats', [DashboardController::class, 'getAppo
 
 //appointment logs 
 Route::post('/scan-qr', [VisitLogController::class, 'handleQrScan'])->name('scan.qr');
+Route::post('/scan-face', [VisitLogController::class, 'handleFaceScan'])->name('scan.face');
 
 //inventory
 Route::get('/inventorylist', [InventoryController::class,'InventoryList'])->name('InventoryList')->middleware('auth');
