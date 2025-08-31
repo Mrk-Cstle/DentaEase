@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 class PatientRecord extends Model
 {
     protected $fillable = [
+        'user_id',
         'last_name', 'first_name', 'middle_name', 'birthdate', 'sex',
         'nationality', 'religion', 'occupation', 'home_address', 'office_address',
         'contact_number', 'email', 'referred_by', 'reason_for_consultation',
@@ -17,6 +18,7 @@ class PatientRecord extends Model
     ];
 
     protected $casts = [
+        'birthdate' => 'date',
         'health_conditions' => 'array',
         'in_good_health' => 'boolean',
         'under_treatment' => 'boolean',
@@ -30,4 +32,8 @@ class PatientRecord extends Model
         'birth_control_pills' => 'boolean',
         'medical_conditions' => 'array',
     ];
+    public function user()
+    {
+        return $this->belongsTo(User::class);
+    }
 }

@@ -8,6 +8,7 @@ use App\Models\Appointment;
 use App\Models\Store;
 use App\Models\User;
 use App\Mail\AppointmentApprovedMail;
+use App\Models\PatientRecord;
 use App\Models\Service;
 use App\Models\StoreStaff;
 use Illuminate\Support\Facades\Mail;
@@ -107,6 +108,8 @@ public function view($id)
     //finalized
     $appointment = Appointment::with('user', 'store')->findOrFail($id);
 
+    $user = $appointment->user;
+    $userid = $user->id;
     //get treatment record
     $record = $appointment->user->appointment;
 
@@ -114,9 +117,15 @@ public function view($id)
     //livewire dental chart
     $patient = $appointment->user;
 
+    $patientinfo = null;
+    $patientinfo = PatientRecord::firstOrCreate(
+        ['user_id' => $userid],
+        ['user_id' => $userid]
+    );
 
 
-    return view('admin.appointment_detail', compact('appointment', 'record', 'patient'));
+
+    return view('admin.appointment_detail', compact('appointment', 'record', 'patient','patientinfo'));
 }
 public function settle(Request $request, $id)
 {

@@ -27,7 +27,7 @@ class Clientside extends Controller
         return view('client.cprofile',compact('medicalForm'));
     }
     public function CForms(){
-        return view('client.cforms');
+        return view('client.patient_record');
     }
     public function CBooking(){
         $stores = Store::all(); // ✅ This provides the variable to the view
