@@ -15,6 +15,7 @@
     <!-- Tabs -->
     <div class="flex border-b mb-4">
         <button @click="tab='checkin'" :class="tab==='checkin' ? 'text-blue-500 font-bold border-b-2 border-blue-500' : 'text-gray-500'" class="py-2 px-4">Check-in</button>
+        <button @click="tab='patient'" :class="tab==='treatment' ? 'text-blue-500 font-bold border-b-2 border-blue-500' : 'text-gray-500'" class="py-2 px-4">Patient Information</button>
         <button @click="tab='info'" :class="tab==='info' ? 'text-blue-500 font-bold border-b-2 border-blue-500' : 'text-gray-500'" class="py-2 px-4">Dental Chart</button>
         <button @click="tab='treatment'" :class="tab==='treatment' ? 'text-blue-500 font-bold border-b-2 border-blue-500' : 'text-gray-500'" class="py-2 px-4">Treatment Record</button>
     </div>
@@ -89,6 +90,9 @@
 
     <div x-show="tab==='info'" x-cloak>
         @include('admin.dental-chart.index', ['patient'=> $patient])
+    </div>
+    <div x-show="tab==='patient'" x-cloak>
+        @include('client.patient_record', ['patient'=> $patient])
     </div>
 
 </div>

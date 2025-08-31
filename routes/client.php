@@ -73,3 +73,8 @@ Route::post('/profile/upload', [ProfileController::class, 'uploadprofileimage'])
 Route::post('/patientrecord', [DentalChartController::class, 'storeRecord'])->name('patient-records');
 
 Route::get('/dental-chart/{patient}/treatmentrecord', [DentalChartController::class, 'treatmentRecord'])->name('treatmentRecord');
+
+Route::get('/patient-record/{patient}', [DentalChartController::class, 'showForm'])->name('patient-record.form');
+
+// Store or update record (POST)
+Route::post('/patient-record', [DentalChartController::class, 'storeOrUpdatePatientRecord'])->name('patient-records');

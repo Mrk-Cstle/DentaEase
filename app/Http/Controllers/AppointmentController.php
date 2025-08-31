@@ -87,6 +87,7 @@ public function getDentistSlots($branchId, $dentistId, Request $request)
     $bookings = Appointment::where('store_id', $store->id)
         ->where('dentist_id', $dentistId)
         ->where('appointment_date', $date)
+        ->where('status', '!=', 'cancelled')
         ->orderBy('appointment_time')
         ->get(['appointment_time', 'booking_end_time']);
 
@@ -141,6 +142,7 @@ public function getAvailableSlots(Request $request, Store $store)
     // Get all bookings on that day
     $bookings = Appointment::where('store_id', $store->id)
         ->where('appointment_date', $date)
+        ->where('status', '!=', 'cancelled')
         ->orderBy('appointment_time')
         ->get(['appointment_time', 'booking_end_time']);
 
@@ -205,6 +207,7 @@ public function appointment(Request $request)
     // ✅ Check if time slot is already taken
  $alreadyBooked = Appointment::where('store_id', $store->id)
     ->where('dentist_id', $request->dentist_id) // ✅ check per dentist
+    ->where('status', '!=', 'cancelled')
     ->where('appointment_date', $request->appointment_date)
     ->where('appointment_time', $request->appointment_time)
     ->exists();
@@ -218,17 +221,17 @@ public function appointment(Request $request)
     }
 
    
-    $userHasBooking = Appointment::where('user_id', auth()->id())
-    ->where('appointment_date', $request->appointment_date)
-    ->exists();
+//     $userHasBooking = Appointment::where('user_id', auth()->id())
+//     ->where('appointment_date', $request->appointment_date)
+//     ->exists();
 
-if ($userHasBooking) {
-    return response()->json(['status'=>'error','message' =>'You already have a booking on this day.']);
-    #return back()->withErrors(['appointment_date' => 'You already have a booking on this day.']);
-}
+// if ($userHasBooking) {
+//     return response()->json(['status'=>'error','message' =>'You already have a booking on this day.']);
+//     #return back()->withErrors(['appointment_date' => 'You already have a booking on this day.']);
+// }
 
 $userHasPending = Appointment::where('user_id', auth()->id())
-    ->whereNotIn('status', ['completed', 'no_show'])
+    ->whereNotIn('status', ['completed', 'no_show', 'cancelled'])
     ->exists();
 
 if ($userHasPending) {
@@ -288,6 +291,8 @@ $user = User::findOrFail($request->user_id);
     // ✅ Check if time slot is already taken
  $alreadyBooked = Appointment::where('store_id', $store->id)
     ->where('dentist_id', $request->dentist_id) // ✅ check per dentist
+    ->where('status', '!=', 'cancelled')
+   
     ->where('appointment_date', $request->appointment_date)
     ->where('appointment_time', $request->appointment_time)
     ->exists();
@@ -301,16 +306,18 @@ $user = User::findOrFail($request->user_id);
     }
 
    
-    $userHasBooking = Appointment::where('user_id', $user->id)
-    ->where('appointment_date', $request->appointment_date)
-    ->exists();
+//     $userHasBooking = Appointment::where('user_id', $user->id)
+//     ->where('appointment_date', $request->appointment_date)
+//     ->where('status', '!=', 'cancelled')
+//     ->exists();
 
-if ($userHasBooking) {
-    return response()->json(['status'=>'error','message' =>'Patient already have a booking on this day.']);
-    #return back()->withErrors(['appointment_date' => 'You already have a booking on this day.']);
-}
+// if ($userHasBooking) {
+//     return response()->json(['status'=>'error','message' =>'Patient already have a booking on this day.']);
+//     #return back()->withErrors(['appointment_date' => 'You already have a booking on this day.']);
+// }
 $userHasPending = Appointment::where('user_id', $user->id)
-    ->whereNotIn('status', ['completed', 'no_show'])
+    ->whereNotIn('status', ['completed', 'no_show','cancelled'])
+    
     ->exists();
 
 if ($userHasPending) {
