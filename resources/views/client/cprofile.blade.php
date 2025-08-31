@@ -17,10 +17,10 @@
             <button class="tab-button border-b-2 border-transparent py-2 px-4 hover:text-blue-600 hover:border-blue-600 active"
                 data-tab="profile-tab">Profile</button>
         </li>
-        <li>
+        {{-- <li>
             <button class="tab-button border-b-2 border-transparent py-2 px-4 hover:text-blue-600 hover:border-blue-600"
                 data-tab="medical-tab">Medical Form</button>
-        </li>
+        </li> --}}
     </ul>
 </div>
 
