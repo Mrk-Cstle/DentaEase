@@ -76,7 +76,11 @@
         </div>
     @endforeach
 </div>
-
+    <span class="flex flex-row gap-2">
+        <p>Describe your concern</p>
+        <b><p style="color: red">(Don't leave this field blank)</p></b>
+    </span>
+   
 
     <textarea class="w-full p-2 border rounded" rows="5" id="desc" name="desc"  placeholder="Describe your concern..."></textarea>
 
