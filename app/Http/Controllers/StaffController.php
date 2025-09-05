@@ -8,6 +8,7 @@ use Illuminate\Support\Facades\Hash;
 use Illuminate\Validation\Rule;
 use App\Models\Appointment;
 use App\Models\MedicalForm;
+use App\Models\PatientRecord;
 
 class StaffController extends Controller
 {
@@ -155,13 +156,54 @@ public function showProfile($id)
 {
     $user = User::findOrFail($id);
 
+    // All completed/cancelled/no_show appointments of this user
     $completedAppointments = Appointment::with(['user', 'dentist'])
-        ->where('user_id', $id)
-        ->whereIn('status', ['completed', 'no_show','cancelled'])
+        ->where('user_id', $user->id)
+        ->whereIn('status', ['completed', 'no_show', 'cancelled'])
         ->orderBy('appointment_date', 'desc')
         ->get();
+
+    // All medical forms of this user
     $medicalForms = MedicalForm::where('user_id', $user->id)->get();
-    return view('admin.viewuserdetails', compact('user', 'completedAppointments', 'medicalForms'));
+
+    // Latest appointment of the user (for profile context)
+    $appointment = Appointment::with('user', 'store')
+        ->where('user_id', $user->id)
+        ->latest('appointment_date')
+        ->first();
+
+    // Initialize variables
+    $record = '';
+    $patient = '';
+    $patientinfo = '';
+
+    if ($user->account_type == 'patient') {
+        // Treatment record (all appointments of the patient)
+        $record = $user->appointment()
+            ->whereIn('status', ['completed', 'no_show', 'cancelled'])
+            ->orderBy('appointment_date', 'desc')
+            ->get();
+
+        // The patient is just the user object
+        $patient = $user;
+
+        // Create patient info if it doesn’t exist
+        $patientinfo = PatientRecord::firstOrCreate(
+            ['user_id' => $user->id],
+            ['user_id' => $user->id]
+        );
+    }
+
+    return view('admin.viewuserdetails', compact(
+        'user',
+        'completedAppointments',
+        'medicalForms',
+        'appointment',
+        'record',
+        'patient',
+        'patientinfo'
+    ));
 }
+
      
 }
