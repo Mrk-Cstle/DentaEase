@@ -8,6 +8,7 @@ use App\Models\Appointment;
 use App\Models\Store;
 use App\Models\User;
 use App\Mail\AppointmentApprovedMail;
+use App\Models\MedicalForm;
 use App\Models\PatientRecord;
 use App\Models\Service;
 use App\Models\StoreStaff;
@@ -105,28 +106,31 @@ public function approveBooking(Request $request, $id)
 
 public function view($id)
 {
-    //finalized
+    // Get the appointment with related user and store
     $appointment = Appointment::with('user', 'store')->findOrFail($id);
 
-    $user = $appointment->user;
-    $userid = $user->id;
-    //get treatment record
-    $record = $appointment->user->appointment;
-
-
-    //livewire dental chart
+    // The user (patient) tied to this appointment
     $patient = $appointment->user;
 
-    $patientinfo = null;
+    // Only completed/finalized appointments for this patient
+    $record = $patient->appointment()
+        ->whereIn('status', ['completed'])
+        ->get();
+
+    // Ensure patient record exists
     $patientinfo = PatientRecord::firstOrCreate(
-        ['user_id' => $userid],
-        ['user_id' => $userid]
+        ['user_id' => $patient->id],
+        ['user_id' => $patient->id]
     );
 
-
-
-    return view('admin.appointment_detail', compact('appointment', 'record', 'patient','patientinfo'));
+    return view('admin.appointment_detail', compact(
+        'appointment',
+        'record',
+        'patient',
+        'patientinfo'
+    ));
 }
+
 public function settle(Request $request, $id)
 {
     $appointment = Appointment::findOrFail($id);
@@ -222,10 +226,46 @@ public function showHistory(Request $request)
 
 public function modalDetails($id)
 {
+   
+       // get the user (patient)
     $user = User::findOrFail($id);
-$completedAppointments = $user->Appointment->whereIn('status', ['completed', 'no_show', 'cancelled']);
+
+    // get all completed / finalized appointments of this user
+    $completedAppointments = $user->appointment()
+        ->whereIn('status', ['completed', 'no_show', 'cancelled'])
+        ->get();
+
+    // if you need the latest or specific appointment
+    $appointment = $user->appointment()
+        ->with('store')
+        ->where('status' , 'completed')
+        ->latest()
+        ->first();
+
+    // livewire dental chart
+    $patient = $user;
+
+    // Only completed/finalized appointments for this patient
+    $record = $patient->appointment()
+        ->whereIn('status', ['completed'])
+        ->get();
 
 
-    return view('admin.partials.usermodaldetail', compact('user', 'completedAppointments'));
+
+
+    // ensure patientinfo exists
+    $patientinfo = PatientRecord::firstOrCreate(
+        ['user_id' => $user->id],
+        ['user_id' => $user->id]
+    );
+
+    return view('admin.partials.usermodaldetail', compact(
+        'user',
+        'completedAppointments',
+        'appointment',
+        'record',
+        'patient',
+        'patientinfo'
+    ));
 }
 }

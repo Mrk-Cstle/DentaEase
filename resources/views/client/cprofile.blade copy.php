@@ -17,21 +17,10 @@
             <button class="tab-button border-b-2 border-transparent py-2 px-4 hover:text-blue-600 hover:border-blue-600 active"
                 data-tab="profile-tab">Profile</button>
         </li>
-        <li>
-                    <button
-                        class="tab-button border-b-2 border-transparent py-2 px-4 hover:text-blue-600 hover:border-blue-600"
-                        data-tab="medical-tab">Patient Information</button>
-                </li>
-                <li>
-                    <button
-                        class="tab-button border-b-2 border-transparent py-2 px-4 hover:text-blue-600 hover:border-blue-600"
-                        data-tab="chart-tab">Dental Chart</button>
-                </li>
-                <li>
-                    <button
-                        class="tab-button border-b-2 border-transparent py-2 px-4 hover:text-blue-600 hover:border-blue-600"
-                        data-tab="record-tab">Treatment Record</button>
-                </li>
+        {{-- <li>
+            <button class="tab-button border-b-2 border-transparent py-2 px-4 hover:text-blue-600 hover:border-blue-600"
+                data-tab="medical-tab">Medical Form</button>
+        </li> --}}
     </ul>
 </div>
 
@@ -191,16 +180,167 @@
 </div>
 </div>
 <div id="medical-tab" class="tab-content hidden">
-      
-       @include('client.patient_record', ['patient'=> $patient])
+ @if($medicalForms && count($medicalForms) > 0)
+<div id="medicalCarousel" class="max-w-5xl mx-auto relative">
+
+    @foreach($medicalForms as $index => $medicalForm)
+    <div class="medical-form-slide {{ $index !== 0 ? 'hidden' : '' }} bg-white p-6 rounded-lg shadow space-y-10" data-index="{{ $index }}">
+
+
+    {{-- Medical History --}}
+    <div>
+    <h2 class="text-xl font-bold mb-4 flex items-center justify-between gap-2">
+  <span class="flex items-center gap-2">
+    📜 <span>MEDICAL HISTORY</span>
+  </span>
+  <span class="text-sm font-normal text-gray-500">
+    Submitted on: {{ \Carbon\Carbon::parse($medicalForm->created_at)->format('F d, Y h:i A') }}
+  </span>
+</h2>
+      <div class="overflow-x-auto">
+        <table class="min-w-full border text-sm">
+          <thead class="bg-[#5D5CFF] text-white">
+            <tr>
+              <th class="px-4 py-2 text-left">Condition</th>
+              <th class="px-4 py-2">Status</th>
+              <th class="px-4 py-2 text-left">Details</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr class="border-t">
+              <td class="px-4 py-2">Allergies</td>
+                 <td class="text-center">   {{ $medicalForm->allergies == 1 ? 'Yes' : 'No' }}</td>
+
+              <td class="px-4 py-2">{{ $medicalForm->allergies_details ?? '' }}</td>
+            </tr>
+            <tr class="border-t">
+              <td class="px-4 py-2">Heart Condition</td>
+                 <td class="text-center">   {{ $medicalForm->heart_condition == 1 ? 'Yes' : 'No' }}</td>
+
         
+              <td class="px-4 py-2">{{ $medicalForm->heart_condition_details ?? '' }}</td>
+            </tr>
+            <tr class="border-t">
+              <td class="px-4 py-2">Asthma</td>
+
+              <td class="text-center"> {{ $medicalForm->asthma == 1 ? 'Yes' : 'No' }}</td>
+              <td class="px-4 py-2">{{ $medicalForm->asthma_details ?? '' }}</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
     </div>
-    <div id="chart-tab" class="tab-content hidden">
-        @include('admin.dental-chart.index', ['patient'=> $patient])
+
+    {{-- Past Surgeries --}}
+    <div>
+      <h2 class="text-xl font-bold mb-4 flex items-center gap-2"><span>📄</span>PAST SURGERIES</h2>
+    
+  <div class="overflow-x-auto">
+    <table class="min-w-full border text-sm">
+      <thead class="bg-[#5D5CFF] text-white">
+        <tr>
+          <th class="px-4 py-2">Surgery Type</th>
+          <th class="px-4 py-2">Date</th>
+          <th class="px-4 py-2">Hospital/Clinic</th>
+          <th class="px-4 py-2">Remarks</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr class="border-t">
+          <td class="px-2 py-2">{{ $medicalForm->surgery_type }}</td>
+          <td class="px-2 py-2">{{ $medicalForm->surgery_date }}</td>
+          <td class="px-2 py-2">{{ $medicalForm->surgery_location }}</td>
+          <td class="px-2 py-2">{{ $medicalForm->surgery_remarks }}</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
     </div>
-    <div id="record-tab" class="tab-content hidden">
-        @include('admin.dental-chart.treatment-record', ['record' => $record])
+
+    {{-- Current Medications --}}
+    <div>
+      <h2 class="text-xl font-bold mb-4 flex items-center gap-2"><span>💊</span>CURRENT MEDICATIONS</h2>
+    @if($medicalForm->medication_name)
+  <table class="min-w-full border text-sm">
+    <thead class="bg-[#5D5CFF] text-white">
+      <tr>
+        <th class="px-4 py-2">Medication Name</th>
+        <th class="px-4 py-2">Dosage</th>
+        <th class="px-4 py-2">Reason</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr class="border-t">
+        <td class="px-2 py-2">{{ $medicalForm->medication_name }}</td>
+        <td class="px-2 py-2">{{ $medicalForm->medication_dosage }}</td>
+        <td class="px-2 py-2">{{ $medicalForm->medication_reason }}</td>
+      </tr>
+    </tbody>
+  </table>
+@else
+  <p class="text-gray-500 italic">No current medications reported.</p>
+@endif
     </div>
+
+    {{-- Dental History --}}
+    <div>
+      <h2 class="text-xl font-bold mb-4 flex items-center gap-2"><span>🍩</span>DENTAL HISTORY</h2>
+      <div class="space-y-4">
+        <div>
+          <label class="font-semibold">Reason for today’s visit:</label>
+          <input type="text" class="w-full p-2 border rounded bg-gray-100" value="{{ $medicalForm->visit_reason ?? '' }}" readonly>
+        </div>
+        <div>
+          <label class="font-semibold">Last dental visit:</label>
+          <input type="text" class="w-full p-2 border rounded bg-gray-100" value="{{ $medicalForm->last_dental_visit ?? '' }}" readonly>
+        </div>
+        <div>
+          <label class="font-semibold">Previous dental problems?</label>
+          <input type="text" class="w-full p-2 border rounded bg-gray-100" value="{{ $medicalForm->had_dental_issues== 1 ? 'Yes' : 'No'  }}" readonly>
+        </div>
+        <div>
+          <label class="font-semibold">Dental anxiety:</label>
+          <input type="text" class="w-full p-2 border rounded bg-gray-100" value="{{ $medicalForm->dental_anxiety == 1 ? 'Yes' : 'No' }}" readonly>
+        </div>
+      </div>
+    </div>
+
+    {{-- Emergency Contact --}}
+    <div>
+      <h2 class="text-xl font-bold mb-4 flex items-center gap-2"><span>👥</span>EMERGENCY CONTACT</h2>
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+        <div>
+          <label class="block font-semibold">Name</label>
+          <input type="text" class="w-full p-2 border rounded bg-gray-100" value="{{ $medicalForm->emergency_name ?? '' }}" readonly>
+        </div>
+        <div>
+          <label class="block font-semibold">Relationship</label>
+          <input type="text" class="w-full p-2 border rounded bg-gray-100" value="{{ $medicalForm->emergency_relationship ?? '' }}" readonly>
+        </div>
+        <div>
+          <label class="block font-semibold">Contact Number</label>
+          <input type="text" class="w-full p-2 border rounded bg-gray-100" value="{{ $medicalForm->emergency_contact ?? '' }}" readonly>
+        </div>
+      </div>
+    </div>
+
+  </div>
+   @endforeach
+
+    <!-- Carousel Controls -->
+    <div class="flex justify-between items-center mt-4">
+        <button id="prevBtn" class="bg-gray-300 hover:bg-gray-400 text-black font-bold py-2 px-4 rounded">Previous</button>
+        <span id="slideIndicator" class="text-sm text-gray-600">1 of {{ count($medicalForms) }}</span>
+        <button id="nextBtn" class="bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded">Next</button>
+    </div>
+</div> 
+  @else
+  <div class="max-w-5xl mx-auto bg-white p-6 rounded-lg shadow text-center">
+    <p class="text-gray-500 italic">You have not submitted your medical history form yet.</p>
+  </div>
+  @endif
+</div>
 
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 

@@ -5,9 +5,9 @@
         <h3 class="text-sm font-bold mb-2 text-center">Temporary Upper Teeth</h3>
         <div class="grid grid-cols-10 gap-1 border border-gray-400 p-1">
             @foreach (['55','54','53','52','51','61','62','63','64','65'] as $tooth)
-                <div class="flex flex-col items-center">
+                <div class="flex flex-col items-center" >
                     <select wire:model.change="chart.tooth_{{ $tooth }}_condition"
-                            class="w-12 h-8 border border-gray-400 text-xs rounded">
+                            class="w-12 h-8 border border-gray-400 text-xs rounded"  @if(auth()->user()->account_type == 'patient') disabled @endif>
                         <option value="">--</option>
                         <option value="✓">✓ Present Teeth</option>
                         <option value="D">D - Decayed</option>
@@ -20,7 +20,7 @@
                     </select>
 
                     <select wire:model.change="chart.tooth_{{ $tooth }}_treatment"
-                            class="w-12 h-8 border border-gray-400 text-xs rounded">
+                            class="w-12 h-8 border border-gray-400 text-xs rounded" @if(auth()->user()->account_type == 'patient') disabled @endif>
                         <option value="">--</option>
                         <option value="Am">Am - Amalgam Filling</option>
                         <option value="Co">Co - Composite Filling</option>
@@ -54,7 +54,7 @@
             @foreach (['18','17','16','15','14','13','12','11','21','22','23','24','25','26','27','28'] as $tooth)
                 <div class="flex flex-col items-center">
                     <select wire:model.change="chart.tooth_{{ $tooth }}_condition"
-                            class="w-12 h-8 border border-gray-400 text-xs rounded">
+                            class="w-12 h-8 border border-gray-400 text-xs rounded" @if(auth()->user()->account_type == 'patient') disabled @endif>
                         <option value="">--</option>
                         <option value="✓">✓ Present Teeth</option>
                         <option value="D">D - Decayed</option>
@@ -66,7 +66,7 @@
                         <option value="Un">Un - Unerupted</option>
                     </select>
                     <select wire:model.change="chart.tooth_{{ $tooth }}_treatment"
-                            class="w-12 h-8 border border-gray-400 text-xs rounded">
+                            class="w-12 h-8 border border-gray-400 text-xs rounded" @if(auth()->user()->account_type == 'patient') disabled @endif>
                         <option value="">--</option>
                         <option value="Am">Am - Amalgam Filling</option>
                         <option value="Co">Co - Composite Filling</option>
@@ -91,7 +91,7 @@
             @foreach (['48','47','46','45','44','43','42','41','31','32','33','34','35','36','37','38'] as $tooth)
                 <div class="flex flex-col items-center">
                     <select wire:model.change="chart.tooth_{{ $tooth }}_condition"
-                            class="w-12 h-8 border border-gray-400 text-xs rounded">
+                            class="w-12 h-8 border border-gray-400 text-xs rounded" @if(auth()->user()->account_type == 'patient') disabled @endif>
                         <option value="">--</option>
                         <option value="✓">✓ Present Teeth</option>
                         <option value="D">D - Decayed</option>
@@ -103,7 +103,7 @@
                         <option value="Un">Un - Unerupted</option>
                     </select>
                     <select wire:model.change="chart.tooth_{{ $tooth }}_treatment"
-                            class="w-12 h-8 border border-gray-400 text-xs rounded">
+                            class="w-12 h-8 border border-gray-400 text-xs rounded" @if(auth()->user()->account_type == 'patient') disabled @endif>
                         <option value="">--</option>
                         <option value="Am">Am - Amalgam Filling</option>
                         <option value="Co">Co - Composite Filling</option>
@@ -134,7 +134,7 @@
             @foreach (['85','84','83','82','81','71','72','73','74','75'] as $tooth)
                 <div class="flex flex-col items-center">
                     <select wire:model.change="chart.tooth_{{ $tooth }}_condition"
-                            class="w-12 h-8 border border-gray-400 text-xs rounded">
+                            class="w-12 h-8 border border-gray-400 text-xs rounded" @if(auth()->user()->account_type == 'patient') disabled @endif>
                         <option value="">--</option>
                         <option value="✓">✓ Present Teeth</option>
                         <option value="D">D - Decayed</option>
@@ -147,7 +147,7 @@
                     </select>
 
                     <select wire:model.change="chart.tooth_{{ $tooth }}_treatment"
-                            class="w-12 h-8 border border-gray-400 text-xs rounded">
+                            class="w-12 h-8 border border-gray-400 text-xs rounded" @if(auth()->user()->account_type == 'patient') disabled @endif>
                         <option value="">--</option>
                         <option value="Am">Am - Amalgam Filling</option>
                         <option value="Co">Co - Composite Filling</option>
@@ -221,16 +221,16 @@
         <h3 class="text-sm font-bold">Periodontal Screening</h3>
         <div class="grid grid-cols-2 gap-2">
             <label>
-                <input type="checkbox" wire:model.change="chart.gingivitis"> Gingivitis
+                <input type="checkbox" wire:model.change="chart.gingivitis" @if(auth()->user()->account_type == 'patient') disabled @endif> Gingivitis
             </label>
             <label>
-                <input type="checkbox" wire:model.change="chart.early_periodontitis"> Early Periodontitis
+                <input type="checkbox" wire:model.change="chart.early_periodontitis" @if(auth()->user()->account_type == 'patient') disabled @endif> Early Periodontitis
             </label>
             <label>
-                <input type="checkbox" wire:model.change="chart.moderate_periodontitis"> Moderate Periodontitis
+                <input type="checkbox" wire:model.change="chart.moderate_periodontitis" @if(auth()->user()->account_type == 'patient') disabled @endif> Moderate Periodontitis
             </label>
             <label>
-                <input type="checkbox" wire:model.change="chart.advanced_periodontitis"> Advanced Periodontitis
+                <input type="checkbox" wire:model.change="chart.advanced_periodontitis" @if(auth()->user()->account_type == 'patient') disabled @endif> Advanced Periodontitis
             </label>
         </div>
     
@@ -238,19 +238,19 @@
         <h3 class="text-sm font-bold mt-4">Occlusion</h3>
         <div class="grid grid-cols-2 gap-2">
             <label>
-                <input type="checkbox" wire:model.change="chart.occlusion_class_molar"> Class Molar
+                <input type="checkbox" wire:model.change="chart.occlusion_class_molar" @if(auth()->user()->account_type == 'patient') disabled @endif> Class Molar
             </label>
             <label>
-                <input type="checkbox" wire:model.change="chart.overjet"> Overjet
+                <input type="checkbox" wire:model.change="chart.overjet" @if(auth()->user()->account_type == 'patient') disabled @endif> Overjet
             </label>
             <label>
-                <input type="checkbox" wire:model.change="chart.overbite"> Overbite
+                <input type="checkbox" wire:model.change="chart.overbite" @if(auth()->user()->account_type == 'patient') disabled @endif> Overbite
             </label>
             <label>
-                <input type="checkbox" wire:model.change="chart.midline_deviation"> Midline Deviation
+                <input type="checkbox" wire:model.change="chart.midline_deviation" @if(auth()->user()->account_type == 'patient') disabled @endif> Midline Deviation
             </label>
             <label>
-                <input type="checkbox" wire:model.change="chart.crossbite"> Crossbite
+                <input type="checkbox" wire:model.change="chart.crossbite" @if(auth()->user()->account_type == 'patient') disabled @endif> Crossbite
             </label>
         </div>
     
@@ -258,10 +258,10 @@
         <h3 class="text-sm font-bold mt-4">Appliances</h3>
         <div class="grid grid-cols-2 gap-2">
             <label>
-                <input type="checkbox" wire:model.change="chart.appliance_orthodontic"> Orthodontic
+                <input type="checkbox" wire:model.change="chart.appliance_orthodontic" @if(auth()->user()->account_type == 'patient') disabled @endif> Orthodontic
             </label>
             <label>
-                <input type="checkbox" wire:model.change="chart.appliance_stayplate"> Stayplate
+                <input type="checkbox" wire:model.change="chart.appliance_stayplate" @if(auth()->user()->account_type == 'patient') disabled @endif> Stayplate
             </label>
             {{-- <label>
                 <input type="checkbox" wire:model.change="chart.appliance_others"> Others
@@ -272,16 +272,16 @@
         <h3 class="text-sm font-bold mt-4">TMD</h3>
         <div class="grid grid-cols-2 gap-2">
             <label>
-                <input type="checkbox" wire:model.change="chart.tmd_clenching"> Clenching
+                <input type="checkbox" wire:model.change="chart.tmd_clenching" @if(auth()->user()->account_type == 'patient') disabled @endif> Clenching
             </label>
             <label>
-                <input type="checkbox" wire:model.change="chart.tmd_clicking"> Clicking
+                <input type="checkbox" wire:model.change="chart.tmd_clicking" @if(auth()->user()->account_type == 'patient') disabled @endif> Clicking
             </label>
             <label>
-                <input type="checkbox" wire:model.change="chart.tmd_trismus"> Trismus
+                <input type="checkbox" wire:model.change="chart.tmd_trismus" @if(auth()->user()->account_type == 'patient') disabled @endif> Trismus
             </label>
             <label>
-                <input type="checkbox" wire:model.change="chart.tmd_muscle_spasm"> Muscle Spasm
+                <input type="checkbox" wire:model.change="chart.tmd_muscle_spasm" @if(auth()->user()->account_type == 'patient') disabled @endif> Muscle Spasm
             </label>
         </div>
     

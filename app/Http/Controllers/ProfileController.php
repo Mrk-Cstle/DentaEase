@@ -9,6 +9,7 @@ use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Log;
 use App\Models\Appointment;
 use App\Models\MedicalForm;
+use App\Models\PatientRecord;
 use Illuminate\Support\Facades\Storage;
 class ProfileController extends Controller
 {
@@ -93,8 +94,29 @@ class ProfileController extends Controller
         ->whereIn('status', ['completed', 'no_show','cancelled'])
         ->orderBy('appointment_date', 'desc')
         ->get();
-$medicalForms = MedicalForm::where('user_id', Auth::id())->get();
 
-    return view('client.cprofile', compact('completedAppointments','medicalForms'));
+
+     $appointment = Appointment::with('user', 'store')->findOrFail(auth()->id());
+
+        # code...
+    $user = $appointment->user;
+    $userid = $user->id;
+    //get treatment record
+    $record = $appointment->user->appointment;
+
+
+    //livewire dental chart
+    $patient = $appointment->user;
+
+    $patientinfo = null;
+    $patientinfo = PatientRecord::firstOrCreate(
+        ['user_id' => $userid],
+        ['user_id' => $userid]
+    );
+
+
+
+
+    return view('client.cprofile', compact('completedAppointments',  'appointment', 'record', 'patient','patientinfo'));
 }
 }

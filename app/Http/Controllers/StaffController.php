@@ -156,39 +156,54 @@ public function showProfile($id)
 {
     $user = User::findOrFail($id);
 
+    // All completed/cancelled/no_show appointments of this user
     $completedAppointments = Appointment::with(['user', 'dentist'])
-        ->where('user_id', $id)
-        ->whereIn('status', ['completed', 'no_show','cancelled'])
+        ->where('user_id', $user->id)
+        ->whereIn('status', ['completed', 'no_show', 'cancelled'])
         ->orderBy('appointment_date', 'desc')
         ->get();
+
+    // All medical forms of this user
     $medicalForms = MedicalForm::where('user_id', $user->id)->get();
 
-     $appointment = Appointment::with('user', 'store')->findOrFail($id);
+    // Latest appointment of the user (for profile context)
+    $appointment = Appointment::with('user', 'store')
+        ->where('user_id', $user->id)
+        ->latest('appointment_date')
+        ->first();
 
-     $record ='' ;
-     $patient ='' ;
-      $patientinfo ='' ;
+    // Initialize variables
+    $record = '';
+    $patient = '';
+    $patientinfo = '';
 
     if ($user->account_type == 'patient') {
-        # code...
-    $user = $appointment->user;
-    $userid = $user->id;
-    //get treatment record
-    $record = $appointment->user->appointment;
+        // Treatment record (all appointments of the patient)
+        $record = $user->appointment()
+            ->whereIn('status', ['completed', 'no_show', 'cancelled'])
+            ->orderBy('appointment_date', 'desc')
+            ->get();
 
+        // The patient is just the user object
+        $patient = $user;
 
-    //livewire dental chart
-    $patient = $appointment->user;
-
-    $patientinfo = null;
-    $patientinfo = PatientRecord::firstOrCreate(
-        ['user_id' => $userid],
-        ['user_id' => $userid]
-    );
+        // Create patient info if it doesn’t exist
+        $patientinfo = PatientRecord::firstOrCreate(
+            ['user_id' => $user->id],
+            ['user_id' => $user->id]
+        );
     }
-   
 
-    return view('admin.viewuserdetails', compact('user', 'completedAppointments', 'medicalForms', 'appointment', 'record', 'patient','patientinfo'));
+    return view('admin.viewuserdetails', compact(
+        'user',
+        'completedAppointments',
+        'medicalForms',
+        'appointment',
+        'record',
+        'patient',
+        'patientinfo'
+    ));
 }
+
      
 }
