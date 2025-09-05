@@ -8,6 +8,7 @@ use Illuminate\Support\Facades\Hash;
 use Illuminate\Validation\Rule;
 use App\Models\Appointment;
 use App\Models\MedicalForm;
+use App\Models\PatientRecord;
 
 class StaffController extends Controller
 {
@@ -161,7 +162,33 @@ public function showProfile($id)
         ->orderBy('appointment_date', 'desc')
         ->get();
     $medicalForms = MedicalForm::where('user_id', $user->id)->get();
-    return view('admin.viewuserdetails', compact('user', 'completedAppointments', 'medicalForms'));
+
+     $appointment = Appointment::with('user', 'store')->findOrFail($id);
+
+     $record ='' ;
+     $patient ='' ;
+      $patientinfo ='' ;
+
+    if ($user->account_type == 'patient') {
+        # code...
+    $user = $appointment->user;
+    $userid = $user->id;
+    //get treatment record
+    $record = $appointment->user->appointment;
+
+
+    //livewire dental chart
+    $patient = $appointment->user;
+
+    $patientinfo = null;
+    $patientinfo = PatientRecord::firstOrCreate(
+        ['user_id' => $userid],
+        ['user_id' => $userid]
+    );
+    }
+   
+
+    return view('admin.viewuserdetails', compact('user', 'completedAppointments', 'medicalForms', 'appointment', 'record', 'patient','patientinfo'));
 }
      
 }
