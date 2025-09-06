@@ -96,7 +96,10 @@ class ProfileController extends Controller
         ->get();
 
 
-     $appointment = Appointment::with('user', 'store')->findOrFail(auth()->id());
+     $appointment = Appointment::with(['user', 'store'])
+    ->where('user_id', auth()->id())
+    ->latest()   // get the latest appointment
+    ->firstOrFail();
 
         # code...
     $user = $appointment->user;
