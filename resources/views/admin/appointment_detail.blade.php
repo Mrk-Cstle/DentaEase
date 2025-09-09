@@ -97,10 +97,119 @@
 
 </div>
 
+<div 
+    x-data="{ openReceiptModal: false }"
+    x-cloak
+    @open-receipt.window="openReceiptModal = true"
+>
+    <!-- Trigger button (optional manual open) -->
+    {{-- <button @click="openReceiptModal = true"
+        class="bg-blue-600 text-white px-4 py-2 rounded">
+        Print Receipt
+    </button> --}}
+
+    <!-- Modal -->
+    <div x-show="openReceiptModal"
+         class="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50">
+        <div class="bg-white rounded-lg shadow-lg w-[700px] p-6 relative">
+            <!-- Close -->
+            <button @click="openReceiptModal = false"
+                class="absolute top-2 right-2 text-gray-500 hover:text-gray-700">✕</button>
+
+            <!-- Receipt -->
+            <div id="receipt-content" class="text-sm font-serif">
+                <h2 class="text-center text-lg font-bold">
+                    Santiago – Amancio Dental Clinic
+                </h2>
+                <p class="text-center">
+                    {{ ($appointment->store->name ?? 'N/A') }}<br>
+                  {{ ($appointment->store->address ?? 'N/A') }}<br>
+               
+                </p>
+
+                <h3 class="text-center font-bold mt-4 underline">
+                    ACKNOWLEDGEMENT RECEIPT
+                </h3>
+
+<div class="mt-4 leading-relaxed">
+    <p>
+        Received from 
+        <u>{{ e($appointment->user->name ?? 'N/A') }} {{ ($appointment->user->lastname ?? '') }} {{ e($appointment->user->suffix ?? '') }}</u>
+        of 
+        <u>{{ $appointment->user->current_address }}</u>,
+        the sum of 
+        <u><span id="receipt-sum">____________________________</span></u>
+        for 
+        <u>{{ e($appointment->service_name ?? '') }}</u>
+        on 
+        <u>{{ now()->format('F j, Y') }}</u>.
+    </p>
+</div>
+
+                <div class="mt-8 flex justify-between">
+                    <span></span>
+                <div class="text-center mt-8">
+                <p><strong>{{ Auth::user()->name }} {{ Auth::user()->lastname }} {{ Auth::user()->suffix }}</strong></p>
+                <p class="text-sm">{{ Auth::user()->position }}</p>
+            </div>
+                            </div>
+            </div>
+
+            <!-- Print -->
+            <div class="mt-6 flex justify-end">
+                <button onclick="printReceipt()"
+                    class="bg-green-600 text-white px-4 py-2 rounded">
+                    Print
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
 
 {{-- Scripts --}}
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script src="//cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+<script>
+    $(document).on('input', 'input[name="total_price"]', function () {
+    let value = parseFloat($(this).val()) || 0;
+    // Format as PHP currency style ₱1,234.56
+    let formatted = value > 0 ? `₱${value.toLocaleString('en-PH', { minimumFractionDigits: 2 })}` : '____________________________';
+    $('#receipt-sum').text(formatted);
+});
+window.printReceipt = function () {
+    // Get the receipt HTML
+    const receipt = document.getElementById('receipt-content').innerHTML;
+
+    // Backup the current page’s body
+    const original = document.body.innerHTML;
+
+    // Replace body with only the receipt + print CSS
+    document.body.innerHTML = `
+        <style>
+            @media print {
+                @page {
+                    margin: 0; /* removes browser header/footer space */
+                }
+                body {
+                    margin: 20mm; /* your custom margin */
+                }
+            }
+        </style>
+        ${receipt}
+    `;
+
+    // Trigger print
+    window.print();
+
+    // Restore original page
+    document.body.innerHTML = original;
+}
+</script>
+
 
 <script>
     $(document).ready(function () {
@@ -148,7 +257,7 @@
                         success: function (res) {
                             Swal.fire('Success', res.message ?? 'Done!', 'success')
                                 .then(() => {
-                                    window.location.href = "{{ route('admin.booking') }}";
+                                    window.dispatchEvent(new CustomEvent('open-receipt'));
                                 });
                         },
                         error: function () {
