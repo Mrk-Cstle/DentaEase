@@ -18,6 +18,7 @@
         <button @click="tab='patient'" :class="tab==='treatment' ? 'text-blue-500 font-bold border-b-2 border-blue-500' : 'text-gray-500'" class="py-2 px-4">Patient Information</button>
         <button @click="tab='info'" :class="tab==='info' ? 'text-blue-500 font-bold border-b-2 border-blue-500' : 'text-gray-500'" class="py-2 px-4">Dental Chart</button>
         <button @click="tab='treatment'" :class="tab==='treatment' ? 'text-blue-500 font-bold border-b-2 border-blue-500' : 'text-gray-500'" class="py-2 px-4">Treatment Record</button>
+        <button @click="tab='rx'" :class="tab==='treatment' ? 'text-blue-500 font-bold border-b-2 border-blue-500' : 'text-gray-500'" class="py-2 px-4">RX</button>
     </div>
 
     <!-- Tab Contents -->
@@ -25,7 +26,7 @@
         <div class="w-full mx-auto bg-white p-6 rounded shadow">
             <h2 class="text-2xl font-bold mb-4">Finalize Appointment</h2>
         
-            <p><strong>Client:</strong>{{ $appointment->user->lastname ?? 'N/A' }}, {{ $appointment->user->name ?? 'N/A' }} {{ $appointment->user->middlename ?? 'N/A' }} {{ $appointment->user->suffix ?? 'N/A' }}</p>
+            <p><strong>Client:</strong>{{ $appointment->user->lastname ?? 'N/A' }}, {{ $appointment->user->name ?? 'N/A' }} {{ $appointment->user->middlename ?? 'N/A' }} {{ $appointment->user->suffix ?? '' }}</p>
             <p><strong>Dentist:</strong> {{ $appointment->dentist->name ?? 'N/A' }}</p>
         
             @php
@@ -94,7 +95,9 @@
     <div x-show="tab==='patient'" x-cloak>
         @include('client.patient_record', ['patient'=> $patient])
     </div>
-
+    <div x-show="tab==='rx'" x-cloak>
+        @include('admin.dental-chart.rx', ['medicines'=> $medicines, 'appointment'=>$appointment])
+    </div>
 </div>
 
 <div 
