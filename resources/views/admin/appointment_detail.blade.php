@@ -297,28 +297,54 @@ window.printReceipt = function () {
     });
 </script>
 <script>
-    
     function printDiv(divId) {
         const redirectUrl = "{{ route('appointments.view', ['id' => $appointment->id]) }}";
-        const content = document.getElementById(divId).innerHTML;
+    
+        // Clone the div to preserve structure
+        const contentDiv = document.getElementById(divId);
+        const clone = contentDiv.cloneNode(true);
+    
+        // Copy current values for all inputs/selects/textarea
+        const originalInputs = contentDiv.querySelectorAll('input, select, textarea');
+        const clonedInputs = clone.querySelectorAll('input, select, textarea');
+    
+        originalInputs.forEach((input, index) => {
+            if (input.type === 'checkbox' || input.type === 'radio') {
+                clonedInputs[index].checked = input.checked;
+            } else {
+                clonedInputs[index].value = input.value;
+            }
+        });
+    
+        // Backup original page
         const originalBody = document.body.innerHTML;
     
-        // Replace body with only the content to print
-        document.body.innerHTML = content;
+        // Replace body with cloned content + print styles
+        document.body.innerHTML = `
+        
+            <style>
+                @media print {
+                    @page { margin: 0; }
+                    body { margin: 1mm; font-family: system-ui, sans-serif; }
+                    .no-print { display: none !important; }
+                }
+                body { font-family: system-ui, sans-serif; margin: 5mm; }
+            </style>
+        `;
+        document.body.appendChild(clone);
     
         // Trigger print
         window.print();
     
-        // Restore the original body after a short delay
+        // Restore original page
         setTimeout(() => {
-            document.body.innerHTML = originalBody;
-            // Re-initialize Alpine to fix x-show tabs
-            window.location.href = redirectUrl; 
-            if (window.Alpine) {
-                window.Alpine.initTree(document.body);
-            }
-        }, 500);
+            // document.body.innerHTML = originalBody;
+            // if (window.Alpine) window.Alpine.initTree(document.body);
+            window.location.href = redirectUrl;
+        }, 200);
     }
     </script>
-     
+    
+
+   
 @endsection
