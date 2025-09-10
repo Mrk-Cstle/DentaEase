@@ -205,9 +205,13 @@ window.printReceipt = function () {
     // Trigger print
     window.print();
 
-    // Restore original page
-    document.body.innerHTML = original;
-}
+    // Restore original page after a short delay
+    setTimeout(() => {
+        document.body.innerHTML = original;
+        // Redirect to another page after print
+        window.location.href = '/appointments'; // change this to your target URL
+    }, 500); // 500ms delay to ensure print dialog has started
+};
 </script>
 
 
