@@ -2,7 +2,12 @@
 
 @section('title','Patient Record')
 @section('main-content') --}}
+
 <div class="max-w-5xl mx-auto p-6 bg-white shadow-lg rounded-lg">
+    <button onclick="printDiv('printable-patient')" 
+    class="mt-2 px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 print:hidden">
+    Print Patient Info
+</button>
     <h2 class="text-2xl font-bold mb-6">Patient Information Record</h2>
 
     @if(session('success'))
@@ -17,7 +22,35 @@
 
         <!-- Personal Information -->
         <div>
-
+            <div>
+                <input value="{{$patientinfo->user_id}}" name="user_id" id="user_id" hidden>
+    
+                <p><strong>Name: </strong>
+                    <span class="print-value">{{ $patientinfo->user->lastname }}, {{ $patientinfo->user->name }} {{ $patientinfo->user->middlename }} {{ $patientinfo->user->suffix ?? '' }}</span>
+                   
+                </p>
+                
+                <p><strong>Address: </strong>
+                    <span class="print-value">{{ $patientinfo->user->current_address }}</span>
+                  
+                </p>
+                
+                <p><strong>Birthdate: </strong>
+                    <span class="print-value">{{ $patientinfo->user->birth_date }}</span>
+                   
+                </p>
+                
+                <p><strong>Contact Number: </strong>
+                    <span class="print-value">{{ $patientinfo->user->contact_number }}</span>
+                   
+                </p>
+                
+                <p><strong>Email: </strong>
+                    <span class="print-value">{{ $patientinfo->user->email }}</span>
+                  
+                </p>
+                
+            </div>
             <input value="{{$patientinfo->user_id}}" name="user_id" id="user_id" hidden>
             {{-- <h4 class="text-lg font-semibold mb-4">Personal Information</h4> --}}
             {{-- <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
@@ -207,4 +240,5 @@
         @apply w-4 h-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500;
     }
 </style>
+
 @endpush

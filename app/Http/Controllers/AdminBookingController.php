@@ -9,6 +9,7 @@ use App\Models\Store;
 use App\Models\User;
 use App\Mail\AppointmentApprovedMail;
 use App\Models\MedicalForm;
+use App\Models\medicines;
 use App\Models\PatientRecord;
 use App\Models\Service;
 use App\Models\StoreStaff;
@@ -122,12 +123,13 @@ public function view($id)
         ['user_id' => $patient->id],
         ['user_id' => $patient->id]
     );
-
+    $medicines = medicines::get();
     return view('admin.appointment_detail', compact(
         'appointment',
         'record',
         'patient',
-        'patientinfo'
+        'patientinfo',
+        'medicines'
     ));
 }
 
@@ -250,7 +252,7 @@ public function modalDetails($id)
         ->whereIn('status', ['completed'])
         ->get();
 
-
+    $medicines = medicines::get();
 
 
     // ensure patientinfo exists
@@ -265,7 +267,8 @@ public function modalDetails($id)
         'appointment',
         'record',
         'patient',
-        'patientinfo'
+        'patientinfo',
+        'medicines'
     ));
 }
 }
