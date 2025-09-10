@@ -1,7 +1,17 @@
 <div class="space-y-6">
+    <button onclick="printDiv('printable-info')" 
+    class="mt-2 px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 print:hidden">
+    Print Dental Chart
+</button>
 
     <!-- Temporary Upper Teeth -->
     <div>
+        <p><strong>Name: </strong>{{ $patient->lastname }}, {{ $patient->name }} {{ $patient->middlename }} {{ $patient->suffix ?? '' }}</p>
+        <p><strong>Address: </strong>{{ $patient->current_address }}</p>
+        <p><strong>Birthdate: </strong>{{ $patient->birth_date }}</p>
+        <p><strong>Contact Number: </strong>{{ $patient->contact_number }}</p>
+        <p><strong>Email: </strong>{{ $patient->email }}</p>
+        
         <h3 class="text-sm font-bold mb-2 text-center">Temporary Upper Teeth</h3>
         <div class="grid grid-cols-10 gap-1 border border-gray-400 p-1">
             @foreach (['55','54','53','52','51','61','62','63','64','65'] as $tooth)

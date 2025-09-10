@@ -15,10 +15,10 @@
     <!-- Tabs -->
     <div class="flex border-b mb-4">
         <button @click="tab='checkin'" :class="tab==='checkin' ? 'text-blue-500 font-bold border-b-2 border-blue-500' : 'text-gray-500'" class="py-2 px-4">Check-in</button>
-        <button @click="tab='patient'" :class="tab==='treatment' ? 'text-blue-500 font-bold border-b-2 border-blue-500' : 'text-gray-500'" class="py-2 px-4">Patient Information</button>
+        <button @click="tab='patient'" :class="tab==='patient' ? 'text-blue-500 font-bold border-b-2 border-blue-500' : 'text-gray-500'" class="py-2 px-4">Patient Information</button>
         <button @click="tab='info'" :class="tab==='info' ? 'text-blue-500 font-bold border-b-2 border-blue-500' : 'text-gray-500'" class="py-2 px-4">Dental Chart</button>
         <button @click="tab='treatment'" :class="tab==='treatment' ? 'text-blue-500 font-bold border-b-2 border-blue-500' : 'text-gray-500'" class="py-2 px-4">Treatment Record</button>
-        <button @click="tab='rx'" :class="tab==='treatment' ? 'text-blue-500 font-bold border-b-2 border-blue-500' : 'text-gray-500'" class="py-2 px-4">RX</button>
+        <button @click="tab='rx'" :class="tab==='rx' ? 'text-blue-500 font-bold border-b-2 border-blue-500' : 'text-gray-500'" class="py-2 px-4">RX</button>
     </div>
 
     <!-- Tab Contents -->
@@ -86,17 +86,37 @@
     </div>
 
     <div x-show="tab==='treatment'" x-cloak>
-        @include('admin.dental-chart.treatment-record', ['record' => $record])
+        <div id="printable-treatment">
+            @include('admin.dental-chart.treatment-record', ['record' => $record])
+        </div>
+        {{-- <button onclick="printDiv('printable-treatment')" 
+            class="mt-2 px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 print:hidden">
+            Print Treatment Record
+        </button> --}}
     </div>
-
+    
     <div x-show="tab==='info'" x-cloak>
-        @include('admin.dental-chart.index', ['patient'=> $patient])
+        <div id="printable-info">
+            @include('admin.dental-chart.index', ['patient'=> $patient])
+        </div>
+     
     </div>
+    
     <div x-show="tab==='patient'" x-cloak>
-        @include('client.patient_record', ['patient'=> $patient])
+        <div id="printable-patient">
+            @include('client.patient_record', ['patient'=> $patient])
+        </div>
+       
     </div>
+    
     <div x-show="tab==='rx'" x-cloak>
-        @include('admin.dental-chart.rx', ['medicines'=> $medicines, 'appointment'=>$appointment])
+        <div id="printable-rx">
+            @include('admin.dental-chart.rx', ['medicines'=> $medicines, 'appointment'=>$appointment])
+        </div>
+        {{-- <button onclick="printDiv('printable-rx')" 
+            class="mt-2 px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 print:hidden">
+            Print RX
+        </button> --}}
     </div>
 </div>
 
@@ -276,4 +296,29 @@ window.printReceipt = function () {
         });
     });
 </script>
+<script>
+    
+    function printDiv(divId) {
+        const redirectUrl = "{{ route('appointments.view', ['id' => $appointment->id]) }}";
+        const content = document.getElementById(divId).innerHTML;
+        const originalBody = document.body.innerHTML;
+    
+        // Replace body with only the content to print
+        document.body.innerHTML = content;
+    
+        // Trigger print
+        window.print();
+    
+        // Restore the original body after a short delay
+        setTimeout(() => {
+            document.body.innerHTML = originalBody;
+            // Re-initialize Alpine to fix x-show tabs
+            window.location.href = redirectUrl; 
+            if (window.Alpine) {
+                window.Alpine.initTree(document.body);
+            }
+        }, 500);
+    }
+    </script>
+     
 @endsection
