@@ -3,7 +3,7 @@
      <td>
     <button onclick="showUserModal({{ $appointment->user->id }})"
         class="text-blue-600 underline">
-        {{ $appointment->user->last_name }}, {{ $appointment->user->name ?? 'N/A' }}
+        {{ $appointment->user->lastname }}, {{ $appointment->user->name ?? 'N/A' }}  {{ $appointment->user->middlename }}.  {{ $appointment->user->suffix ?? '' }}
     </button>
 </td>
 <td>{{ $appointment->service_name}}</td>
