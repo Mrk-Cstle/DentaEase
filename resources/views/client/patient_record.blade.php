@@ -27,27 +27,27 @@
     
                 <p><strong>Name: </strong>
                     <span class="print-value">{{ $patientinfo->user->lastname }}, {{ $patientinfo->user->name }} {{ $patientinfo->user->middlename }} {{ $patientinfo->user->suffix ?? '' }}</span>
-                    <input value="{{$patientinfo->user->lastname}}, {{$patientinfo->user->name}} {{$patientinfo->user->middlename}} {{$patientinfo->user->suffix ?? ''}}" name="name" class="input">
+                   
                 </p>
                 
                 <p><strong>Address: </strong>
                     <span class="print-value">{{ $patientinfo->user->current_address }}</span>
-                    <input value="{{$patientinfo->user->current_address}}" name="address" class="input">
+                  
                 </p>
                 
                 <p><strong>Birthdate: </strong>
                     <span class="print-value">{{ $patientinfo->user->birth_date }}</span>
-                    <input value="{{$patientinfo->user->birth_date}}" name="birthdate" class="input">
+                   
                 </p>
                 
                 <p><strong>Contact Number: </strong>
                     <span class="print-value">{{ $patientinfo->user->contact_number }}</span>
-                    <input value="{{$patientinfo->user->contact_number}}" name="contact_number" class="input">
+                   
                 </p>
                 
                 <p><strong>Email: </strong>
                     <span class="print-value">{{ $patientinfo->user->email }}</span>
-                    <input value="{{$patientinfo->user->email}}" name="email" class="input">
+                  
                 </p>
                 
             </div>
