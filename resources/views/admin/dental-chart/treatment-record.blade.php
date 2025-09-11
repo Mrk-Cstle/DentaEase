@@ -1,7 +1,9 @@
 <div class="p-6 bg-gray-100 min-h-screen" id="printable-area">
+     @if (auth()->user()->account_type == 'admin')
     <button onclick="window.print()" class="mb-4 px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 print:hidden">
         Print
     </button>
+    @endif
 
     <div class="bg-white p-6 shadow rounded">
         <p><strong>Name: </strong>{{ $patientinfo->user->lastname }}, {{ $patientinfo->user->name }} {{ $patientinfo->user->middlename }} {{ $patientinfo->user->suffix ?? '' }}</p>
