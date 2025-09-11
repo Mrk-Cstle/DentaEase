@@ -14,6 +14,7 @@ use App\Http\Controllers\FileController;
 use App\Http\Controllers\ServicesController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\InventoryController;
+use App\Http\Controllers\POSController;
 use App\Http\Controllers\VisitLogController;
 use Illuminate\Support\Facades\Auth;
 
@@ -141,6 +142,14 @@ Route::post('/batches/{id}/stock-in', [InventoryController::class, 'stockIn'])->
 Route::post('/batches/{id}/stock-out', [InventoryController::class, 'stockOut'])->name('stock.out');
 Route::post('/batches/{id}/suspend', [InventoryController::class, 'suspend'])->name('batch.suspend');
 Route::post('/batches/{id}/expired', [InventoryController::class, 'expired'])->name('batch.expired');
+
+Route::prefix('pos')->group(function () {
+    Route::get('/{store}', [POSController::class, 'index'])->name('pos.index');
+    Route::post('/{store}/add', [POSController::class, 'addToCart'])->name('pos.add');
+    Route::post('/{store}/update', [POSController::class, 'updateCart'])->name('pos.update');
+    Route::post('/{store}/remove', [POSController::class, 'removeFromCart'])->name('pos.remove');
+    Route::post('/{store}/checkout', [POSController::class, 'checkout'])->name('pos.checkout');
+});
 });
 
 Route::get('/get-branch', [AuthUi::class,'GetBranchLogin'])->name('GetBranchLogin');
