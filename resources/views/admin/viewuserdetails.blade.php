@@ -11,6 +11,10 @@
             
         }
     </style>
+<button onclick="history.back()" 
+    class="inline-flex items-center px-4 py-2 bg-gray-200 text-gray-700 rounded-lg shadow-sm hover:bg-gray-300 transition">
+    ⬅ Back
+</button>
 
     <h1 class="text-2xl font-semibold mb-4">View User Details</h1>
 
@@ -25,14 +29,15 @@
 
             @if ($user->account_type == 'patient')
                 <li>
-                    <button
+                   
+                    <button 
                         class="tab-button border-b-2 border-transparent py-2 px-4 hover:text-blue-600 hover:border-blue-600"
-                        data-tab="medical-tab">Patient Information</button>
+                        data-tab="printable-patient">Patient Information</button>
                 </li>
                 <li>
                     <button
                         class="tab-button border-b-2 border-transparent py-2 px-4 hover:text-blue-600 hover:border-blue-600"
-                        data-tab="chart-tab">Dental Chart</button>
+                        data-tab="printable-info">Dental Chart</button>
                 </li>
                 <li>
                     <button
@@ -161,18 +166,19 @@
             @endif
         </div>
     </div>
-
-    <div id="medical-tab" class="tab-content hidden">
+  @if ($user->account_type == 'patient')
+    <div  id="printable-patient" class="tab-content hidden">
       
        @include('client.patient_record', ['patient'=> $patient])
         
     </div>
-    <div id="chart-tab" class="tab-content hidden">
+    <div id="printable-info" class="tab-content hidden">
         @include('admin.dental-chart.index', ['patient'=> $patient])
     </div>
     <div id="record-tab" class="tab-content hidden">
         @include('admin.dental-chart.treatment-record', ['record' => $record])
     </div>
+    @endif
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script>
@@ -456,5 +462,55 @@
 
             showSlide(currentSlide);
         });
+    </script>
+    <script>
+    function printDiv(divId) {
+        const redirectUrl = "{{ route('appointments.view', ['id' => $appointment->id]) }}";
+    
+        // Clone the div to preserve structure
+        const contentDiv = document.getElementById(divId);
+        const clone = contentDiv.cloneNode(true);
+    
+        // Copy current values for all inputs/selects/textarea
+        const originalInputs = contentDiv.querySelectorAll('input, select, textarea');
+        const clonedInputs = clone.querySelectorAll('input, select, textarea');
+    
+        originalInputs.forEach((input, index) => {
+            if (input.type === 'checkbox' || input.type === 'radio') {
+                clonedInputs[index].checked = input.checked;
+            } else {
+                clonedInputs[index].value = input.value;
+            }
+        });
+    
+        // Backup original page
+        const originalBody = document.body.innerHTML;
+    
+        // Replace body with cloned content + print styles
+        document.body.innerHTML = `
+        
+            <style>
+                @media print {
+                    @page { margin: 0; }
+                    body { margin: 1mm; font-family: system-ui, sans-serif; }
+                    .no-print { display: none !important; }
+                }
+                body { font-family: system-ui, sans-serif; margin: 5mm; }
+            </style>
+        `;
+        document.body.appendChild(clone);
+    
+        // Trigger print
+        window.print();
+    
+        // Restore original page
+        setTimeout(() => {
+            // document.body.innerHTML = originalBody;
+            // if (window.Alpine) window.Alpine.initTree(document.body);
+            // window.location.href = redirectUrl;
+            // history.back();
+            location.reload()
+        }, 200);
+    }
     </script>
 @endsection
