@@ -7,6 +7,7 @@ use App\Models\Sale;
 use App\Models\SaleItem;
 use App\Models\medicine_batches;
 use App\Models\MedicineMovement;
+use App\Models\Store;
 
 use Illuminate\Support\Facades\DB;
 
@@ -32,7 +33,9 @@ class POSController extends Controller
             'available_quantity' => $batches->sum('quantity'),
         ];
     });
-        return view('admin.pos.index', compact('medicines', 'storeId'));
+
+    $store = Store::find($storeId);
+        return view('admin.pos.index', compact('medicines', 'storeId', 'store'));
     }
 
     // Add to cart (simple demo — real apps use session or Livewire)
@@ -52,11 +55,12 @@ class POSController extends Controller
         if (!$batch) {
             return back()->withErrors(['stock' => 'Not enough stock available!']);
         }
-
+$medicine = $batch->medicine;
         // Save in session cart
         $cart = session()->get('cart', []);
         $cart[] = [
             'medicine_id' => $request->medicine_id,
+             'medicine_name' => $medicine->name, 
             'batch_id'    => $batch->id,
             'quantity'    => $request->quantity,
             'price'       => $batch->medicine->price,
@@ -69,60 +73,60 @@ class POSController extends Controller
 
     // Checkout and save sale
     public function checkout(Request $request, $storeId)
-    {
-        $cart = session()->get('cart', []);
-        if (empty($cart)) {
-            return back()->withErrors(['cart' => 'Cart is empty!']);
-        }
+{
+    $cart = session()->get('cart', []);
+    if (empty($cart)) {
+        return back()->withErrors(['cart' => 'Cart is empty!']);
+    }
 
-        DB::transaction(function () use ($cart, $storeId) {
-            $sale = Sale::create([
-                'store_id'     => $storeId,
-                'user_id'      => auth()->id(),
-                'total_amount' => collect($cart)->sum('subtotal'),
-                'status'       => 'completed',
+    $sale = null;
+
+    DB::transaction(function () use ($cart, $storeId, $request, &$sale) {
+        $sale = Sale::create([
+            'store_id'     => $storeId,
+            'user_id'      => auth()->id(),   // seller
+            'patient_id'   => $request->patient_id, // ✅ new
+            'total_amount' => collect($cart)->sum('subtotal'),
+            'status'       => 'completed',
+        ]);
+
+        foreach ($cart as $item) {
+            SaleItem::create([
+                'sale_id'           => $sale->id,
+                'medicine_id'       => $item['medicine_id'],
+               
+                'medicine_batch_id' => $item['batch_id'],
+                'quantity'          => $item['quantity'],
+                'price'             => $item['price'],
+                'subtotal'          => $item['subtotal'],
             ]);
 
-            foreach ($cart as $item) {
-                // Create Sale Item
-                $saleItem = SaleItem::create([
-                    'sale_id'           => $sale->id,
-                    'medicine_id'       => $item['medicine_id'],
-                    'medicine_batch_id' => $item['batch_id'],
-                    'quantity'          => $item['quantity'],
-                    'price'             => $item['price'],
-                    'subtotal'          => $item['subtotal'],
-                ]);
-
-                // Deduct from batch
-                        // Deduct from batch
+            // Update stock
             $batch = medicine_batches::find($item['batch_id']);
             $batch->decrement('quantity', $item['quantity']);
-
-            // ✅ If batch is now 0, suspend it
             if ($batch->quantity <= 0) {
                 $batch->status = 'suspended';
                 $batch->save();
             }
 
+            MedicineMovement::create([
+                'medicine_id'       => $item['medicine_id'],
+                'store_id'          => $storeId,
+                'medicine_batch_id' => $item['batch_id'],
+                'type'              => 'stock_out',
+                'quantity'          => -$item['quantity'],
+                'remarks'           => "Sale #{$sale->id}",
+            ]);
+        }
+    });
 
-                // Log movement
-                MedicineMovement::create([
-                    'medicine_id'       => $item['medicine_id'],
-                    'store_id'          => $storeId,
-                    'medicine_batch_id' => $item['batch_id'],
-                    'type'              => 'stock_out',
-                    'quantity'          => -$item['quantity'],
-                    'remarks'           => "Sale #{$sale->id}",
-                ]);
-            }
-        });
+    // clear cart
+    session()->forget('cart');
 
-        // Clear cart
-        session()->forget('cart');
-
-        return redirect()->route('pos.index', $storeId)->with('success', 'Sale completed successfully!');
-    }
+    // send sale + items to session so Blade can use
+  return redirect()->route('pos.index', $storeId)
+    ->with('receipt', $sale->load('items.medicine', 'patient', 'user'));
+}
 
     public function updateCart(Request $request, $storeId)
 {

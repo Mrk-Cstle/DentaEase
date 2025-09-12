@@ -3,6 +3,8 @@
 @section('title', 'POS - Store ' . $storeId)
 
 @section('main-content')
+<script src="//unpkg.com/alpinejs" defer></script>
+
 <div class="max-w-6xl mx-auto p-6">
     <h1 class="text-3xl font-bold text-sky-600 mb-6">Point of Sale</h1>
 
@@ -68,7 +70,7 @@
         <div class="flex justify-between items-center bg-white p-3 rounded-lg shadow">
             <div class="flex items-center gap-3">
                 <!-- Medicine Info -->
-                <span>{{ $item['medicine_id'] }} (₱{{ number_format($item['price'],2) }})</span>
+                <span>{{ $item['medicine_name'] }} (₱{{ number_format($item['price'],2) }})</span>
             </div>
 
             <div class="flex items-center gap-2">
@@ -102,6 +104,13 @@
             </span>
             <form method="POST" action="{{ route('pos.checkout', $storeId) }}">
                 @csrf
+                 <label for="patient_id" class="block mb-2">Customer (Patient)</label>
+                <select name="patient_id" id="patient_id" class="border rounded p-2 w-full">
+                    <option value="">Walk-in</option>
+                    @foreach(\App\Models\User::where('account_type', 'patient')->get() as $patient)
+                        <option value="{{ $patient->id }}">{{ $patient->name }}</option>
+                    @endforeach
+                </select>
                 <button class="px-6 py-3 bg-sky-600 text-white rounded-2xl hover:bg-sky-700 transition">
                     Checkout
                 </button>
@@ -109,4 +118,117 @@
         </div>
     </div>
 </div>
+
+<div x-data="{ open: false, receipt: @js(session('receipt')) }" x-init="if(receipt){ open=true }">
+    <div x-show="open" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50" x-transition>
+        <div class="bg-white rounded-lg shadow-lg w-3/4 max-w-2xl p-6 relative" >
+            <!-- Close -->
+            <button @click="open=false" class="absolute top-2 right-2 text-gray-600 hover:text-gray-900">✖</button>
+            <div id="receipt-modal">
+            <!-- Header -->
+            <div class="text-center mb-6">
+                <h1 class="text-xl font-bold">SANTIAGO-AMANCIO DENTAL CLINIC</h1>
+                <p>{{$store->name}}<br>{{$store->address}}</p>
+            </div>
+
+            <!-- Info -->
+            <div class="flex justify-between mb-4 text-sm">
+                <div>
+                    <p><strong>Patient:</strong> <span x-text="receipt?.patient?.name ?? 'Walk-in'"></span></p>
+                </div>
+                <div>
+                    <p><strong>Receipt No:</strong> <span x-text="receipt?.id"></span></p>
+                    <p><strong>Date:</strong> <span x-text="new Date(receipt?.created_at).toLocaleDateString()"></span></p>
+                </div>
+            </div>
+
+            <!-- Table -->
+            <table class="w-full border border-gray-400 text-sm mb-4">
+                <thead class="bg-gray-100">
+                    <tr>
+                        <th class="border px-2 py-1 text-left">Description</th>
+                        <th class="border px-2 py-1 text-center">Qty</th>
+                        <th class="border px-2 py-1 text-right">Unit Price</th>
+                        <th class="border px-2 py-1 text-right">Amount</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <template x-for="item in receipt.items" :key="item.id">
+                        <tr>
+                        <td class="border px-2 py-1" x-text="item.medicine.name"></td>
+
+
+                            <td class="border px-2 py-1 text-center" x-text="item.quantity"></td>
+                           <td class="border px-2 py-1 text-right">
+                                ₱<span x-text="parseFloat(item.price).toFixed(2)"></span>
+                            </td>
+                            <td class="border px-2 py-1 text-right">
+                                ₱<span x-text="parseFloat(item.subtotal).toFixed(2)"></span>
+                            </td>
+                        </tr>
+                    </template>
+                </tbody>
+            </table>
+
+      <!-- Total -->
+<div class="text-right font-bold text-lg border-t pt-2 foot">
+    <span>Total: ₱<span x-text="receipt.total_amount.toFixed(2)"></span></span>
+</div>
+
+<!-- Seller -->
+<div class="text-right mt-8 foot">
+    <p>__________________________</p>
+    <p><span x-text="receipt?.user?.name"></span>, DMD</p>
+</div>
+
+</div>
+            <!-- Print -->
+            <div class="mt-6 text-right">
+             <button onclick="printReceipt()" 
+    class="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700">
+    🖨 Print
+</button>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+   function printReceipt() {
+    let modalContent = document.getElementById("receipt-modal").innerHTML;
+    let printWindow = window.open("", "", "width=800,height=600");
+    printWindow.document.write(`
+        <html>
+            <head>
+                <style>
+                    @page {
+                        margin: 10mm;
+                    }
+                    body {
+                        font-family: Arial, sans-serif;
+                        margin: 0;
+                        padding: 10px;
+                        font-size: 12px;
+                    }
+                    h1 { font-size: 16px; margin: 0; }
+                    table { border-collapse: collapse; width: 100%; }
+                    td, th { border: 1px solid #000; padding: 4px; font-size: 12px; }
+                    .text-right { text-align: right; }
+                    .text-center { text-align: center; }
+                    
+                </style>
+            </head>
+            <body>
+                <div class="receipt">
+                    ${modalContent}
+                </div>
+            </body>
+        </html>
+    `);
+    printWindow.document.close();
+    printWindow.focus();
+    printWindow.print();
+    printWindow.close();
+}
+
+</script>
 @endsection

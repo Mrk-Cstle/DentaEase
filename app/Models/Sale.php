@@ -12,6 +12,7 @@ class Sale extends Model
         'total_amount',
         'status',
         'remarks',
+        'patient_id',
     ];
 
     public function store()
@@ -21,8 +22,12 @@ class Sale extends Model
 
     public function user()
     {
-        return $this->belongsTo(User::class);
+        return $this->belongsTo(User::class, 'user_id');
     }
+public function patient()
+{
+    return $this->belongsTo(User::class, 'patient_id')->where('account_type', 'patient');
+}
 
     public function items()
     {
