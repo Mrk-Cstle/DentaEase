@@ -4,10 +4,14 @@
 @section('main-content') --}}
 
 <div class="max-w-5xl mx-auto p-6 bg-white shadow-lg rounded-lg">
-    <button onclick="printDiv('printable-patient')" 
+
+      @if (auth()->user()->account_type == 'admin')
+         <button onclick="printDiv('printable-patient')" 
     class="mt-2 px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 print:hidden">
     Print Patient Info
 </button>
+    @endif
+   
     <h2 class="text-2xl font-bold mb-6">Patient Information Record</h2>
 
     @if(session('success'))
