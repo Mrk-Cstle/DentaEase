@@ -15,6 +15,7 @@ use App\Http\Controllers\ServicesController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\InventoryController;
 use App\Http\Controllers\POSController;
+use App\Http\Controllers\TransactionController;
 use App\Http\Controllers\VisitLogController;
 use Illuminate\Support\Facades\Auth;
 
@@ -150,6 +151,7 @@ Route::prefix('pos')->group(function () {
     Route::post('/{store}/remove', [POSController::class, 'removeFromCart'])->name('pos.remove');
     Route::post('/{store}/checkout', [POSController::class, 'checkout'])->name('pos.checkout');
 });
+Route::get('/transactions/{storeId}', [TransactionController::class, 'index'])->name('transactions.index');
 });
 
 Route::get('/get-branch', [AuthUi::class,'GetBranchLogin'])->name('GetBranchLogin');
