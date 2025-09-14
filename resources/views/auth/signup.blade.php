@@ -205,6 +205,7 @@ $(document).ready(function () {
                     $('#signupForm')[0].reset();
                     currentStep = 1;
                     showStep(currentStep);
+                     window.location.href = "{{ route('login') }}";
                 },
                 error: function (xhr) {
                     const response = xhr.responseJSON;

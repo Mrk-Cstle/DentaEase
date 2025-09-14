@@ -41,6 +41,7 @@
                 @php
                     $branch = \App\Models\Store::find(session('active_branch_id'));
                 @endphp
+               
                 <div class="ml-6 text-white hidden sm:block">
                     @if ($branch)
                         <div class="font-medium text-base">{{ $branch->name }}</div>
@@ -81,6 +82,10 @@
                         <select id="branchSelector" class="mb-4 border border-gray-300 rounded px-2 py-1 w-full text-sm">
                             <option value="">-- Select Branch --</option>
                         </select>
+                    @else
+                        <select id="assignedBranchSelector" class="mb-4 border border-gray-300 rounded px-2 py-1 w-full text-sm">
+                            <option value="">-- Select Branch --</option>
+                        </select>
                     @endif
 
                     <a href="/dashboard" class="flex items-center gap-2 px-3 py-2 rounded hover:bg-navItem hover:text-white">
@@ -117,6 +122,15 @@
                     <a href="/logs" class="flex items-center gap-2 px-3 py-2 rounded hover:bg-navItem hover:text-white">
                         <i class="fa-solid fa-file-lines"></i> <span>Logs</span>
                     </a>
+
+                    <a href="/pos/{{ session('active_branch_id') }}" 
+                    class="flex items-center gap-2 px-3 py-2 rounded hover:bg-navItem hover:text-white">
+                     <i class="fa-solid fa-file-lines"></i> <span>POS</span>
+                    </a>
+                        <a href="reports/sales" 
+                            class="flex items-center gap-2 px-3 py-2 rounded hover:bg-navItem hover:text-white">
+                            <i class="fa-solid fa-file-lines"></i> <span>Reports</span>
+                        </a>
                     @endif
 
                       {{-- <a href="/try" class="flex items-center gap-2 px-3 py-2 rounded hover:bg-navItem hover:text-white">
@@ -149,17 +163,18 @@
         });
 
         $(document).ready(function () {
-            $.get('/get-branches', function (data) {
-                let selector = $('#branchSelector');
-                selector.empty().append('<option value="">-- Select Branch --</option>');
+    // For Admin
+    $.get('/get-branches', function (data) {
+        let selector = $('#branchSelector');
+        if (selector.length) { // only run if admin selector exists
+            selector.empty().append('<option value="">-- Select Branch --</option>');
 
-                data.forEach(branch => {
-                    let selected = branch.id == '{{ session('active_branch_id') }}' ? 'selected' : '';
-                    selector.append(`<option value="${branch.id}" ${selected}>${branch.name}</option>`);
-                });
+            data.forEach(branch => {
+                let selected = branch.id == '{{ session('active_branch_id') }}' ? 'selected' : '';
+                selector.append(`<option value="${branch.id}" ${selected}>${branch.name}</option>`);
             });
 
-            $('#branchSelector').on('change', function () {
+            selector.on('change', function () {
                 const branchId = $(this).val();
                 if (branchId) {
                     $.post('/set-active-branch', {
@@ -167,12 +182,44 @@
                         _token: '{{ csrf_token() }}'
                     }, function (response) {
                         if (response.status === 'success') {
-                            location.reload();
+                            //location.reload();
+                             window.location.href = '/dashboard';
                         }
                     });
                 }
             });
-        });
+        }
+    });
+
+    // For Dentist / Receptionist
+    $.get('/get-assigned-branches', function (data) {
+        let selector = $('#assignedBranchSelector');
+        if (selector.length) { // only run if dentist/receptionist selector exists
+            selector.empty().append('<option value="">-- Select Branch --</option>');
+
+            data.forEach(branch => {
+                let selected = branch.id == '{{ session('active_branch_id') }}' ? 'selected' : '';
+                selector.append(`<option value="${branch.id}" ${selected}>${branch.name}</option>`);
+            });
+
+            selector.on('change', function () {
+                const branchId = $(this).val();
+                if (branchId) {
+                    $.post('/set-active-branch', {
+                        id: branchId,
+                        _token: '{{ csrf_token() }}'
+                    }, function (response) {
+                        if (response.status === 'success') {
+                            // location.reload();
+                             window.location.href = '/dashboard';
+                        }
+                    });
+                }
+            });
+        }
+    });
+});
+
     </script>
 </body>
 </html>

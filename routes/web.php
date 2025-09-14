@@ -7,16 +7,21 @@ use Illuminate\Support\Facades\Route;
 use Symfony\Component\HttpKernel\Profiler\Profile;
 use  App\Models\User;
 use App\Http\Controllers\AdminController;
+use App\Http\Controllers\LandingPageController;
+
 use function Laravel\Prompts\password;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 use SimpleSoftwareIO\QrCode\Facades\QrCode;
 use App\Http\Controllers\QrController;
 
-Route::get('/', function () {
+// Route::get('/', function () {
+//     return view('auth.login');
+// })->name('login');
+
+Route::get('/login', function () {
     return view('auth.login');
 })->name('login');
-
 Route::get('/syseng', function () {
     
     $user = 'qwe';
@@ -66,7 +71,10 @@ Route::get('/generateqr', function () {
         'message' => 'QR codes generated for users without QR.',
         'count' => $users->count()
     ]);
+
+    
 });
+Route::get('/', [LandingPageController::class, 'index']);
 
 require __DIR__.'/admin.php';
 require __DIR__.'/client.php';
