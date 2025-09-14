@@ -201,12 +201,15 @@ $(document).ready(function () {
                 method: 'get',
                 data: { otp, _token: '{{ csrf_token() }}' },
                 success: function (res) {
-                    Swal.fire('Success', res.message, 'success');
-                    $('#signupForm')[0].reset();
-                    currentStep = 1;
-                    showStep(currentStep);
-                     window.location.href = "{{ route('login') }}";
-                },
+    Swal.fire('Success', res.message, 'success').then(() => {
+        // After user clicks OK
+        $('#signupForm')[0].reset();
+        currentStep = 1;
+        showStep(currentStep);
+        window.location.href = "{{ route('login') }}";
+    });
+},
+
                 error: function (xhr) {
                     const response = xhr.responseJSON;
                     Swal.fire('Validation Error', response.message, 'error');
