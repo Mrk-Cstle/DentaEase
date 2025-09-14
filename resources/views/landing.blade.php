@@ -125,7 +125,7 @@
                     <div class="bg-white shadow-lg rounded-xl p-6 hover:shadow-xl transition">
                         <h3 class="text-lg font-bold mb-2">{{ $branch->name }}</h3>
                         <p class="text-sm text-gray-600">{{ $branch->address }}</p>
-                        <p class="text-sm text-gray-600">📞 {{ $branch->contact_number ?? 'N/A' }}</p>
+                        {{-- <p class="text-sm text-gray-600">📞 {{ $branch->contact_number ?? 'N/A' }}</p> --}}
 
                         {{-- Open Days --}}
                         @if(!empty($branch->open_days))
