@@ -48,7 +48,7 @@
             <div class="rounded-t mb-0 px-0 border-0">
                 <div class="flex flex-wrap items-center px-4 py-2">
                     <div class="relative w-full max-w-full flex-grow flex-1">
-                        <h3 class="font-semibold text-base text-gray-900 dark:text-gray-50">Low Stock Inventory</h3>
+                        <h3 class="font-semibold text-base text-gray-900 dark:text-gray-50">Expiring Soon Inventory</h3>
                     </div>
                 </div>
                 <div class="block w-full overflow-x-auto">
@@ -57,21 +57,31 @@
                             <tr>
                                 <th class="px-4 bg-gray-100 dark:bg-gray-600 text-gray-500 dark:text-gray-100 py-3 text-xs uppercase font-semibold text-left">Item</th>
                                 <th class="px-4 bg-gray-100 dark:bg-gray-600 text-gray-500 dark:text-gray-100 py-3 text-xs uppercase font-semibold text-left">Stocks</th>
-                                <th class="px-4 bg-gray-100 dark:bg-gray-600 text-gray-500 dark:text-gray-100 py-3 text-xs uppercase font-semibold text-left min-w-140-px"></th>
+                                <th class="px-4 bg-gray-100 dark:bg-gray-600 text-gray-500 dark:text-gray-100 py-3 text-xs uppercase font-semibold text-left min-w-140-px">Expiration</th>
                             </tr>
                         </thead>
-                        <tbody>
+                      <tbody>
+                        @forelse ($expiringSoon as $batch)
                             <tr class="text-gray-700 dark:text-gray-100">
-                                <th class="border-t-0 px-4 py-4 text-left text-xs">Paracetamol</th>
-                                <td class="border-t-0 px-4 py-4 text-xs">1</td>
-                                <td class="border-t-0 px-4 py-4 text-xs"></td>
+                                <th class="border-t-0 px-4 py-4 text-left text-xs">
+                                    {{ $batch->medicine->name }}
+                                </th>
+                                <td class="border-t-0 px-4 py-4 text-xs">
+                                    {{ $batch->quantity }}
+                                </td>
+                                <td class="border-t-0 px-4 py-4 text-xs">
+                                    Exp: {{ \Carbon\Carbon::parse($batch->expiry_date)->format('M d, Y') }}
+                                </td>
                             </tr>
-                            <tr class="text-gray-700 dark:text-gray-100">
-                                <th class="border-t-0 px-4 py-4 text-left text-xs">Paracetamol</th>
-                                <td class="border-t-0 px-4 py-4 text-xs">6</td>
-                                <td class="border-t-0 px-4 py-4 text-xs"></td>
+                        @empty
+                            <tr>
+                                <td colspan="3" class="text-center py-4 text-gray-500 text-xs">
+                                    No medicines expiring soon 🎉
+                                </td>
                             </tr>
-                        </tbody>
+                        @endforelse
+                    </tbody>
+
                     </table>
                 </div>
             </div>

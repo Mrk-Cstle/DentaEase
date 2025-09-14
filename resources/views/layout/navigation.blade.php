@@ -127,7 +127,10 @@
                     class="flex items-center gap-2 px-3 py-2 rounded hover:bg-navItem hover:text-white">
                      <i class="fa-solid fa-file-lines"></i> <span>POS</span>
                     </a>
-                 
+                        <a href="reports/sales" 
+                            class="flex items-center gap-2 px-3 py-2 rounded hover:bg-navItem hover:text-white">
+                            <i class="fa-solid fa-file-lines"></i> <span>Reports</span>
+                        </a>
                     @endif
 
                       {{-- <a href="/try" class="flex items-center gap-2 px-3 py-2 rounded hover:bg-navItem hover:text-white">
@@ -179,7 +182,8 @@
                         _token: '{{ csrf_token() }}'
                     }, function (response) {
                         if (response.status === 'success') {
-                            location.reload();
+                            //location.reload();
+                             window.location.href = '/dashboard';
                         }
                     });
                 }
@@ -206,7 +210,8 @@
                         _token: '{{ csrf_token() }}'
                     }, function (response) {
                         if (response.status === 'success') {
-                            location.reload();
+                            // location.reload();
+                             window.location.href = '/dashboard';
                         }
                     });
                 }

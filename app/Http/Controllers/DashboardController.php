@@ -33,6 +33,8 @@ class DashboardController extends Controller
     $canceled = (clone $query)->where('status', 'cancelled')->count();
         $noshow = (clone $query)->where('status', 'no_show')->count();
 
+        
+
     return response()->json([
         'active' => $active,
         'completed' => $completed,

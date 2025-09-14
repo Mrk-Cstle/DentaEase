@@ -9,6 +9,7 @@ use  App\Models\User;
 use Illuminate\Support\Facades\Mail;
 use App\Mail\mailresponse;
 use App\Models\Appointment;
+use App\Models\medicine_batches;
 use App\Models\Service;
 use App\Models\Store;
 use Illuminate\Support\Carbon;
@@ -48,7 +49,16 @@ class AdminController extends Controller
         ->whereDate('appointment_date', Carbon::today())
         ->orderBy('appointment_time')
         ->get();
-        return view('admin.dashboard', compact('appointmentsToday'));
+
+         $branchId = session('active_branch_id');
+
+    $expiringSoon = medicine_batches::with('medicine')
+        ->where('store_id', $branchId)
+        ->whereDate('expiration_date', '<=', now()->addMonth())
+        ->where('quantity', '>', 0)
+        ->orderBy('expiration_date', 'asc')
+        ->get();
+        return view('admin.dashboard', compact('appointmentsToday','expiringSoon'));
     }
     
     public function Logout(){
