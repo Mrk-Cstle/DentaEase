@@ -15,6 +15,7 @@ use App\Http\Controllers\ServicesController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\InventoryController;
 use App\Http\Controllers\POSController;
+use App\Http\Controllers\SaleReportController;
 use App\Http\Controllers\TransactionController;
 use App\Http\Controllers\VisitLogController;
 use Illuminate\Support\Facades\Auth;
@@ -48,8 +49,13 @@ if (Auth::check() && Auth::user()->position === 'admin') {
         'closing_time' => null,
     ];
 }
-
+Route::get('/get-assigned-branches', function () {
+    return Auth::user()->stores; 
+});
 return response()->json($branches);
+});
+Route::get('/get-assigned-branches', function () {
+    return Auth::user()->stores; 
 });
 
 ///profile tab
@@ -151,7 +157,15 @@ Route::prefix('pos')->group(function () {
     Route::post('/{store}/remove', [POSController::class, 'removeFromCart'])->name('pos.remove');
     Route::post('/{store}/checkout', [POSController::class, 'checkout'])->name('pos.checkout');
 });
+
+//transaction
 Route::get('/transactions/{storeId}', [TransactionController::class, 'index'])->name('transactions.index');
+
+
+//reports
+Route::get('reports/sales', [SaleReportController::class, 'index'])
+    ->name('reports.sales');
+
 });
 
 Route::get('/get-branch', [AuthUi::class,'GetBranchLogin'])->name('GetBranchLogin');

@@ -41,6 +41,7 @@
                 @php
                     $branch = \App\Models\Store::find(session('active_branch_id'));
                 @endphp
+               
                 <div class="ml-6 text-white hidden sm:block">
                     @if ($branch)
                         <div class="font-medium text-base">{{ $branch->name }}</div>
@@ -79,6 +80,10 @@
                 <nav class="flex flex-col space-y-2 text-sm text-accent font-medium">
                     @if (auth()->user()->position == 'admin')
                         <select id="branchSelector" class="mb-4 border border-gray-300 rounded px-2 py-1 w-full text-sm">
+                            <option value="">-- Select Branch --</option>
+                        </select>
+                    @else
+                        <select id="assignedBranchSelector" class="mb-4 border border-gray-300 rounded px-2 py-1 w-full text-sm">
                             <option value="">-- Select Branch --</option>
                         </select>
                     @endif
@@ -155,17 +160,18 @@
         });
 
         $(document).ready(function () {
-            $.get('/get-branches', function (data) {
-                let selector = $('#branchSelector');
-                selector.empty().append('<option value="">-- Select Branch --</option>');
+    // For Admin
+    $.get('/get-branches', function (data) {
+        let selector = $('#branchSelector');
+        if (selector.length) { // only run if admin selector exists
+            selector.empty().append('<option value="">-- Select Branch --</option>');
 
-                data.forEach(branch => {
-                    let selected = branch.id == '{{ session('active_branch_id') }}' ? 'selected' : '';
-                    selector.append(`<option value="${branch.id}" ${selected}>${branch.name}</option>`);
-                });
+            data.forEach(branch => {
+                let selected = branch.id == '{{ session('active_branch_id') }}' ? 'selected' : '';
+                selector.append(`<option value="${branch.id}" ${selected}>${branch.name}</option>`);
             });
 
-            $('#branchSelector').on('change', function () {
+            selector.on('change', function () {
                 const branchId = $(this).val();
                 if (branchId) {
                     $.post('/set-active-branch', {
@@ -178,7 +184,37 @@
                     });
                 }
             });
-        });
+        }
+    });
+
+    // For Dentist / Receptionist
+    $.get('/get-assigned-branches', function (data) {
+        let selector = $('#assignedBranchSelector');
+        if (selector.length) { // only run if dentist/receptionist selector exists
+            selector.empty().append('<option value="">-- Select Branch --</option>');
+
+            data.forEach(branch => {
+                let selected = branch.id == '{{ session('active_branch_id') }}' ? 'selected' : '';
+                selector.append(`<option value="${branch.id}" ${selected}>${branch.name}</option>`);
+            });
+
+            selector.on('change', function () {
+                const branchId = $(this).val();
+                if (branchId) {
+                    $.post('/set-active-branch', {
+                        id: branchId,
+                        _token: '{{ csrf_token() }}'
+                    }, function (response) {
+                        if (response.status === 'success') {
+                            location.reload();
+                        }
+                    });
+                }
+            });
+        }
+    });
+});
+
     </script>
 </body>
 </html>
