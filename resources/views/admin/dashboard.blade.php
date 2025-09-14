@@ -5,7 +5,7 @@
 
 <!-- Content -->
 <div class="p-6 overflow-y-auto">
-    @if (auth()->user()->position != 'Receptionist')
+    @if (auth()->user()->position == 'Admin')
     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-6">
         <div class="bg-white rounded-md border border-gray-200 p-6 shadow-md hover:shadow-lg transition duration-300">
             <div class="flex justify-between mb-6">
