@@ -39,37 +39,49 @@ class POSController extends Controller
     }
 
     // Add to cart (simple demo — real apps use session or Livewire)
-    public function addToCart(Request $request, $storeId)
-    {
-        $request->validate([
-            'medicine_id' => 'required|integer',
-            'quantity'    => 'required|integer|min:1',
-        ]);
+  public function addToCart(Request $request, $storeId)
+{
+    $request->validate([
+        'medicine_id' => 'required|integer',
+        'quantity'    => 'required|integer|min:1',
+    ]);
 
-        $batch = medicine_batches::where('medicine_id', $request->medicine_id)
-            ->where('store_id', $storeId)
-            ->where('quantity', '>=', $request->quantity)
-            ->orderBy('expiration_date', 'asc') // FIFO
-            ->first();
+    $batch = medicine_batches::where('medicine_id', $request->medicine_id)
+        ->where('store_id', $storeId)
+        ->where('quantity', '>=', $request->quantity)
+        ->orderBy('expiration_date', 'asc') // FIFO
+        ->first();
 
-        if (!$batch) {
-            return back()->withErrors(['stock' => 'Not enough stock available!']);
-        }
-$medicine = $batch->medicine;
-        // Save in session cart
-        $cart = session()->get('cart', []);
-        $cart[] = [
-            'medicine_id' => $request->medicine_id,
-             'medicine_name' => $medicine->name, 
-            'batch_id'    => $batch->id,
-            'quantity'    => $request->quantity,
-            'price'       => $batch->medicine->price,
-            'subtotal'    => $batch->medicine->price * $request->quantity,
-        ];
-        session()->put('cart', $cart);
-
-        return redirect()->route('pos.index', $storeId)->with('success', 'Item added to cart!');
+    if (!$batch) {
+        return back()->withErrors(['stock' => 'Not enough stock available!']);
     }
+
+    $medicine = $batch->medicine;
+
+    // Get current cart
+    $cart = session()->get('cart', []);
+
+    // Check for duplicates
+    $exists = collect($cart)->firstWhere('medicine_id', $request->medicine_id);
+    if ($exists) {
+        return back()->withErrors(['cart' => 'This item is already in the cart!']);
+    }
+
+    // Add to cart
+    $cart[] = [
+        'medicine_id'   => $request->medicine_id,
+        'medicine_name' => $medicine->name, 
+        'batch_id'      => $batch->id,
+        'quantity'      => $request->quantity,
+        'price'         => $batch->medicine->price,
+        'subtotal'      => $batch->medicine->price * $request->quantity,
+    ];
+
+    session()->put('cart', $cart);
+
+    return redirect()->route('pos.index', $storeId)->with('success', 'Item added to cart!');
+}
+
 
     // Checkout and save sale
     public function checkout(Request $request, $storeId)
