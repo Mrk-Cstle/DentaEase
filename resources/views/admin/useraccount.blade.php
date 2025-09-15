@@ -145,7 +145,7 @@
           response.data.forEach(user => {
             rows += `
               <tr>
-                <td class="border py-2 px-4">${user.name}</td>
+                <td class="border py-2 px-4">${user.full_name}</td>
                 <td class="border py-2 px-4">${user.position}</td>
                 <td class="border py-2 px-4">${user.contact_number}</td>
                 <td class="border py-2 px-4">

@@ -25,6 +25,8 @@ class User extends Authenticatable
             app(\App\Http\Controllers\QrController::class)->generateUserQr($user);
         });
     }
+
+    protected $appends = ['full_name'];
     public function getFullNameAttribute()
 {
     $lastname   = $this->lastname ?? '';
