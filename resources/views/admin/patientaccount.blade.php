@@ -115,7 +115,7 @@
           response.data.forEach(function (user) {
             rows += `
               <tr>
-                <td class="border py-2 px-4">${user.name}</td>
+                <td class="border py-2 px-4">${user.full_name}</td>
                 <td class="border py-2 px-4">${user.contact_number}</td>
                 <td class="border py-2 px-4">
                   <a href="/user/${user.id}" class="text-blue-600 hover:underline">View</a>
