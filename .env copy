@@ -74,6 +74,14 @@ MAIL_FROM_ADDRESS=delacruzmarviricken@gmail.com
 MAIL_FROM_NAME="Dentaease"
 
 
+BROADCAST_DRIVER=pusher
+PUSHER_APP_ID=local
+PUSHER_APP_KEY=local
+PUSHER_APP_SECRET=local
+PUSHER_HOST=127.0.0.1
+PUSHER_PORT=6001
+PUSHER_SCHEME=http
+PUSHER_APP_CLUSTER=mt1
 # FACE_API_KEY=d6oKAAzVLTtgRyeecdED4eHFi9wfmq3I
 # FACE_API_SECRET=qe_nYezzGtNwf4WN_drOcrxfeg0ryJ7S
 # FACE_API_URL=https://api-us.faceplusplus.com/facepp/v3/detect
