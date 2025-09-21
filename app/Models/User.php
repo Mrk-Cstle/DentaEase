@@ -99,4 +99,11 @@ public function medicalForm()
 {
     return $this->hasOne(MedicalForm::class);
 }
+
+public function messages()
+{
+    return $this->hasMany(Message::class, 'receiver_id'); 
+    // or 'sender_id' depending on what you want to show
+}
+
 }
