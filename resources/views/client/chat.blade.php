@@ -1,12 +1,8 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <title>My Branch Chat</title>
-  <script src="https://cdn.tailwindcss.com"></script>
-  <meta name="csrf-token" content="{{ csrf_token() }}">
-</head>
-<body class="h-screen bg-sky-50">
+@extends('layout.cnav')
+
+@section('title', 'Chat')
+<meta name="csrf-token" content="{{ csrf_token() }}">
+@section('main-content')
   <div class="flex h-screen">
     
     <!-- Sidebar (Branches) -->
@@ -16,7 +12,7 @@
     </div>
     
     <!-- Chat Window -->
-    <div class="flex-1 flex flex-col">
+    <div class="flex-1 flex flex-col bg-slate-300">
       <div id="chatHeader" class="p-4 bg-sky-300 text-white font-bold">Select a branch</div>
       <div id="messagesBox" class="flex-1 overflow-y-auto p-4 space-y-3"></div>
       <div class="p-4 border-t border-sky-300 flex">
@@ -67,6 +63,11 @@ function loadMessages(storeId, branchName) {
       box.scrollTop = box.scrollHeight;
     });
 }
+setInterval(() => {
+  if (currentBranch) {
+    loadMessages(currentBranch, document.getElementById("chatHeader").textContent);
+  }
+}, 3000);
 
 document.getElementById("sendBtn").addEventListener("click", () => {
   const input = document.getElementById("messageInput");
@@ -102,5 +103,4 @@ fetch("{{ route('patient.messages.store') }}", {
   });
 });
 </script>
-</body>
-</html>
+@endsection

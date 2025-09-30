@@ -109,8 +109,11 @@
         {{-- <a href="/cprofile" class="sm:hidden flex items-center gap-2 px-3 py-2 rounded hover:bg-navItem hover:text-white">
           <i class="fa-solid fa-user"></i> <span>Profile</span>
         </a> --}}
+           <a href="/patient/chat" class="flex items-center gap-2 px-3 py-2 rounded hover:bg-navItem hover:text-white">
+                        <i class="fa-solid fa-calendar-check"></i> <span>Message</span>
+                    </a>
       </nav>
-
+    
       <!-- Main Content -->
       <main class="flex-1 py-6 px-20 overflow-y-auto bg-background bg-gray-100">
         @yield('main-content')

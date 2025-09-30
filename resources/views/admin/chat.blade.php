@@ -1,12 +1,9 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <title>Admin Messaging</title>
-  <script src="https://cdn.tailwindcss.com"></script>
+@extends('layout.navigation')
+
+@section('title','Chat')
+@section('main-content')
   <meta name="csrf-token" content="{{ csrf_token() }}">
-</head>
-<body class="h-screen bg-sky-50">
+
   <div class="flex h-screen">
     
     <!-- Sidebar (Patients) -->
@@ -23,7 +20,7 @@
     </div>
   
     <!-- Chat Window -->
-    <div class="flex-1 flex flex-col">
+    <div class="flex-1 flex flex-col bg-slate-300">
       <!-- Header -->
       <div id="chatHeader" class="p-4 bg-sky-300 text-white font-bold">Select a patient</div>
       
@@ -40,7 +37,7 @@
       </div>
     </div>
   </div>
-</body>
+
 
 <script>
   let currentPatient = null;
@@ -65,8 +62,9 @@
       let lastMsg = patient.messages.length ? patient.messages[0].message : "No messages yet";
       let li = document.createElement("li");
       li.className = "p-3 hover:bg-sky-200 cursor-pointer";
-      li.innerHTML = `<strong>${patient.name}</strong><br><small>${lastMsg}</small>`;
-      li.onclick = () => loadMessages(currentStore, patient.id, patient.name);
+      li.innerHTML = `<strong>${patient.full_name}</strong><br>`;
+      // li.innerHTML = `<strong>${patient.name}</strong><br><small>${lastMsg}</small>`;
+      li.onclick = () => loadMessages(currentStore, patient.id, patient.full_name);
       patientList.appendChild(li);
     });
   }
@@ -100,7 +98,11 @@
         box.scrollTop = box.scrollHeight;
       });
   }
-
+setInterval(() => {
+  if (currentPatient) {
+    loadMessages(currentStore, currentPatient, document.getElementById("chatHeader").textContent);
+  }
+}, 3000);
   // Send message (admin to patient)
   document.getElementById("sendBtn").addEventListener("click", () => {
     const input = document.getElementById("messageInput");
@@ -139,4 +141,4 @@
   // Initial load
   loadPatients();
 </script>
-</html>
+@endsection
