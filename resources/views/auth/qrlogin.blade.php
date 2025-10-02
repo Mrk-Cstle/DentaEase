@@ -3,7 +3,7 @@
 @section('title', 'Login via QR')
 
 @section('auth-content')
-
+<div class="p-[50px] bg-sky-100">
     <div class="text-center mb-4">
         <h2 class="text-2xl font-bold text-sky-600">Login using QR Code</h2>
     </div>
@@ -25,7 +25,7 @@
         </p>
     </div>
 
-
+</div>
 <!-- Scripts -->
 <script src="https://unpkg.com/html5-qrcode" type="text/javascript"></script>
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>

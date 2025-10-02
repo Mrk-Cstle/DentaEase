@@ -3,7 +3,7 @@
 @section('title', 'Signup')
 
 @section('auth-content')
-
+<div class="p-[50px] bg-sky-100">
     <form id="signupForm" method="POST" enctype="multipart/form-data" class="space-y-8">
         @csrf
 
@@ -134,7 +134,7 @@
         </div>
     </form>
 
-
+</div>
 <!-- JS -->
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
