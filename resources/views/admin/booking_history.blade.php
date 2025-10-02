@@ -12,10 +12,16 @@
 
 <form method="GET" action="{{ route('admin.booking.history') }}" class="mb-4 flex space-x-4">
     <div>
-        <label for="date">Filter by Date:</label>
-        <input type="date" name="date" id="date" value="{{ request('date') }}" class="border rounded p-2">
+        <label for="start_date">Start Date:</label>
+        <input type="date" name="start_date" id="start_date" 
+               value="{{ request('start_date') }}" class="border rounded p-2">
     </div>
     <div>
+        <label for="end_date">End Date:</label>
+        <input type="date" name="end_date" id="end_date" 
+               value="{{ request('end_date') }}" class="border rounded p-2">
+    </div>
+    <div class="flex items-end">
         <button type="submit" class="bg-gray-600 text-white px-4 py-2 rounded">Filter</button>
     </div>
 </form>
@@ -30,7 +36,7 @@
            
             <th>Description</th>
       
-            <th>Procedure</th>
+            <th>Note</th>
             <th>Price</th>
             <th>Status</th>
         </tr>

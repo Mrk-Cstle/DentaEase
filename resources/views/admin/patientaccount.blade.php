@@ -1,6 +1,6 @@
 @extends('layout.navigation')
 
-@section('title','New User Verification')
+@section('title','Patient Management')
 @section('main-content')
 
 <div class="mb-6">
@@ -16,6 +16,11 @@
     <div class="flex flex-col sm:flex-row gap-2">
       <input type="text" id="searchInput" placeholder="Search..." class="border rounded p-2 w-full sm:w-64" />
       <button onclick="stafflist(1)" class="bg-primary hover:bg-blue-700 text-white px-4 py-2 rounded">Search</button>
+
+      <button onclick="printPatients()" class="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded">
+  <i class="fa-solid fa-print mr-2"></i> Print
+</button>
+
     </div>
   </div>
 
@@ -188,5 +193,66 @@
 
     stafflist(currentPage);
   });
+  function printPatients() {
+  let currentSearch = $('#searchInput').val();
+
+  $.ajax({
+    type: "GET",
+    url: "{{ route('Patientlist') }}",
+    data: {
+      search: currentSearch,
+      print: 1 // request all records
+    },
+    success: function (response) {
+      if (response.status === 'success') {
+        let printWindow = window.open('', '', 'width=900,height=600');
+        let content = `
+          <html>
+          <head>
+            <title>Patient List</title>
+            <style>
+              body { font-family: Arial, sans-serif; }
+              table { width:100%; border-collapse: collapse; margin-top:20px; }
+              th, td { border: 1px solid #333; padding: 8px; text-align: left; }
+              th { background: #f4f4f4; }
+              h2 { text-align: center; margin-bottom: 20px; }
+            </style>
+          </head>
+          <body>
+            <h2>Patient List</h2>
+            <table>
+              <thead>
+                <tr>
+                  <th>Name</th>
+                  <th>Contact Number</th>
+                </tr>
+              </thead>
+              <tbody>
+        `;
+
+        response.data.forEach(user => {
+          content += `
+            <tr>
+              <td>${user.full_name}</td>
+              <td>${user.contact_number ?? ''}</td>
+            </tr>
+          `;
+        });
+
+        content += `
+              </tbody>
+            </table>
+          </body>
+          </html>
+        `;
+
+        printWindow.document.write(content);
+        printWindow.document.close();
+        printWindow.print();
+      }
+    }
+  });
+}
+
 </script>
 @endsection
