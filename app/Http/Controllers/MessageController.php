@@ -18,11 +18,35 @@ class MessageController extends Controller
         return view('admin.chat'); // your Blade frontend
     }
 
-    public function branches()
-    {
-        $branches = Store::all();
-        return response()->json($branches);
-    }
+public function branches()
+{
+    $patientId = auth()->id();
+
+    $branches = Store::with(['messages' => function ($q) use ($patientId) {
+        $q->where(function ($query) use ($patientId) {
+            $query->where('sender_id', $patientId)
+                  ->orWhere('receiver_id', $patientId);
+        })
+        ->latest()
+        ->limit(1);
+    }])
+    ->get()
+    ->map(function ($branch) {
+        return [
+            'id' => $branch->id,
+            'name' => $branch->name,
+            'latest_message' => $branch->messages->first(),
+        ];
+    })
+    // ✅ Sort newest to oldest based on message timestamp
+    ->sortByDesc(function ($branch) {
+        return optional($branch['latest_message'])->created_at ?? now()->subYears(100);
+    })
+    ->values();
+
+    return response()->json($branches);
+}
+
 
     public function fetch($storeId, $userId)
     {
@@ -64,20 +88,36 @@ class MessageController extends Controller
 
 public function patients()
 {
-    // $patients = User::whereHas('messages')
-    //     ->with(['messages' => function ($q) {
-    //         $q->latest()->limit(1);
-    //     }])
-    //     ->get();
+    $storeId = session('active_branch_id');
 
-    $storeId = session('active_branch_id'); // current branch
-
+    // Get all patients
     $patients = User::where('account_type', 'patient')
-        ->with(['messages' => function ($q) use ($storeId) {
-            $q->where('store_id', $storeId)->latest()->limit(1);
-        }])
-        ->get();
+        ->get()
+        ->map(function ($patient) use ($storeId) {
+            // Get latest message between this patient and the branch
+            $latestMessage = \App\Models\Message::where('store_id', $storeId)
+                ->where(function ($q) use ($patient) {
+                    $q->where('sender_id', $patient->id)
+                      ->orWhere('receiver_id', $patient->id);
+                })
+                ->latest('created_at')
+                ->with('store')
+                ->first();
 
+            return [
+                'id' => $patient->id,
+                'full_name' => trim($patient->name . ' ' . $patient->lastname),
+                'latest_message' => $latestMessage?->message,
+                'latest_message_time' => $latestMessage?->created_at
+                    ? $latestMessage->created_at->diffForHumans()
+                    : null,
+                'branch_name' => $latestMessage?->store?->name,
+                'sort_time' => $latestMessage?->created_at ?? now()->subYears(100)
+            ];
+        })
+        // ✅ Sort by latest message timestamp descending (new → old)
+        ->sortByDesc('sort_time')
+        ->values();
 
     return response()->json($patients);
 }

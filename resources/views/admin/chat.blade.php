@@ -46,28 +46,66 @@
   let allPatients = [];
 
   // Load patient list
-  function loadPatients() {
-    fetch("{{ route('patients.list') }}")
-      .then(res => res.json())
-      .then(patients => {
-        allPatients = patients;
-        renderPatientList(patients);
-      });
-  }
+ function loadPatients() {
+  fetch("{{ route('patients.list') }}")
+    .then(res => res.json())
+    .then(patients => {
+      allPatients = patients;
+      renderPatientList(patients);
+    })
+    .catch(err => console.error("Error loading patients:", err));
+}
 
-  function renderPatientList(patients) {
-    const patientList = document.getElementById("patientList");
-    patientList.innerHTML = "";
-    patients.forEach(patient => {
-      let lastMsg = patient.messages.length ? patient.messages[0].message : "No messages yet";
-      let li = document.createElement("li");
-      li.className = "p-3 hover:bg-sky-200 cursor-pointer";
-      li.innerHTML = `<strong>${patient.full_name}</strong><br>`;
-      // li.innerHTML = `<strong>${patient.name}</strong><br><small>${lastMsg}</small>`;
-      li.onclick = () => loadMessages(currentStore, patient.id, patient.full_name);
-      patientList.appendChild(li);
-    });
+function renderPatientList(patients) {
+  const patientList = document.getElementById("patientList");
+  patientList.innerHTML = "";
+
+  patients.forEach(patient => {
+    // latest_message is now just a string
+    let lastMsg = patient.latest_message || "No messages yet";
+    let branchName = patient.branch_name ? ` (${patient.branch_name})` : "";
+    let time = patient.latest_message_time ? ` • ${patient.latest_message_time}` : "";
+
+    let li = document.createElement("li");
+    li.className =
+      "p-3 hover:bg-sky-200 cursor-pointer border-b border-gray-200 transition";
+
+    if (currentPatient === patient.id) {
+      li.classList.add("bg-sky-300");
+    }
+
+    // li.innerHTML = `
+    //   <strong>${patient.full_name}</strong><br>
+    //   <small class="text-gray-600">${lastMsg}${time}${branchName}</small>
+    // `;
+   li.innerHTML = `
+      <strong>${patient.full_name}</strong><br>
+      <small class="text-gray-600">${lastMsg}</small>
+    `;
+    li.onclick = () => {
+      currentPatient = patient.id;
+      document.getElementById("chatHeader").textContent = patient.full_name;
+      loadMessages(currentStore, patient.id, patient.full_name);
+    };
+
+    patientList.appendChild(li);
+  });
+}
+
+
+// ✅ Refresh both patients list and messages every 3 seconds
+setInterval(() => {
+  loadPatients(); // refresh patient list (includes latest message below name)
+
+  if (currentPatient) {
+    const currentName = document.getElementById("chatHeader").textContent;
+    loadMessages(currentStore, currentPatient, currentName);
   }
+}, 3000);
+
+// ✅ Initial load
+loadPatients();
+
 
   // Search patients
   document.getElementById("patientSearch").addEventListener("input", function() {
@@ -138,7 +176,6 @@ setInterval(() => {
     });
   });
 
-  // Initial load
-  loadPatients();
+
 </script>
 @endsection

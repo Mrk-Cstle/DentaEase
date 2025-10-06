@@ -105,5 +105,15 @@ public function messages()
     return $this->hasMany(Message::class, 'receiver_id'); 
     // or 'sender_id' depending on what you want to show
 }
+public function latestMessage()
+{
+    $storeId = session('active_branch_id');
+
+    // A message can be sent OR received by the user
+    return $this->hasOne(\App\Models\Message::class, 'sender_id', 'id')
+        ->where('store_id', $storeId)
+        ->latestOfMany();
+}
+
 
 }

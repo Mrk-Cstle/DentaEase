@@ -1,7 +1,7 @@
 @props(['href', 'icon', 'label'])
 
 @php
-    $active = Request::is(trim($href, '/').'*');
+    $active = Request::is(trim($href, '/'));
 @endphp
 
 <a href="{{ $href }}" 
