@@ -46,7 +46,7 @@
                 @csrf
         
                 <div class="mt-4">
-                    <label class="block font-semibold">Work Done</label>
+                    <label class="block font-semibold">Note</label>
                     <textarea name="work_done" rows="4" class="w-full border rounded p-2" required></textarea>
                 </div>
         

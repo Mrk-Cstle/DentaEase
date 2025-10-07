@@ -19,4 +19,9 @@ class Store extends Model
                 ->withPivot('position')        
                 ->withTimestamps();  
 }
+
+public function messages()
+{
+    return $this->hasMany(Message::class);
+}
 }

@@ -3,7 +3,7 @@
 @section('title', 'Login via QR')
 
 @section('auth-content')
-
+<div class="p-[50px] bg-sky-100">
     <div class="text-center mb-4">
         <h2 class="text-2xl font-bold text-sky-600">Login using QR Code</h2>
     </div>
@@ -25,6 +25,7 @@
         </p>
     </div>
 
+</div>
 
 <!-- Scripts -->
 <script src="https://unpkg.com/html5-qrcode" type="text/javascript"></script>
@@ -32,7 +33,16 @@
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
 <script>
+let qrScanner; // store scanner instance
+let hasScanned = false; // prevent multiple scans
+
 function onScanSuccess(decodedText, decodedResult) {
+    if (hasScanned) return; // ignore repeated scans
+    hasScanned = true;
+
+    // Stop scanner immediately
+    qrScanner.clear().catch(err => console.error("Scanner clear error:", err));
+
     // Send token to backend
     fetch("/qr-login", {
         method: "POST",
@@ -59,6 +69,9 @@ function onScanSuccess(decodedText, decodedResult) {
                 icon: 'error',
                 title: 'Login Failed',
                 text: data.message,
+            }).then(() => {
+                hasScanned = false; // allow retry
+                startScanner(); // restart scanner
             });
         }
     })
@@ -68,11 +81,19 @@ function onScanSuccess(decodedText, decodedResult) {
             icon: 'error',
             title: 'Error',
             text: 'Something went wrong. Please try again.',
+        }).then(() => {
+            hasScanned = false; // allow retry
+            startScanner(); // restart scanner
         });
     });
 }
 
-new Html5QrcodeScanner("qr-reader", { fps: 10, qrbox: 250 })
-    .render(onScanSuccess);
+function startScanner() {
+    qrScanner = new Html5QrcodeScanner("qr-reader", { fps: 10, qrbox: 250 });
+    qrScanner.render(onScanSuccess);
+}
+
+// Start scanning
+startScanner();
 </script>
 @endsection

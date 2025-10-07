@@ -13,38 +13,52 @@ use App\Models\PatientRecord;
 class StaffController extends Controller
 {
     //
-    public function ViewStaff(Request $request){
+public function ViewStaff(Request $request)
+{
+    $perPage = 5;
 
-        $perPage = 5;
+    $search = $request->input('search');
+    $position = $request->input('position');
+    $print = $request->input('print'); // <-- check if it's for printing
 
-        $search = $request->input('search');
-        $position = $request->input('position');
-       
-        $query = User::where('account_type', 'admin')->where(function($q) use ($search){
-            $q->where('name', 'like', "%{$search}%");
-            $q->orWhere('user', 'like', "%{$search}%");
+    $query = User::where('account_type', 'admin')
+        ->where(function ($q) use ($search) {
+            $q->where('name', 'like', "%{$search}%")
+              ->orWhere('user', 'like', "%{$search}%");
         });
-        
-        
+
     if ($position) {
         $query->where('position', $position);
     }
-        $staff = $query->paginate($perPage);
+
+    // if printing, return ALL results (no pagination)
+    if ($print) {
+        $staff = $query->get();
 
         return response()->json([
             'status' => 'success',
-            'data' => $staff->items(),
-            'pagination' => [
-                'total' => $staff->total(),
-                'per_page' => $staff->perPage(),
-                'current_page' => $staff->currentPage(),
-                'last_page' => $staff->lastPage(),
-                'next_page_url' => $staff->nextPageUrl(),
-                'prev_page_url' => $staff->previousPageUrl(),
-            ]
+            'data' => $staff,
+            'pagination' => null
         ]);
-
     }
+
+    // default: paginate
+    $staff = $query->paginate($perPage);
+
+    return response()->json([
+        'status' => 'success',
+        'data' => $staff->items(),
+        'pagination' => [
+            'total' => $staff->total(),
+            'per_page' => $staff->perPage(),
+            'current_page' => $staff->currentPage(),
+            'last_page' => $staff->lastPage(),
+            'next_page_url' => $staff->nextPageUrl(),
+            'prev_page_url' => $staff->previousPageUrl(),
+        ]
+    ]);
+}
+
             public function show($id)
         {
             $user = User::findOrFail($id); 

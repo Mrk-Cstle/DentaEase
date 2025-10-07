@@ -163,7 +163,7 @@ Route::get('/transactions/{storeId}', [TransactionController::class, 'index'])->
 
 
 //reports
-Route::get('reports/sales', [SaleReportController::class, 'index'])
+Route::get('/reports/sales', [SaleReportController::class, 'index'])
     ->name('reports.sales');
 
 });

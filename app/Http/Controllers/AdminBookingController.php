@@ -209,22 +209,33 @@ public function cancelBooking($id)
 
 public function showHistory(Request $request)
 {
-    $query = Appointment::with('user')
+    $query = Appointment::with(['user', 'dentist']) // added dentist relation for eager load
         ->where('store_id', session('active_branch_id'))
-        ->whereIn('status', ['completed', 'cancelled' , 'no_show']); // adjust as needed
+        ->whereIn('status', ['completed', 'cancelled', 'no_show']);
 
     if (auth()->user()->position === 'dentist') {
         $query->where('dentist_id', auth()->id());
     }
 
-    if ($request->filled('date')) {
-        $query->whereDate('appointment_date', $request->input('date'));
+ 
+    if ($request->filled('start_date') && $request->filled('end_date')) {
+        $query->whereBetween('appointment_date', [
+            $request->input('start_date'),
+            $request->input('end_date'),
+        ]);
+    } elseif ($request->filled('start_date')) {
+        // if only start_date, filter from that day onwards
+        $query->whereDate('appointment_date', '>=', $request->input('start_date'));
+    } elseif ($request->filled('end_date')) {
+        // if only end_date, filter up to that day
+        $query->whereDate('appointment_date', '<=', $request->input('end_date'));
     }
 
     $appointments = $query->get();
 
     return view('admin.booking_history', compact('appointments'));
 }
+
 
 public function modalDetails($id)
 {

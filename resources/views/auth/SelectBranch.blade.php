@@ -3,6 +3,7 @@
 @section('title', 'Login')
 
 @section('auth-content')
+<div class="p-[50px] bg-sky-100">
 <div class="flex justify-center">
     <div class="bg-[#F5F5F5] bg-opacity-75 w-full md:w-2/3 lg:w-1/2 px-10 py-10 rounded-md flex flex-col h-auto">
         <h3 class="text-xl font-semibold mb-6 text-center">Select Your Branch</h3>
@@ -41,5 +42,6 @@
             </div>
         </form>
     </div>
+</div>
 </div>
 @endsection

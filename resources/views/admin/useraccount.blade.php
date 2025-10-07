@@ -21,6 +21,11 @@
       <button onclick="stafflist(1)" class="bg-primary hover:bg-blue-700 text-white px-4 py-2 rounded">
         Search
       </button>
+
+      <button onclick="printStaff()" class="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded">
+  <i class="fa-solid fa-print mr-2"></i> Print
+</button>
+
     </div>
   </div>
 
@@ -226,6 +231,73 @@
     });
 
     stafflist(currentPage);
+
+    
+
   });
+
+  function printStaff() {
+  let currentSearch = $('#searchInput').val();
+  let currentPosition = $('#positionFilter').val();
+
+  $.ajax({
+    type: "GET",
+    url: "{{ route('Stafflist') }}",
+    data: {
+      search: currentSearch,
+      position: currentPosition,
+      print: 1 // tell backend we want all
+    },
+    success: function (response) {
+      if (response.status === 'success') {
+        let printWindow = window.open('', '', 'width=900,height=600');
+        let content = `
+          <html>
+          <head>
+            <title>Staff List</title>
+            <style>
+              table { width:100%; border-collapse: collapse; font-family: Arial, sans-serif; }
+              th, td { border: 1px solid #333; padding: 8px; text-align: left; }
+              th { background: #f4f4f4; }
+              h2 { text-align: center; margin-bottom: 20px; }
+            </style>
+          </head>
+          <body>
+            <h2>Staff List</h2>
+            <table>
+              <thead>
+                <tr>
+                  <th>Name</th>
+                  <th>Position</th>
+                  <th>Contact Number</th>
+                </tr>
+              </thead>
+              <tbody>
+        `;
+
+        response.data.forEach(user => {
+          content += `
+            <tr>
+              <td>${user.full_name}</td>
+              <td>${user.position}</td>
+              <td>${user.contact_number ?? ''}</td>
+            </tr>
+          `;
+        });
+
+        content += `
+              </tbody>
+            </table>
+          </body>
+          </html>
+        `;
+
+        printWindow.document.write(content);
+        printWindow.document.close();
+        printWindow.print();
+      }
+    }
+  });
+}
 </script>
 @endsection

@@ -3,8 +3,9 @@
 @section('title', 'Login')
 
 @section('auth-content')
+<div class="p-[50px] bg-sky-100">
 
-    <form id="loginForm" method="post" class="flex flex-col gap-5">
+ <form id="loginForm" method="post" class="flex flex-col gap-5">
         <div class="text-center">
             <h2 class="text-2xl font-bold text-sky-600">Login</h2>
         </div>
@@ -57,6 +58,8 @@
         </div>
     </form>
 
+</div>
+   
 
 <!-- Scripts -->
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>

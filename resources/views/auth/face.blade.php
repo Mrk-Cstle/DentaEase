@@ -2,7 +2,7 @@
 @section('title', 'Face Recognition')
 
 @section('auth-content')
-
+<div class="p-[50px] bg-sky-100">
     <form id="loginForm" method="post" class="flex flex-col gap-5">
         <div class="text-center">
             <h2 class="text-2xl font-bold text-sky-600">Face Recognition Login</h2>
@@ -52,7 +52,7 @@
             <div class="animate-spin rounded-full h-16 w-16 border-t-4 border-b-4 border-sky-500"></div>
         </div>
     </form>
-
+</div>
 
 <!-- Scripts -->
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>

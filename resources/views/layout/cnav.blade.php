@@ -33,6 +33,7 @@
 
 <body class="bg-background font-sans">
   <div class="flex flex-col min-h-screen">
+
     <!-- Header -->
     <header class="bg-primary px-4 py-4 shadow-lg flex justify-between items-center">
       <div class="flex items-center space-x-4">
@@ -50,6 +51,7 @@
               <span class="absolute top-0 right-0 w-2 h-2 bg-red-500 rounded-full"></span>
             @endif
           </button>
+
           <div id="notificationDropdown" class="hidden absolute right-0 mt-2 w-80 bg-white border rounded-lg shadow-lg z-50">
             <div class="p-4 border-b">
               <h3 class="text-sm font-bold text-gray-700">Notifications</h3>
@@ -95,20 +97,18 @@
 
     <!-- Main Layout Container -->
     <div class="flex flex-col sm:flex-row flex-1">
-      <!-- Sidebar / Topbar Nav -->
+
+      <!-- Sidebar -->
       <nav class="bg-secondary sm:w-64 w-full border-b sm:border-b-0 sm:border-r px-4 py-4 shadow-md flex sm:flex-col flex-row flex-wrap sm:space-y-2 space-x-2 sm:space-x-0 justify-center sm:justify-start text-sm text-accent font-medium">
-        <a href="/bookingongoing" class="flex items-center gap-2 px-3 py-2 rounded hover:bg-navItem hover:text-white">
-          <i class="fa-solid fa-calendar-check"></i> <span class="hidden sm:inline">Booking Ongoing</span>
-        </a>
-        <a href="/booking" class="flex items-center gap-2 px-3 py-2 rounded hover:bg-navItem hover:text-white">
-          <i class="fa-solid fa-calendar-plus"></i> <span class="hidden sm:inline">Booking</span>
-        </a>
-         {{-- <a href="/cforms" class="flex items-center gap-2 px-3 py-2 rounded hover:bg-navItem hover:text-white">
-          <i class="fa-solid fa-calendar-plus"></i> <span class="hidden sm:inline">Medical History Update</span>
-        </a> --}}
-        {{-- <a href="/cprofile" class="sm:hidden flex items-center gap-2 px-3 py-2 rounded hover:bg-navItem hover:text-white">
-          <i class="fa-solid fa-user"></i> <span>Profile</span>
-        </a> --}}
+
+        {{-- Use x-nav-link components --}}
+        <x-nav-link href="/bookingongoing" icon="fa-solid fa-calendar-check" label="Booking Ongoing" />
+        <x-nav-link href="/booking" icon="fa-solid fa-calendar-plus" label="Booking" />
+        {{-- Uncomment if needed --}}
+        {{-- <x-nav-link href="/cforms" icon="fa-solid fa-file-medical" label="Medical History Update" /> --}}
+        {{-- <x-nav-link href="/cprofile" icon="fa-solid fa-user" label="Profile" /> --}}
+        <x-nav-link href="/patient/chat" icon="fa-solid fa-comments" label="Message" />
+
       </nav>
 
       <!-- Main Content -->
