@@ -138,6 +138,9 @@ $(document).on('click', '.approve-btn', function () {
     const time = row.find('.appointment-time').val();
     const endTime = row.find('.booking-end-time').val();
 
+    // detect type
+    const isChangeTime = button.text().trim().toLowerCase() == 'change time';
+
     $.ajax({
         url: `/appointments/${appointmentId}/approve`,
         type: 'PUT',
@@ -145,12 +148,15 @@ $(document).on('click', '.approve-btn', function () {
             _token: '{{ csrf_token() }}',
             appointment_time: time,
             booking_end_time: endTime,
+            change_time: isChangeTime ? 1 : 0, // send indicator to backend
         },
         success: function (res) {
             Swal.fire({
                 icon: 'success',
-                title: 'Approved!',
-                text: 'Appointment has been approved.'
+                title: isChangeTime ? 'Time Changed!' : 'Approved!',
+                text: isChangeTime 
+                    ? 'Appointment time has been successfully updated.' 
+                    : 'Appointment has been approved.'
             });
 
             $.get('{{ route('appointments.fetch') }}', function (html) {
@@ -166,6 +172,7 @@ $(document).on('click', '.approve-btn', function () {
         }
     });
 });
+
 
 $(document).on('click', '.cancel-btn', function () {
     const button = $(this);
