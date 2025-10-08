@@ -8,6 +8,7 @@ use App\Models\Appointment;
 use App\Models\Store;
 use App\Models\User;
 use App\Mail\AppointmentApprovedMail;
+use App\Mail\AppointmentRescheduledMail;
 use App\Models\MedicalForm;
 use App\Models\medicines;
 use App\Models\PatientRecord;
@@ -17,6 +18,7 @@ use Illuminate\Support\Facades\Mail;
 use App\Notifications\AppointmentNotification;
    use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\Facades\Log;
+
 
 class AdminBookingController extends Controller
 {
@@ -90,20 +92,45 @@ public function approveBooking(Request $request, $id)
 
     $appointment = Appointment::findOrFail($id);
 
+    $isReschedule = $appointment->status === 'approved'; // 👈 Detect if already approved
+
     $appointment->update([
         'appointment_time' => $request->appointment_time,
         'booking_end_time' => $request->booking_end_time,
         'status' => 'approved',
     ]);
-     Mail::to($appointment->user->email)->send(new AppointmentApprovedMail($appointment));
-     
-     $appointment->user->notify(new AppointmentNotification([
-    'title' => 'Appointment Approved',
-    'message' => 'Your appointment has been approved and updated at '. $appointment->store->name,
-    // 'url' => '/messages'
-]));
-      return response()->json(['message' => 'Appointment approved.']);
+
+    //  Send different emails depending on action
+    if ($isReschedule) {
+        Mail::to($appointment->user->email)->send(new AppointmentRescheduledMail($appointment));
+    } else {
+        Mail::to($appointment->user->email)->send(new AppointmentApprovedMail($appointment));
+    }
+
+    //  Notification logic
+    $title = $isReschedule ? 'Appointment Rescheduled' : 'Appointment Approved';
+       $message = $isReschedule
+    ? 'Your appointment time has been changed at ' . $appointment->store->name . 
+      ' to ' . Carbon::parse($appointment->appointment_date)->format('F j, Y') . 
+      ' (' . Carbon::parse($appointment->appointment_time)->format('g:i A') . 
+      ' - ' . Carbon::parse($appointment->booking_end_time)->format('g:i A') . ')'
+    : 'Your appointment has been approved at ' . $appointment->store->name . 
+      ' on ' . Carbon::parse($appointment->appointment_date)->format('F j, Y') . 
+      ' (' . Carbon::parse($appointment->appointment_time)->format('g:i A') . 
+      ' - ' . Carbon::parse($appointment->booking_end_time)->format('g:i A') . ')';
+
+    $appointment->user->notify(new AppointmentNotification([
+        'title' => $title,
+        'message' => $message,
+    ]));
+
+    // 🧾 Response with custom message
+    return response()->json([
+        'message' => $isReschedule ? 'Appointment time updated successfully.' : 'Appointment approved successfully.',
+        'status' => $isReschedule ? 'rescheduled' : 'approved',
+    ]);
 }
+
 
 public function view($id)
 {
