@@ -465,7 +465,11 @@
     </script>
     <script>
     function printDiv(divId) {
+           @if(isset($appointment))
         const redirectUrl = "{{ route('appointments.view', ['id' => $appointment->id]) }}";
+            @else
+                const redirectUrl = null;
+            @endif
     
         // Clone the div to preserve structure
         const contentDiv = document.getElementById(divId);
