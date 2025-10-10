@@ -26,7 +26,7 @@
         <th class="border px-4 py-2">Service</th>
         <th class="border px-4 py-2">Type</th>
         <th class="border px-4 py-2">Time</th>
-        <th class="border px-4 py-2">Price</th>
+        {{-- <th class="border px-4 py-2">Price</th> --}}
         <th class="border px-4 py-2">Action</th>
       </tr>
     </thead>
@@ -44,7 +44,7 @@
       <input type="text" name="name" placeholder="Name" required class="w-full border p-2 rounded">
       <input type="text" name="description" placeholder="Description" required class="w-full border p-2 rounded">
       <input type="number" name="time" placeholder="Approx. Time (mins)" required class="w-full border p-2 rounded">
-      <input type="number" name="price" placeholder="Approx. Price" required class="w-full border p-2 rounded">
+      <input type="number" name="price" placeholder="Approx. Price" required class="w-full border p-2 rounded" hidden>
       <select name="type" id="type" class="w-full border p-2 rounded">
         <option value="General Dentistry">General Dentistry</option>
         <option value="Orthodontics">Orthodontics</option>
@@ -114,7 +114,7 @@
                 <td class="border px-2 py-1">${service.name}</td>
                 <td class="border px-2 py-1">${service.type}</td>
                 <td class="border px-2 py-1">${service.approx_time}</td>
-                <td class="border px-2 py-1">${service.approx_price}</td>
+                <td hidden class="border px-2 py-1">${service.approx_price}</td>
                 <td class="border px-2 py-1">
                   <button class="view-service bg-blue-500 text-white px-2 py-1 rounded" 
                     data-id="${service.id}" 
