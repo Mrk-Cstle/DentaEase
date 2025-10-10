@@ -88,8 +88,28 @@
                             <label for="birthdate">Birth Day</label>
                             <input type="date" name="birthdate" id="birthdate" value="{{ $user->birth_date }}">
                         </form>
-                        <button id="deletebtn" data-id="{{ $user->id }}"
-                            class="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded shadow">Delete</button>
+                       @if (is_null($user->deleted_at))
+    <!-- Archive Button -->
+    <button id="archiveBtn" data-id="{{ $user->id }}"
+        class="bg-yellow-600 hover:bg-yellow-700 text-white px-4 py-2 rounded shadow">
+        Archive
+    </button>
+@else
+    <div class="flex gap-2">
+        <!-- Restore Button -->
+        <button id="restoreBtn" data-id="{{ $user->id }}"
+            class="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded shadow">
+            Restore
+        </button>
+
+        <!-- Permanent Delete Button -->
+        <button id="permanentDeleteBtn" data-id="{{ $user->id }}"
+            class="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded shadow">
+            Permanent Delete
+        </button>
+    </div>
+@endif
+
                     </div>
                 </div>
 
@@ -334,6 +354,103 @@
             }, 'image/jpeg');
         });
     </script>
+<script>
+    // Archive (Soft Delete)
+    $('#archiveBtn').click(function(e) {
+        e.preventDefault();
+        const userId = $(this).data('id');
+
+        Swal.fire({
+            title: 'Archive this user?',
+            text: 'This will temporarily deactivate the account.',
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonText: 'Yes, archive it!'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                $.ajax({
+                    type: "POST",
+                    url: "{{ route('user.archive') }}",
+                    data: {
+                        _token: '{{ csrf_token() }}',
+                        id: userId
+                    },
+                    success: function(response) {
+                        Swal.fire('Archived!', response.message, 'success')
+                            .then(() => location.reload());
+                    },
+                    error: function(xhr) {
+                        Swal.fire('Error', 'Unable to archive user.', 'error');
+                    }
+                });
+            }
+        });
+    });
+
+    // Restore
+    $('#restoreBtn').click(function(e) {
+        e.preventDefault();
+        const userId = $(this).data('id');
+
+        Swal.fire({
+            title: 'Restore this user?',
+            text: 'This will reactivate the account.',
+            icon: 'question',
+            showCancelButton: true,
+            confirmButtonText: 'Yes, restore it!'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                $.ajax({
+                    type: "POST",
+                    url: "{{ route('user.restore') }}",
+                    data: {
+                        _token: '{{ csrf_token() }}',
+                        id: userId
+                    },
+                    success: function(response) {
+                        Swal.fire('Restored!', response.message, 'success')
+                            .then(() => location.reload());
+                    },
+                    error: function() {
+                        Swal.fire('Error', 'Unable to restore user.', 'error');
+                    }
+                });
+            }
+        });
+    });
+
+    // Permanent Delete
+    $('#permanentDeleteBtn').click(function(e) {
+        e.preventDefault();
+        const userId = $(this).data('id');
+
+        Swal.fire({
+            title: 'Permanently delete this user?',
+            text: 'This action cannot be undone!',
+            icon: 'error',
+            showCancelButton: true,
+            confirmButtonText: 'Yes, delete permanently!'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                $.ajax({
+                    type: "DELETE",
+                    url: "{{ route('user.forceDelete') }}",
+                    data: {
+                        _token: '{{ csrf_token() }}',
+                        id: userId
+                    },
+                    success: function(response) {
+                        Swal.fire('Deleted!', response.message, 'success')
+                            .then(() => window.location.href = '/useraccount');
+                    },
+                    error: function() {
+                        Swal.fire('Error', 'Unable to permanently delete user.', 'error');
+                    }
+                });
+            }
+        });
+    });
+</script>
 
     <script>
         ///update profile

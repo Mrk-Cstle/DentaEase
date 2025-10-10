@@ -8,10 +8,12 @@
 
   <div class="flex flex-col sm:flex-row justify-between gap-4 mb-4">
     <div class="flex flex-row gap-2">
+    <a href="/userverify" class="bg-blue-500 text-white px-4 py-2 rounded shadow">New Users</a>
 
-        <a href="/userverify" class="bg-blue-500 text-white px-4 py-2 rounded shadow">New Users</a>
-    
-    </div>
+    <!-- Filter Buttons -->
+    <button id="filterActive" class="bg-green-600 text-white px-4 py-2 rounded shadow">Active</button>
+    <button id="filterArchived" class="bg-gray-500 text-white px-4 py-2 rounded shadow">Archived</button>
+</div>
 
     <div class="flex flex-col sm:flex-row gap-2">
       <input type="text" id="searchInput" placeholder="Search..." class="border rounded p-2 w-full sm:w-64" />
@@ -95,6 +97,20 @@
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
 <script>
+  let currentStatus = 'active'; 
+  $('#filterActive').click(function() {
+    currentStatus = 'active';
+    $(this).addClass('bg-green-700').removeClass('bg-green-600');
+    $('#filterArchived').removeClass('bg-gray-700').addClass('bg-gray-500');
+    stafflist(1);
+  });
+
+  $('#filterArchived').click(function() {
+    currentStatus = 'archived';
+    $(this).addClass('bg-gray-700').removeClass('bg-gray-500');
+    $('#filterActive').removeClass('bg-green-700').addClass('bg-green-600');
+    stafflist(1);
+  });
   function closeModal() {
     $('#viewModal').addClass('hidden');
   }
@@ -112,7 +128,8 @@
       url: "{{ route('Patientlist') }}",
       data: {
         search: currentSearch,
-        page: page
+        page: page,
+  status: currentStatus
       },
       success: function (response) {
         if (response.status === 'success') {

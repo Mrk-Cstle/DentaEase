@@ -39,7 +39,7 @@ class Appointment extends Model
     // Relationship: belongs to a user (customer/patient)
     public function user()
     {
-        return $this->belongsTo(User::class);
+        return $this->belongsTo(User::class)->withTrashed();
     }
     public function dentist()
 {
