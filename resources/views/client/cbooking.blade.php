@@ -70,7 +70,7 @@
             <h3 class="text-lg font-bold">{{ $service->name }}</h3>
             <p>{{ $service->description }}</p>
             <p>Approx. Time: {{ $service->approx_time }}mins</p>
-            <p>Approx. Price: ₱{{ $service->approx_price }}</p>
+            {{-- <p>Approx. Price: ₱{{ $service->approx_price }}</p> --}}
            </div>
             
         </div>

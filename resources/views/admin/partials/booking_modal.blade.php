@@ -25,7 +25,7 @@
                         <option value="{{ $store->id }}">{{ $store->name }}</option>
                     @endforeach
                 </select>
-                <div id="storedetail"></div>
+                <div id="storedetail" hidden></div>
             </div>
 
             {{-- Services --}}
@@ -37,7 +37,7 @@
                         <option value="{{ $service->id }}">{{ $service->name }}</option>
                     @endforeach
                 </select>
-                <div id="servicedetail"></div>
+                <div id="servicedetail" hidden></div>
             </div>
             <!-- Dentist Selection -->
             <div>

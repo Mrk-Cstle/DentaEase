@@ -91,8 +91,8 @@
                         <div class="p-6">
                             <h3 class="text-xl font-bold text-gray-900 mb-2">{{ $service->name }}</h3>
                             <p class="text-gray-600 mb-3">{{ $service->description }}</p>
-                            <p class="text-sm text-gray-700">⏱ {{ $service->approx_time ?? 'N/A' }}</p>
-                            <p class="text-sm text-gray-700">💰 ₱{{ number_format($service->approx_price, 2) }}</p>
+                            <p class="text-sm text-gray-700">⏱ {{ $service->approx_time ?? 'N/A' }} minutes</p>
+                            {{-- <p class="text-sm text-gray-700">💰 ₱{{ number_format($service->approx_price, 2) }}</p> --}}
                         </div>
                     </div>
                 @endforeach
