@@ -6,10 +6,21 @@
   <h1 class="text-2xl font-bold text-accent mb-4">Staff Management</h1>
 
   <div class="flex flex-col sm:flex-row justify-between gap-4 mb-4">
+    <div class="flex flex-wrap gap-2 items-center">
     <button id="addUserBtn" class="bg-primary hover:bg-blue-700 text-white px-4 py-2 rounded shadow w-full sm:w-auto">
       <i class="fa-solid fa-user-plus mr-2"></i>Add User
     </button>
-
+    
+<!--  Archive Filter Buttons -->
+  <div class="flex gap-2">
+    <button id="filterActive" class="bg-green-600 text-white px-4 py-2 rounded shadow active-filter">
+      Active
+    </button>
+    <button id="filterArchived" class="bg-gray-500 text-white px-4 py-2 rounded shadow">
+      Archived
+    </button>
+  </div>
+  </div>
     <div class="flex flex-col sm:flex-row gap-2">
       <select id="positionFilter" class="border rounded p-2 w-full sm:w-auto">
         <option value="">All Positions</option>
@@ -125,6 +136,7 @@
   function closeModal() {
     $('#viewModal').addClass('hidden');
   }
+let currentArchive = localStorage.getItem('staffArchiveFilter') || 'active';
 
   let currentPage = parseInt(localStorage.getItem('staffcurrentpage')) || 1;
   let currentSearch = '';
@@ -142,7 +154,8 @@
       data: {
         search: currentSearch,
         position: currentPosition,
-        page: page
+        page: page,
+         archive: currentArchive
       },
       success: function (response) {
         if (response.status === 'success') {
@@ -172,6 +185,30 @@
       }
     });
   }
+
+  $('#filterActive').on('click', function () {
+  currentArchive = 'active';
+  localStorage.setItem('staffArchiveFilter', currentArchive);
+  updateArchiveButtons();
+  stafflist(1);
+});
+
+$('#filterArchived').on('click', function () {
+  currentArchive = 'archived';
+  localStorage.setItem('staffArchiveFilter', currentArchive);
+  updateArchiveButtons();
+  stafflist(1);
+});
+
+function updateArchiveButtons() {
+  if (currentArchive === 'active') {
+    $('#filterActive').addClass('bg-green-600').removeClass('bg-gray-500');
+    $('#filterArchived').addClass('bg-gray-500').removeClass('bg-green-600');
+  } else {
+    $('#filterArchived').addClass('bg-green-600').removeClass('bg-gray-500');
+    $('#filterActive').addClass('bg-gray-500').removeClass('bg-green-600');
+  }
+}
 
   $(document).ready(function () {
     const savedPosition = localStorage.getItem('staffPositionFilter');

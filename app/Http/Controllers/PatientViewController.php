@@ -10,17 +10,26 @@ use Illuminate\Validation\Rule;
 class PatientViewController extends Controller
 {
     //
-   public function ViewPatient(Request $request)
+  public function ViewPatient(Request $request)
 {
     $perPage = 5;
     $search = $request->input('search');
-    $print = $request->input('print'); // <-- check for print flag
+    $print = $request->input('print');
+    $status = $request->input('status', 'active'); // <--- default to 'active'
 
+    // Start query
     $query = User::where('account_type', 'patient')
         ->where(function($q) use ($search) {
             $q->where('name', 'like', "%{$search}%")
               ->orWhere('user', 'like', "%{$search}%");
         });
+
+    // Filter based on status
+    if ($status === 'archived') {
+        $query = $query->onlyTrashed(); // show soft-deleted
+    } else {
+        $query = $query->whereNull('deleted_at'); // only active
+    }
 
     // If printing, return all results (no pagination)
     if ($print) {
@@ -50,6 +59,4 @@ class PatientViewController extends Controller
     ]);
 }
 
-           
-     
 }

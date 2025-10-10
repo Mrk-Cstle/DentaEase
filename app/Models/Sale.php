@@ -22,11 +22,11 @@ class Sale extends Model
 
     public function user()
     {
-        return $this->belongsTo(User::class, 'user_id');
+        return $this->belongsTo(User::class, 'user_id')->withTrashed();
     }
 public function patient()
 {
-    return $this->belongsTo(User::class, 'patient_id')->where('account_type', 'patient');
+    return $this->belongsTo(User::class, 'patient_id')->where('account_type', 'patient')->withTrashed();
 }
 
     public function items()

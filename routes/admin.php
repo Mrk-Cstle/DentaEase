@@ -58,7 +58,7 @@ Route::get('/get-assigned-branches', function () {
     return Auth::user()->stores; 
 });
 
-///profile tab
+
 
 
 //navigation link
@@ -93,6 +93,11 @@ Route::get('/stafflist', [StaffController::class,'ViewStaff'])->name('Stafflist'
 Route::post('/deleteuser', [StaffController::class, 'DeleteUser'])->name('deleteuser');
 Route::patch('/updateUser', [StaffController::class, 'UpdateUser'])->middleware('auth')->name('updateUser');
 Route::get('/user/{id}', [StaffController::class, 'showProfile'])->name('userviewappointment');
+
+///profile tab
+Route::post('/user/archive', [StaffController::class, 'archive'])->name('user.archive');
+Route::post('/user/restore', [StaffController::class, 'restore'])->name('user.restore');
+Route::delete('/user/force-delete', [StaffController::class, 'forceDelete'])->name('user.forceDelete');
 
 //Paient list tab
 Route::get('/patientlist', [PatientViewController::class,'ViewPatient'])->name('Patientlist')->middleware('auth');

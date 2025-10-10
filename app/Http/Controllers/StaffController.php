@@ -16,22 +16,32 @@ class StaffController extends Controller
 public function ViewStaff(Request $request)
 {
     $perPage = 5;
-
     $search = $request->input('search');
     $position = $request->input('position');
-    $print = $request->input('print'); // <-- check if it's for printing
+    $archive = $request->input('archive'); // Added for active/archived filter
+    $print = $request->input('print'); // check if it's for printing
 
-    $query = User::where('account_type', 'admin')
+    // Base query (include trashed so we can filter)
+    $query = User::withTrashed()
+        ->where('account_type', 'admin')
         ->where(function ($q) use ($search) {
             $q->where('name', 'like', "%{$search}%")
               ->orWhere('user', 'like', "%{$search}%");
         });
 
+    // Filter by position if provided
     if ($position) {
         $query->where('position', $position);
     }
 
-    // if printing, return ALL results (no pagination)
+    //  Handle archive filter
+    if ($archive === 'archived') {
+        $query->onlyTrashed(); // show soft-deleted only
+    } elseif ($archive === 'active') {
+        $query->whereNull('deleted_at'); // show active only
+    }
+
+    // If printing, return ALL results (no pagination)
     if ($print) {
         $staff = $query->get();
 
@@ -42,7 +52,7 @@ public function ViewStaff(Request $request)
         ]);
     }
 
-    // default: paginate
+    // Default: paginate
     $staff = $query->paginate($perPage);
 
     return response()->json([
@@ -168,44 +178,46 @@ public function ViewStaff(Request $request)
 
 public function showProfile($id)
 {
-    $user = User::findOrFail($id);
+    // Fetch the user even if soft-deleted
+    $user = User::withTrashed()->findOrFail($id);
 
-    // All completed/cancelled/no_show appointments of this user
-    $completedAppointments = Appointment::with(['user', 'dentist'])
-        ->where('user_id', $user->id)
-        ->whereIn('status', ['completed', 'no_show', 'cancelled'])
-        ->orderBy('appointment_date', 'desc')
-        ->get();
+    // Fetch completed, no_show, or cancelled appointments (user may be trashed)
+    $completedAppointments = Appointment::with([
+        'user' => fn($q) => $q,
+        'dentist',
+    ])
+    ->where('user_id', $user->id)
+    ->whereIn('status', ['completed', 'no_show', 'cancelled'])
+    ->orderBy('appointment_date', 'desc')
+    ->get();
 
-    // All medical forms of this user
+    // Medical forms (no soft deletes here)
     $medicalForms = MedicalForm::where('user_id', $user->id)->get();
 
-    // Latest appointment of the user (for profile context)
-    $appointment = Appointment::with('user', 'store')
-        ->where('user_id', $user->id)
-        ->latest('appointment_date')
-        ->first();
+    // Latest appointment (no soft deletes here)
+    $appointment = Appointment::with([
+        'user' => fn($q) => $q,
+        'store',
+    ])
+    ->where('user_id', $user->id)
+    ->latest('appointment_date')
+    ->first();
 
-    // Initialize variables
     $record = '';
     $patient = '';
     $patientinfo = '';
 
-    if ($user->account_type == 'patient') {
-        // Treatment record (all appointments of the patient)
+    if ($user->account_type === 'patient') {
+        // Appointments under the patient (normal, no soft deletes)
         $record = $user->appointment()
             ->whereIn('status', ['completed', 'no_show', 'cancelled'])
             ->orderBy('appointment_date', 'desc')
             ->get();
 
-        // The patient is just the user object
         $patient = $user;
 
-        // Create patient info if it doesn’t exist
-        $patientinfo = PatientRecord::firstOrCreate(
-            ['user_id' => $user->id],
-            ['user_id' => $user->id]
-        );
+        // Patient record (no soft deletes)
+        $patientinfo = PatientRecord::firstOrCreate(['user_id' => $user->id]);
     }
 
     return view('admin.viewuserdetails', compact(
@@ -218,6 +230,29 @@ public function showProfile($id)
         'patientinfo'
     ));
 }
+
+
+public function archive(Request $request)
+{
+    $user = User::findOrFail($request->id);
+    $user->delete(); // soft delete
+    return response()->json(['message' => 'User archived successfully.']);
+}
+
+public function restore(Request $request)
+{
+    $user = User::withTrashed()->findOrFail($request->id);
+    $user->restore();
+    return response()->json(['message' => 'User restored successfully.']);
+}
+
+public function forceDelete(Request $request)
+{
+    $user = User::withTrashed()->findOrFail($request->id);
+    $user->forceDelete();
+    return response()->json(['message' => 'User permanently deleted.']);
+}
+
 
      
 }

@@ -121,6 +121,6 @@ class DentalChart extends Model
     // Relation: One patient has one dental chart
     public function patient()
     {
-        return $this->belongsTo(User::class, 'patient_id');
+        return $this->belongsTo(User::class, 'patient_id')->withTrashed();
     }
 }
